@@ -3,8 +3,9 @@ import numpy as np
 import matplotlib.pyplot as plt
 import math
 
-def checkAERDATA(p_timestamps, p_number_of_addresses =  -1, p_events = []):
+def checkAERDATA(p_timestamps, p_number_of_channels =  -1, p_events = []):
 
+    number_of_addresses = p_number_of_channels*2
     # Check all timestamps are greater than zero
     a = all(item >= 0  for item in p_timestamps)
 
@@ -17,10 +18,10 @@ def checkAERDATA(p_timestamps, p_number_of_addresses =  -1, p_events = []):
     if not b:
         print "The AER-DATA file that you loaded has at least one timestamp whose value is lesser than its previous one."
 
-    if p_number_of_addresses != -1:
+    if number_of_addresses != -1:
 
         # Check all addresses are between zero and the total number of addresses
-        c = all(item >= 0 and item < p_number_of_addresses for item in p_events)
+        c = all(item >= 0 and item < number_of_addresses for item in p_events)
 
         if not c:
             print "The AER-DATA file that you loaded has at least one event whose address is either below 0 or above the number of addresses that you specified."
