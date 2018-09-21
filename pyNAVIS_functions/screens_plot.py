@@ -41,8 +41,8 @@ def sonogram(allAddr, allTs, num_channels, bin_size):
     colorbar = plt.colorbar()
     colorbar.set_label('No. of spikes', rotation=270, fontsize='large', labelpad= 10) #, rotation=270)
 
-
     sng_fig.show()
+
 
 def spikegram(allAddr, allTs, dot_width):
 
