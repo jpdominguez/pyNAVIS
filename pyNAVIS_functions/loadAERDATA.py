@@ -14,7 +14,7 @@ def checkAERDATA(p_timestamps, p_number_of_channels =  -1, p_events = []):
 
     # Check every timestamp is greater than its previous one
     b = not any(i > 0 and p_timestamps[i] < p_timestamps[i-1] for i in range(len(p_timestamps)))
-    
+
     if not b:
         print "The AER-DATA file that you loaded has at least one timestamp whose value is lesser than its previous one."
 
@@ -26,10 +26,12 @@ def checkAERDATA(p_timestamps, p_number_of_channels =  -1, p_events = []):
         if not c:
             print "The AER-DATA file that you loaded has at least one event whose address is either below 0 or above the number of addresses that you specified."
 
-        return a and b and c
+        if a and b and c:
+            print "The loaded AER-DATA file has been checked and it's OK"
 
     else:
-        return a and not b
+        if a and b:
+            print "The loaded AER-DATA file has been checked and it's OK"
             
 
 # Function to subtract the smallest timestamp to all of the events (to start from 0) and adapt them based on the tick frequency of the tool used to log the file.
@@ -53,10 +55,19 @@ def loadAERDATA(p_path, p_address_size = 2):
         print "Only address sizes implemented are 2 and 4 bytes"
 
     with open(p_path, 'rb') as f:
+        ## Check header ##
+        p = 0
+        lt = f.readline()
+        while lt and lt[0] == "#":
+            p += len(lt)
+            lt = f.readline()
+        f.seek(p)
+
+        ## Read file ##
         while True:
             buff = f.read(p_address_size)
             if len(buff) < p_address_size: break
-            x = np.uint16(struct.unpack(unpack_param, buff)[0])
+            x = struct.unpack(unpack_param, buff)[0]
             events.append(x)
 
             buff = f.read(4)
