@@ -44,13 +44,30 @@ def sonogram(allAddr, allTs, num_channels, bin_size):
     sng_fig.show()
 
 
-def spikegram(allAddr, allTs, dot_width):
+def spikegram(allAddr, allTs, p_settings):
 
     #REPRESENTATION
     plt.style.use('seaborn-whitegrid')
     spk_fig = plt.figure()
     spk_fig.canvas.set_window_title('Spikegram')
-    plt.scatter(allTs, allAddr, s=dot_width)
+
+    if p_settings.mono_stereo == 0:
+        plt.scatter(allTs, allAddr, s=p_settings.spikegram_dot_size)
+    else:
+        """
+        col = np.where([x for x in allAddr if x <p_settings.num_channels*(p_settings.on_off_both)],'y','k')
+        print col
+        plt.scatter(allTs, allAddr, s=p_settings.spikegram_dot_size, c=col)
+        """
+        aedat_addr_ts = zip(allAddr, allTs)
+        addr, ts = zip(*[(evt[0], evt[1]) for evt in aedat_addr_ts if evt[0] < p_settings.num_channels*(p_settings.on_off_both)])
+        plt.scatter(ts, addr, s=p_settings.spikegram_dot_size, c='#80bdf7')
+        addr, ts = zip(*[(evt[0], evt[1]) for evt in aedat_addr_ts if evt[0] >= p_settings.num_channels*(p_settings.on_off_both) and evt[0] < p_settings.num_channels*(p_settings.on_off_both)*2])
+        plt.scatter(ts, addr, s=p_settings.spikegram_dot_size, c='#fcbd6a')
+        
+
+
+
     plt.title('Spikegram', fontsize='x-large')
 
     plt.xlabel('Timestamp ($\mu$s)', fontsize='large')
