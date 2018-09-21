@@ -1,46 +1,39 @@
-from pyNAVIS_functions.Screens import *
+from pyNAVIS_functions.screens_plot import *
 from pyNAVIS_functions.loadAERDATA import *
 from pyNAVIS_functions.utils import *
+from pyNAVIS_functions.raw_audio_functions import *
+from pyNAVIS_settings.main_settings import *
 
 
-
-#import time
-#start_time = time.time()
-#print "The file took ", time.time() - start_time
+#path = 'D:\\Repositorios\\GitHub\\pyNAVIS\\1khz_test_pdm_mono_30att2.aedat'
+path = 'D:\\Repositorios\\GitHub\\pyNAVIS\\c120e80e_nohash_8.wav.aedat'
 
 
+settings = MainSettings(p_num_channels=32, p_mono_stereo=0, p_address_size=2, p_ts_tick=0.2, p_bin_size=20000)
 
 
-#Parameters
-path = 'D:\\Repositorios\\GitHub\\loadAERDATA\\c120e80e_nohash_8.wav.aedat'
-bin_size = 20000
-ts_tick = 0.2
-num_channels = 32
-mono_stereo = 0 #0-mono, 1-stereo
+add, ts = loadAERDATA(path, settings.address_size)
+ts = adaptAERDATA(ts, settings.reset_timestamp, settings.ts_tick)
+checkAERDATA(ts, settings.num_channels, add)
 
-reset_timestamp = True
-
-spikegram_dot_size = 0.1
-
-bar_line = 1 #0-bar, 1-line
+print "The file contains", len(add), "spikes"
 
 
-
-[add, ts] = loadAERDATA(path)
-ts = adaptAERDATA(ts, reset_timestamp, ts_tick)
-if checkAERDATA(ts, num_channels, add):
-    print "The loaded AER-DATA file has been checked and it's OK"
-
-print len(add)
-print execution_time(loadAERDATA, [path])
-print execution_time(spikegram, (add, ts, spikegram_dot_size))
+#print execution_time(loadAERDATA, [path])
+print execution_time(spikegram, (add, ts, settings.spikegram_dot_size))
+"""
 print execution_time(sonogram, (add, ts, num_channels, bin_size))
 print execution_time(histogram, (add, num_channels, mono_stereo, bar_line))
 print execution_time(average_activity,(ts, bin_size))
+"""
+
+
 
 """
-sonogram(add, ts, num_channels, bin_size)
-histogram(add, num_channels, mono_stereo, bar_line)
-average_activity(ts, bin_size)
-raw_input()
+wav_data, wav_fs = wav_loadWAV('D:\\Repositorios\\GitHub\\pyNAVIS\\c120e80e_nohash_8.wav')
+wav_plot(wav_data, wav_fs)
+wav_spectrogram(wav_data, wav_fs)
 """
+
+
+raw_input()
