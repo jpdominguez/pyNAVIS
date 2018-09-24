@@ -4,44 +4,6 @@ import struct
 import matplotlib.pyplot as plt
 import numpy as np
 
-def sonogram(allAddr, allTs, num_channels, bin_size):
-
-    aedat_addr_ts = zip(allAddr, allTs)
-    total_time = max(allTs) - min(allTs)
-    sonogram = np.zeros((num_channels*2, int(math.ceil(total_time/bin_size))))
-
-    spikes = [0 for i in range(num_channels*2)]
-    last_time = aedat_addr_ts[0][1]
-
-    for i in range(int(math.ceil(total_time/bin_size))):
-
-        blockAddr = [item[0] for item in aedat_addr_ts if item[1] >= last_time and item[1] < (last_time + bin_size)]
-
-        for t in range(len(blockAddr)):
-            spikes[blockAddr[t]] = spikes[blockAddr[t]] + 1
-    
-        last_time = last_time + bin_size
-        sonogram[:, i] = spikes
-        spikes = [0 for i in range(num_channels*2)]
-
-    
-    # REPRESENTATION
-    plt.style.use('default')
-    sng_fig = plt.figure()
-    sng_fig.canvas.set_window_title('Sonogram')
-
-    plt.imshow(sonogram) #, aspect="auto")
-    plt.gca().invert_yaxis()
-
-    plt.xlabel('Bin ('+str(bin_size) + '$\mu$s width)', fontsize='large')
-    plt.ylabel('Address', fontsize='large')
-
-    plt.title('Sonogram', fontsize='x-large')
-
-    colorbar = plt.colorbar()
-    colorbar.set_label('No. of spikes', rotation=270, fontsize='large', labelpad= 10) #, rotation=270)
-
-    sng_fig.show()
 
 
 def spikegram(allAddr, allTs, p_settings):
@@ -65,9 +27,6 @@ def spikegram(allAddr, allTs, p_settings):
         addr, ts = zip(*[(evt[0], evt[1]) for evt in aedat_addr_ts if evt[0] >= p_settings.num_channels*(p_settings.on_off_both) and evt[0] < p_settings.num_channels*(p_settings.on_off_both)*2])
         plt.scatter(ts, addr, s=p_settings.spikegram_dot_size, c='#fcbd6a')
         
-
-
-
     plt.title('Spikegram', fontsize='x-large')
 
     plt.xlabel('Timestamp ($\mu$s)', fontsize='large')
@@ -75,6 +34,45 @@ def spikegram(allAddr, allTs, p_settings):
 
     spk_fig.show()
 
+
+def sonogram(allAddr, allTs, p_settings):
+
+    aedat_addr_ts = zip(allAddr, allTs)
+    total_time = max(allTs) - min(allTs)
+    sonogram = np.zeros((p_settings.num_channels*2*(p_settings.mono_stereo+1), int(math.ceil(total_time/p_settings.bin_size))))
+
+    spikes = [0 for i in range(p_settings.num_channels*2*(p_settings.mono_stereo+1))]
+    last_time = aedat_addr_ts[0][1]
+
+    for i in range(int(math.ceil(total_time/p_settings.bin_size))):
+
+        blockAddr = [item[0] for item in aedat_addr_ts if item[1] >= last_time and item[1] < (last_time + p_settings.bin_size)]
+
+        for t in range(len(blockAddr)):
+            spikes[blockAddr[t]] = spikes[blockAddr[t]] + 1
+    
+        last_time = last_time + p_settings.bin_size
+        sonogram[:, i] = spikes
+        spikes = [0 for i in range(p_settings.num_channels*2*(p_settings.mono_stereo+1))]
+
+    
+    # REPRESENTATION
+    plt.style.use('default')
+    sng_fig = plt.figure()
+    sng_fig.canvas.set_window_title('Sonogram')
+
+    plt.imshow(sonogram) #, aspect="auto")
+    plt.gca().invert_yaxis()
+
+    plt.xlabel('Bin ('+str(p_settings.bin_size) + '$\mu$s width)', fontsize='large')
+    plt.ylabel('Address', fontsize='large')
+
+    plt.title('Sonogram', fontsize='x-large')
+
+    colorbar = plt.colorbar()
+    colorbar.set_label('No. of spikes', rotation=270, fontsize='large', labelpad= 10) #, rotation=270)
+
+    sng_fig.show()
 
 
 def histogram(allAddr, num_channels, mono_stereo, bar_line):
