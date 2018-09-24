@@ -41,5 +41,5 @@ def wav_spectrogram(p_data, p_fs):
 
     plt.xlabel('Time (ms)', fontsize='large')
     plt.ylabel('Frequency (Hz)', fontsize='large')
-
+    colorbar = plt.colorbar()
     sptgrm_fig.show()

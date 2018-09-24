@@ -23,9 +23,10 @@ def spikegram(allAddr, allTs, p_settings):
         """
         aedat_addr_ts = zip(allAddr, allTs)
         addr, ts = zip(*[(evt[0], evt[1]) for evt in aedat_addr_ts if evt[0] < p_settings.num_channels*(p_settings.on_off_both)])
-        plt.scatter(ts, addr, s=p_settings.spikegram_dot_size, c='#80bdf7')
+        plt.scatter(ts, addr, s=p_settings.spikegram_dot_size, c='#80bdf7', label='Left cochlea')
         addr, ts = zip(*[(evt[0], evt[1]) for evt in aedat_addr_ts if evt[0] >= p_settings.num_channels*(p_settings.on_off_both) and evt[0] < p_settings.num_channels*(p_settings.on_off_both)*2])
-        plt.scatter(ts, addr, s=p_settings.spikegram_dot_size, c='#fcbd6a')
+        plt.scatter(ts, addr, s=p_settings.spikegram_dot_size, c='#fcbd6a', label='Right cochlea')
+        plt.legend(fancybox=False, ncol=2, loc='upper center', markerscale=2/p_settings.spikegram_dot_size, frameon=True)
         
     plt.title('Spikegram', fontsize='x-large')
 
@@ -90,28 +91,37 @@ def histogram(allAddr, num_channels, mono_stereo, bar_line):
     plt.ylabel('No. of spikes', fontsize='large')
 
     if bar_line == 0:
-        plt.bar(np.arange(num_channels * 2 * (mono_stereo + 1)), spikes_count)
+        if mono_stereo == 1:
+            plt.bar(np.arange(num_channels * 2), spikes_count[0:num_channels*2])
+            plt.bar(np.arange(num_channels * 2), spikes_count[num_channels*2:num_channels*4])
+        else:
+            plt.bar(np.arange(num_channels * 2 * (mono_stereo + 1)), spikes_count)
     else:
-        plt.plot(np.arange(num_channels * 2 * (mono_stereo + 1)), spikes_count)
+        if mono_stereo == 1:
+            plt.plot(np.arange(num_channels * 2), spikes_count[0:num_channels*2], label='Left cochlea')
+            plt.plot(np.arange(num_channels * 2), spikes_count[num_channels*2:num_channels*4], label='Right cochlea')
+            plt.legend(loc='upper right')
+        else:
+            plt.plot(np.arange(num_channels * 2 * (mono_stereo + 1)), spikes_count)
 
     hst_fig.show()
 
 
-def average_activity(allTs, bin_size):
+def average_activity(allTs, p_settings):
     total_time = int(max(allTs))
     last_ts = 0
-    average_activity = np.zeros(int(math.ceil(total_time/bin_size))+1)
-    for i in range(0, total_time, bin_size):
-        spikes_between_timestamps = [ts for ts in allTs if ts >= last_ts and ts < last_ts + bin_size]
-        average_activity[int(i/bin_size)] = len(spikes_between_timestamps)
-        last_ts = last_ts + bin_size
+    average_activity = np.zeros(int(math.ceil(total_time/p_settings.bin_size))+1)
+    for i in range(0, total_time, p_settings.bin_size):
+        spikes_between_timestamps = [ts for ts in allTs if ts >= last_ts and ts < last_ts + p_settings.bin_size]
+        average_activity[int(i/p_settings.bin_size)] = len(spikes_between_timestamps)
+        last_ts = last_ts + p_settings.bin_size
 
     plt.style.use('seaborn-whitegrid')
     avg_fig = plt.figure()
     avg_fig.canvas.set_window_title('Average activity')
     plt.title('Average activity', fontsize='x-large')
-    plt.xlabel('Bin ('+str(bin_size) + '$\mu$s width)', fontsize='large')
+    plt.xlabel('Bin ('+str(p_settings.bin_size) + '$\mu$s width)', fontsize='large')
     plt.ylabel('No. of spikes', fontsize='large')
 
-    plt.plot(np.arange(math.ceil(total_time/bin_size)+1), average_activity)
+    plt.plot(np.arange(math.ceil(total_time/p_settings.bin_size)+1), average_activity)
     avg_fig.show()
