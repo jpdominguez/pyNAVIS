@@ -1,6 +1,8 @@
 import math
 import struct
 
+import random
+
 import matplotlib.pyplot as plt
 import numpy as np
 
@@ -13,19 +15,17 @@ def spikegram(allAddr, allTs, p_settings):
     spk_fig = plt.figure()
     spk_fig.canvas.set_window_title('Spikegram')
 
+    random.seed('just some random seed')
+
     if p_settings.mono_stereo == 0:
-        plt.scatter(allTs, allAddr, s=p_settings.spikegram_dot_size)
+        #plt.scatter(random.sample(allTs, len(allAddr)/p_settings.spikegram_dot_freq), random.sample(allAddr, len(allAddr)/p_settings.spikegram_dot_freq), s=p_settings.spikegram_dot_size)
+        plt.scatter(allTs[0::p_settings.spikegram_dot_freq], allAddr[0::p_settings.spikegram_dot_freq], s=p_settings.spikegram_dot_size)
     else:
-        """
-        col = np.where([x for x in allAddr if x <p_settings.num_channels*(p_settings.on_off_both)],'y','k')
-        print col
-        plt.scatter(allTs, allAddr, s=p_settings.spikegram_dot_size, c=col)
-        """
         aedat_addr_ts = zip(allAddr, allTs)
         addr, ts = zip(*[(evt[0], evt[1]) for evt in aedat_addr_ts if evt[0] < p_settings.num_channels*(p_settings.on_off_both)])
-        plt.scatter(ts, addr, s=p_settings.spikegram_dot_size, c='#80bdf7', label='Left cochlea')
+        plt.scatter(ts[0::p_settings.spikegram_dot_freq], addr[0::p_settings.spikegram_dot_freq], s=p_settings.spikegram_dot_size, label='Left cochlea')
         addr, ts = zip(*[(evt[0], evt[1]) for evt in aedat_addr_ts if evt[0] >= p_settings.num_channels*(p_settings.on_off_both) and evt[0] < p_settings.num_channels*(p_settings.on_off_both)*2])
-        plt.scatter(ts, addr, s=p_settings.spikegram_dot_size, c='#fcbd6a', label='Right cochlea')
+        plt.scatter(ts[0::p_settings.spikegram_dot_freq], addr[0::p_settings.spikegram_dot_freq], s=p_settings.spikegram_dot_size, label='Right cochlea')
         plt.legend(fancybox=False, ncol=2, loc='upper center', markerscale=2/p_settings.spikegram_dot_size, frameon=True)
         
     plt.title('Spikegram', fontsize='x-large')
@@ -76,9 +76,9 @@ def sonogram(allAddr, allTs, p_settings):
     sng_fig.show()
 
 
-def histogram(allAddr, num_channels, mono_stereo, bar_line):
+def histogram(allAddr, p_settings):
 
-    spikes_count = np.zeros(num_channels * 2 * (mono_stereo + 1))
+    spikes_count = np.zeros(p_settings.num_channels * 2 * (p_settings.mono_stereo + 1))
 
     for event in allAddr:
         spikes_count[event] = spikes_count[event] + 1
@@ -90,30 +90,36 @@ def histogram(allAddr, num_channels, mono_stereo, bar_line):
     plt.xlabel('Address', fontsize='large')
     plt.ylabel('No. of spikes', fontsize='large')
 
-    if bar_line == 0:
-        if mono_stereo == 1:
-            plt.bar(np.arange(num_channels * 2), spikes_count[0:num_channels*2])
-            plt.bar(np.arange(num_channels * 2), spikes_count[num_channels*2:num_channels*4])
+    if p_settings.bar_line == 0:
+        if p_settings.mono_stereo == 1:
+            plt.bar(np.arange(p_settings.num_channels * 2), spikes_count[0:p_settings.num_channels*2])
+            plt.bar(np.arange(p_settings.num_channels * 2), spikes_count[p_settings.num_channels*2:p_settings.num_channels*4])
         else:
-            plt.bar(np.arange(num_channels * 2 * (mono_stereo + 1)), spikes_count)
+            plt.bar(np.arange(p_settings.num_channels * 2 * (p_settings.mono_stereo + 1)), spikes_count)
     else:
-        if mono_stereo == 1:
-            plt.plot(np.arange(num_channels * 2), spikes_count[0:num_channels*2], label='Left cochlea')
-            plt.plot(np.arange(num_channels * 2), spikes_count[num_channels*2:num_channels*4], label='Right cochlea')
-            plt.legend(loc='upper right')
+        if p_settings.mono_stereo == 1:
+            plt.plot(np.arange(p_settings.num_channels * 2), spikes_count[0:p_settings.num_channels*2], label='Left cochlea')
+            plt.plot(np.arange(p_settings.num_channels * 2), spikes_count[p_settings.num_channels*2:p_settings.num_channels*4], label='Right cochlea')
+            plt.legend(loc='best', frameon=True)
         else:
-            plt.plot(np.arange(num_channels * 2 * (mono_stereo + 1)), spikes_count)
+            plt.plot(np.arange(p_settings.num_channels * 2 * (p_settings.mono_stereo + 1)), spikes_count)
 
     hst_fig.show()
 
 
-def average_activity(allTs, p_settings):
+def average_activity(allAddr, allTs, p_settings):
+    aedat_addr_ts = zip(allAddr, allTs)
     total_time = int(max(allTs))
     last_ts = 0
-    average_activity = np.zeros(int(math.ceil(total_time/p_settings.bin_size))+1)
+    average_activity_L = np.zeros(int(math.ceil(total_time/p_settings.bin_size))+1)
+    if(p_settings.mono_stereo == 1):
+        average_activity_R = np.zeros(int(math.ceil(total_time/p_settings.bin_size))+1)
     for i in range(0, total_time, p_settings.bin_size):
-        spikes_between_timestamps = [ts for ts in allTs if ts >= last_ts and ts < last_ts + p_settings.bin_size]
-        average_activity[int(i/p_settings.bin_size)] = len(spikes_between_timestamps)
+        spikes_between_timestamps_L = [evt[1] for evt in aedat_addr_ts if (evt[1] >= last_ts and evt[1] < last_ts + p_settings.bin_size) and evt[0] < p_settings.num_channels*2]
+        average_activity_L[int(i/p_settings.bin_size)] = len(spikes_between_timestamps_L)
+        if(p_settings.mono_stereo == 1):
+            spikes_between_timestamps_R = [evt[1] for evt in aedat_addr_ts if (evt[1] >= last_ts and evt[1] < last_ts + p_settings.bin_size) and (evt[0] >= p_settings.num_channels*2 and evt[0] < p_settings.num_channels*2*2)]
+            average_activity_R[int(i/p_settings.bin_size)] = len(spikes_between_timestamps_R)
         last_ts = last_ts + p_settings.bin_size
 
     plt.style.use('seaborn-whitegrid')
@@ -123,5 +129,49 @@ def average_activity(allTs, p_settings):
     plt.xlabel('Bin ('+str(p_settings.bin_size) + '$\mu$s width)', fontsize='large')
     plt.ylabel('No. of spikes', fontsize='large')
 
-    plt.plot(np.arange(math.ceil(total_time/p_settings.bin_size)+1), average_activity)
+    plt.plot(np.arange(math.ceil(total_time/p_settings.bin_size)+1), average_activity_L, label='Left cochlea')
+    if(p_settings.mono_stereo == 1):
+        plt.plot(np.arange(math.ceil(total_time/p_settings.bin_size)+1), average_activity_R, label='Right cochlea')
+        plt.legend(loc='best',  ncol=2, frameon=True)
     avg_fig.show()
+
+
+def difference_between_LR(allAddr, allTs, p_settings):
+    aedat_addr_ts = zip(allAddr, allTs)
+    total_time = max(allTs) - min(allTs)
+    diff = np.zeros((p_settings.num_channels*2, int(math.ceil(total_time/p_settings.bin_size))))
+
+    spikes = [0 for i in range(p_settings.num_channels*2*2)]
+    last_time = aedat_addr_ts[0][1]
+
+    for i in range(int(math.ceil(total_time/p_settings.bin_size))):
+
+        blockAddr = [item[0] for item in aedat_addr_ts if item[1] >= last_time and item[1] < (last_time + p_settings.bin_size)]
+
+        for t in range(len(blockAddr)/2):
+            spikes[blockAddr[t]] = spikes[blockAddr[t]] + 1
+    
+        last_time = last_time + p_settings.bin_size
+        diff[:, i] = [x1 - x2 for (x1, x2) in zip(spikes[0:p_settings.num_channels*2], spikes[p_settings.num_channels*2:p_settings.num_channels*2*2])] #  spikes[0:p_settings.num_channels*2] - spikes[p_settings.num_channels*2:p_settings.num_channels*2*2]
+        spikes = [0 for i in range(p_settings.num_channels*2*2)]
+    print np.max(diff)
+    diff = diff*100/max(abs(np.min(diff)), np.max(diff))
+    
+    # REPRESENTATION
+    plt.style.use('default')
+    sng_fig = plt.figure()
+    sng_fig.canvas.set_window_title('Diff. between L and R cochlea')
+
+    plt.imshow(diff, vmin=-100, vmax=100) #, aspect="auto")
+    plt.gca().invert_yaxis()
+
+    plt.xlabel('Bin ('+str(p_settings.bin_size) + '$\mu$s width)', fontsize='large')
+    plt.ylabel('Address', fontsize='large')
+
+    plt.title('Diff. between L and R cochlea', fontsize='x-large')
+
+    colorbar = plt.colorbar(ticks=[100, 50, 0, -50, -100], orientation='horizontal')
+    colorbar.set_label('Cochlea predominance', rotation=0, fontsize='large', labelpad= 10)
+    colorbar.ax.set_xticklabels(['100% L cochlea', '50%', '0% L==R', '50%', '100% R cochlea'])
+    colorbar.ax.invert_xaxis()
+    sng_fig.show()
