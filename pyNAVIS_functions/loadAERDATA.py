@@ -30,8 +30,9 @@ def checkAERDATA(p_events, p_timestamps, p_settings):
 
 # Function to subtract the smallest timestamp to all of the events (to start from 0) and adapt them based on the tick frequency of the tool used to log the file.
 def adaptAERDATA(p_timestamps, p_settings):
+    minimum_ts = min(p_timestamps)
     if p_settings.reset_timestamp:
-        return [(x - p_timestamps[0])*p_settings.ts_tick for x in p_timestamps]
+        return [(x - minimum_ts)*p_settings.ts_tick for x in p_timestamps]
     else:
         return [x*p_settings.ts_tick for x in p_timestamps]
 
