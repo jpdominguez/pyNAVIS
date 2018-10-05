@@ -6,6 +6,9 @@ import random
 import matplotlib.pyplot as plt
 import numpy as np
 
+from bisect import bisect_left, bisect_right
+from pyNAVIS_functions.utils import *
+
 
 
 def spikegram(allAddr, allTs, p_settings):
@@ -50,7 +53,9 @@ def sonogram(allAddr, allTs, p_settings):
         blockAddr = [item[0] for item in aedat_addr_ts if item[1] >= last_time and item[1] < (last_time + p_settings.bin_size)]
 
         for t in range(len(blockAddr)):
+            #if blockAddr[t] >=0 and blockAddr[t]<p_settings.num_channels*2*(p_settings.mono_stereo + 1):
             spikes[blockAddr[t]] = spikes[blockAddr[t]] + 1
+            
     
         last_time = last_time + p_settings.bin_size
         sonogram[:, i] = spikes
@@ -106,6 +111,8 @@ def histogram(allAddr, p_settings):
 
     hst_fig.show()
 
+def getKey(item):
+    return item[1]
 
 def average_activity(allAddr, allTs, p_settings):
     aedat_addr_ts = zip(allAddr, allTs)
@@ -114,13 +121,58 @@ def average_activity(allAddr, allTs, p_settings):
     average_activity_L = np.zeros(int(math.ceil(total_time/p_settings.bin_size))+1)
     if(p_settings.mono_stereo == 1):
         average_activity_R = np.zeros(int(math.ceil(total_time/p_settings.bin_size))+1)
-    for i in range(0, total_time, p_settings.bin_size):
+
+
+    #THIS TWO ONLY IF CHECK DETECTS AEDAT NOT IN ORDER
+    aedat_addr_ts = sorted(aedat_addr_ts, key=getKey)
+    allAddr, allTs = extract_addr_and_ts(aedat_addr_ts)
+
+    if p_settings.mono_stereo == 1: 
+        for i in range(0, total_time, p_settings.bin_size):        
+            evtL = 0
+            evtR = 0
+            """
+            events_list = [evt[0] for evt in aedat_addr_ts if (evt[1] >= last_ts and evt[1] < last_ts + p_settings.bin_size)]
+
+            """
+            a =  bisect_left(allTs, last_ts)
+            b =  bisect_right(allTs, last_ts + p_settings.bin_size)
+
+            events_list = allAddr[a:b]
+
+            
+            for j in events_list:
+                if j < p_settings.num_channels*2:
+                    evtL = evtL + 1
+                elif j >= p_settings.num_channels*2 and j < p_settings.num_channels*2*2:
+                    evtR = evtR + 1
+
+            average_activity_L[i/p_settings.bin_size] = evtL
+            average_activity_R[i/p_settings.bin_size] = evtR
+            last_ts = last_ts + p_settings.bin_size
+    elif p_settings.mono_stereo == 0:
+        for i in range(0, total_time, p_settings.bin_size):
+            evtL = 0
+            """
+            events_list = [evt[0] for evt in aedat_addr_ts if (evt[1] >= last_ts and evt[1] < last_ts + p_settings.bin_size)]
+            """
+            a =  bisect_left(allTs, last_ts)
+            b =  bisect_right(allTs, last_ts + p_settings.bin_size)
+            events_list = allAddr[a:b]
+            
+            for j in events_list:
+                evtL = evtL + 1
+
+            average_activity_L[i/p_settings.bin_size] = evtL
+            last_ts = last_ts + p_settings.bin_size
+        """
         spikes_between_timestamps_L = [evt[1] for evt in aedat_addr_ts if (evt[1] >= last_ts and evt[1] < last_ts + p_settings.bin_size) and evt[0] < p_settings.num_channels*2]
         average_activity_L[int(i/p_settings.bin_size)] = len(spikes_between_timestamps_L)
         if(p_settings.mono_stereo == 1):
             spikes_between_timestamps_R = [evt[1] for evt in aedat_addr_ts if (evt[1] >= last_ts and evt[1] < last_ts + p_settings.bin_size) and (evt[0] >= p_settings.num_channels*2 and evt[0] < p_settings.num_channels*2*2)]
             average_activity_R[int(i/p_settings.bin_size)] = len(spikes_between_timestamps_R)
         last_ts = last_ts + p_settings.bin_size
+        """
 
     plt.style.use('seaborn-whitegrid')
     avg_fig = plt.figure()
@@ -154,7 +206,7 @@ def difference_between_LR(allAddr, allTs, p_settings):
         last_time = last_time + p_settings.bin_size
         diff[:, i] = [x1 - x2 for (x1, x2) in zip(spikes[0:p_settings.num_channels*2], spikes[p_settings.num_channels*2:p_settings.num_channels*2*2])] #  spikes[0:p_settings.num_channels*2] - spikes[p_settings.num_channels*2:p_settings.num_channels*2*2]
         spikes = [0 for i in range(p_settings.num_channels*2*2)]
-    print np.max(diff)
+    #print np.max(diff)
     diff = diff*100/max(abs(np.min(diff)), np.max(diff))
     
     # REPRESENTATION
