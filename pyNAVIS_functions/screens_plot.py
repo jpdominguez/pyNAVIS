@@ -42,6 +42,72 @@ def spikegram(allAddr, allTs, p_settings):
 
 def sonogram(allAddr, allTs, p_settings):
 
+    start_time = time.time()
+    aedat_addr_ts = zip(allAddr, allTs)
+    print 'ZIP:', time.time() - start_time
+
+    start_time = time.time()
+    total_time = max(allTs) - min(allTs)
+    print 'MAX - MIN:', time.time() - start_time
+
+    start_time = time.time()
+    sonogram = np.zeros((p_settings.num_channels*2*(p_settings.mono_stereo+1), int(math.ceil(total_time/p_settings.bin_size))))
+    print 'CREATE MATRIX', time.time() - start_time
+
+    #last_time = aedat_addr_ts[0][1]
+    last_time = min(allTs)
+
+    its = int(math.ceil(total_time/p_settings.bin_size))
+
+    aedat_addr_ts = sorted(aedat_addr_ts, key=getKey)
+    allAddr, allTs = extract_addr_and_ts(aedat_addr_ts)
+
+    for i in range(its):
+        """
+        start_time = time.time()
+        blockAddr = [item[0] for item in aedat_addr_ts if item[1] >= last_time and item[1] < (last_time + p_settings.bin_size)]
+        print 'BLOCK ADDR', time.time() - start_time
+        """
+
+        start_time = time.time()
+        a =  bisect_left(allTs, last_time)
+        b =  bisect_right(allTs, last_time + p_settings.bin_size)
+
+        blockAddr = allAddr[a:b]
+        print 'BLOCK ADDR_new', time.time() - start_time
+
+        start_time = time.time()
+        spikes = np.bincount(blockAddr, minlength=p_settings.num_channels*2*(p_settings.mono_stereo+1))        
+        print 'FREQ', time.time() - start_time
+
+        start_time = time.time()
+        last_time += p_settings.bin_size
+        sonogram[:, i] = spikes
+
+        print 'INC LAST TIME + ADD COLUMN TO SONOGRAM', time.time() - start_time
+
+    
+    # REPRESENTATION
+    plt.style.use('default')
+    sng_fig = plt.figure()
+    sng_fig.canvas.set_window_title('Sonogram')
+
+    plt.imshow(sonogram) #, aspect="auto")
+    plt.gca().invert_yaxis()
+
+    plt.xlabel('Bin ('+str(p_settings.bin_size) + '$\mu$s width)', fontsize='large')
+    plt.ylabel('Address', fontsize='large')
+
+    plt.title('Sonogram', fontsize='x-large')
+
+    colorbar = plt.colorbar()
+    colorbar.set_label('No. of spikes', rotation=270, fontsize='large', labelpad= 10) #, rotation=270)
+
+    sng_fig.show()
+
+
+def sonogram_old(allAddr, allTs, p_settings):
+
     aedat_addr_ts = zip(allAddr, allTs)
     total_time = max(allTs) - min(allTs)
     sonogram = np.zeros((p_settings.num_channels*2*(p_settings.mono_stereo+1), int(math.ceil(total_time/p_settings.bin_size))))
@@ -50,13 +116,12 @@ def sonogram(allAddr, allTs, p_settings):
     last_time = aedat_addr_ts[0][1]
 
     for i in range(int(math.ceil(total_time/p_settings.bin_size))):
-
+        #print 'alive', i
         blockAddr = [item[0] for item in aedat_addr_ts if item[1] >= last_time and item[1] < (last_time + p_settings.bin_size)]
 
-        for t in range(len(blockAddr)):
-            #if blockAddr[t] >=0 and blockAddr[t]<p_settings.num_channels*2*(p_settings.mono_stereo + 1):
+        for t in range(len(blockAddr)):            
             spikes[blockAddr[t]] = spikes[blockAddr[t]] + 1
-            
+        
     
         last_time = last_time + p_settings.bin_size
         sonogram[:, i] = spikes
@@ -85,15 +150,8 @@ def sonogram(allAddr, allTs, p_settings):
 def histogram(allAddr, p_settings):
 
     start_time = time.time()
-    counter=collections.Counter(allAddr)
-    print 'TIEMPO:', time.time() - start_time
-    spikes_count = counter.values()
-    print spikes_count
-
-    start_time = time.time()
-    y = np.bincount(allAddr)
-    print 'TIEMPO:', time.time() - start_time
-    print y
+    spikes_count = np.bincount(allAddr)
+    print 'TIEMPO HISTOGRAM:', time.time() - start_time
 
 
     plt.style.use('seaborn-whitegrid')
