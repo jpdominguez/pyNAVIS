@@ -88,7 +88,13 @@ def histogram(allAddr, p_settings):
     counter=collections.Counter(allAddr)
     print 'TIEMPO:', time.time() - start_time
     spikes_count = counter.values()
-    
+    print spikes_count
+
+    start_time = time.time()
+    y = np.bincount(allAddr)
+    print 'TIEMPO:', time.time() - start_time
+    print y
+
 
     plt.style.use('seaborn-whitegrid')
     hst_fig = plt.figure()
