@@ -38,8 +38,53 @@ def adaptAERDATA(p_timestamps, p_settings):
 
 
 def loadAERDATA(p_path, p_settings):
-    #events = []
-    #timestamps = []
+    unpack_param = ">H"
+    
+    if p_settings.address_size == 2:
+        unpack_param = ">H"
+    elif p_settings.address_size == 4:
+        unpack_param = ">L"
+    else:
+        print "Only address sizes implemented are 2 and 4 bytes"
+
+    with open(p_path, 'rb') as f:
+        ## Check header ##
+        p = 0
+        lt = f.readline()
+        while lt and lt[0] == "#":
+            p += len(lt)
+            lt = f.readline()
+        f.seek(p)
+
+        f.seek(0, 2)
+        eof = f.tell()
+
+        num_events = math.floor((eof-p)/(p_settings.address_size + 4))
+
+        f.seek(p)
+
+        events = [0] * int(num_events)
+        timestamps = [0] * int(num_events)
+
+        ## Read file ##
+        i = 0
+        try:
+            while 1:
+                buff = f.read(p_settings.address_size)                
+                x = struct.unpack(unpack_param, buff)[0]
+                events[i] = x
+
+                buff = f.read(4)
+                x = struct.unpack('>L', buff)[0]
+                timestamps[i] = x
+
+                i += 1
+        except Exception as inst:
+            pass
+    return events, timestamps
+
+
+def loadAERDATA_true(p_path, p_settings):
     unpack_param = ">H"
     
     if p_settings.address_size == 2:
@@ -72,24 +117,18 @@ def loadAERDATA(p_path, p_settings):
         i = 0
         try:
             while True:
-                
-                buff = f.read(p_settings.address_size)
-                #if len(buff) < p_settings.address_size: break
+                buff = f.read(p_settings.address_size)                
                 x = struct.unpack(unpack_param, buff)[0]
                 events[i] = x
 
                 buff = f.read(4)
-                #if len(buff) < 4: break
                 x = struct.unpack('>L', buff)[0]
                 timestamps[i] = x
 
-                i = i+1
+                i += 1
         except Exception as inst:
             pass
     return events, timestamps
-
-
-
 
 
 

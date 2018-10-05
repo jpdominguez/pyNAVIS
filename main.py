@@ -22,16 +22,25 @@ print "The file contains", len(add), "spikes"
 print "The audio has", max(ts), 'microsec'
 
 
+"""
 mean_new = 0
+mean_new_true = 0
 mean_old = 0
 it = 10
 for i in range(it):
     mean_new = mean_new + execution_time(loadAERDATA, [path, settings])
-    mean_old = mean_old + execution_time(loadAERDATA_old, [path, settings])
+    mean_new_true = mean_new_true + execution_time(loadAERDATA_true, [path, settings])
+    #mean_old = mean_old + execution_time(loadAERDATA_old, [path, settings])
     print 'Iteration', i+1, 'of', it 
 
 print 'Mean time new', mean_new/it
-print 'Mean time old', mean_old/it
+print 'Mean time new TRUE', mean_new_true/it
+"""
+#print 'Mean time old', mean_old/it
+
+for i in range(10):
+    print '1:', execution_time(loadAERDATA, [path, settings])
+
 #print execution_time(loadAERDATA, [path, settings])                         #2.8  #2.15
 #print execution_time(loadAERDATA_old, [path, settings])
                                                                             #928617 spikes
