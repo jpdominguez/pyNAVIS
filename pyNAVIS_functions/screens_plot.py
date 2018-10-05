@@ -85,8 +85,16 @@ def histogram(allAddr, p_settings):
 
     spikes_count = np.zeros(p_settings.num_channels * 2 * (p_settings.mono_stereo + 1))
 
+    start_time = time.time()
     for event in allAddr:
         spikes_count[event] = spikes_count[event] + 1
+    print 'TIEMPO:', time.time() - start_time
+
+    import collections
+    start_time = time.time()
+    counter=collections.Counter(allAddr)
+    a = counter.values()
+    print 'TIEMPO:', time.time() - start_time
 
     plt.style.use('seaborn-whitegrid')
     hst_fig = plt.figure()
