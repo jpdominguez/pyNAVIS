@@ -187,9 +187,6 @@ def histogram(allAddr, p_settings):
 
     hst_fig.show()
 
-def getKey(item):
-    return item[1]
-
 def average_activity(allAddr, allTs, p_settings):
     aedat_addr_ts = zip(allAddr, allTs)
     total_time = int(max(allTs))
@@ -264,7 +261,58 @@ def average_activity(allAddr, allTs, p_settings):
     avg_fig.show()
 
 
-def difference_between_LR(allAddr, allTs, p_settings):
+def difference_between_LR(allAddr, allTs, p_settings):    
+    total_time = max(allTs) - min(allTs)
+    diff = np.zeros((p_settings.num_channels*2, int(math.ceil(total_time/p_settings.bin_size))))
+
+    #spikes = [0] * p_settings.num_channels*2*2
+    last_time = min(allTs)
+
+    its = int(math.ceil(total_time/p_settings.bin_size))
+
+    #THIS IS NOT NEEDED IF TS ARE SORTED
+    aedat_addr_ts = zip(allAddr, allTs)
+    aedat_addr_ts = sorted(aedat_addr_ts, key=getKey)
+    allAddr, allTs = extract_addr_and_ts(aedat_addr_ts)
+
+    start_time = time.time()
+    for i in range(its):
+
+        #blockAddr = [item[0] for item in aedat_addr_ts if item[1] >= last_time and item[1] < (last_time + p_settings.bin_size)]
+        a =  bisect_left(allTs, last_time)
+        b =  bisect_right(allTs, last_time + p_settings.bin_size)
+
+        blockAddr = allAddr[a:b]
+        
+        spikes = np.bincount(blockAddr, minlength=p_settings.num_channels*2*(p_settings.mono_stereo+1))
+        
+        last_time += p_settings.bin_size
+
+        diff[:, i] = [x1 - x2 for (x1, x2) in zip(spikes[0:p_settings.num_channels*2], spikes[p_settings.num_channels*2:p_settings.num_channels*2*2])]
+    print 'DIFF CALCULATION', time.time() - start_time
+    diff = diff*100/max(abs(np.min(diff)), np.max(diff))
+    
+    # REPRESENTATION
+    plt.style.use('default')
+    sng_fig = plt.figure()
+    sng_fig.canvas.set_window_title('Diff. between L and R cochlea')
+
+    plt.imshow(diff, vmin=-100, vmax=100) #, aspect="auto")
+    plt.gca().invert_yaxis()
+
+    plt.xlabel('Bin ('+str(p_settings.bin_size) + '$\mu$s width)', fontsize='large')
+    plt.ylabel('Address', fontsize='large')
+
+    plt.title('Diff. between L and R cochlea', fontsize='x-large')
+
+    colorbar = plt.colorbar(ticks=[100, 50, 0, -50, -100], orientation='horizontal')
+    colorbar.set_label('Cochlea predominance', rotation=0, fontsize='large', labelpad= 10)
+    colorbar.ax.set_xticklabels(['100% L cochlea', '50%', '0% L==R', '50%', '100% R cochlea'])
+    colorbar.ax.invert_xaxis()
+    sng_fig.show()
+
+
+def difference_between_LR_old(allAddr, allTs, p_settings):
     aedat_addr_ts = zip(allAddr, allTs)
     total_time = max(allTs) - min(allTs)
     diff = np.zeros((p_settings.num_channels*2, int(math.ceil(total_time/p_settings.bin_size))))
@@ -275,13 +323,14 @@ def difference_between_LR(allAddr, allTs, p_settings):
     for i in range(int(math.ceil(total_time/p_settings.bin_size))):
 
         blockAddr = [item[0] for item in aedat_addr_ts if item[1] >= last_time and item[1] < (last_time + p_settings.bin_size)]
-
-        for t in range(len(blockAddr)/2):
+        
+        for t in range(len(blockAddr)):
             spikes[blockAddr[t]] = spikes[blockAddr[t]] + 1
-    
+        
         last_time = last_time + p_settings.bin_size
         diff[:, i] = [x1 - x2 for (x1, x2) in zip(spikes[0:p_settings.num_channels*2], spikes[p_settings.num_channels*2:p_settings.num_channels*2*2])] #  spikes[0:p_settings.num_channels*2] - spikes[p_settings.num_channels*2:p_settings.num_channels*2*2]
         spikes = [0 for i in range(p_settings.num_channels*2*2)]
+        
     #print np.max(diff)
     diff = diff*100/max(abs(np.min(diff)), np.max(diff))
     

@@ -11,3 +11,6 @@ def execution_time(p_function, p_params):
     start_time = time.time()
     p_function(*p_params)
     return time.time() - start_time
+
+def getKey(item):
+    return item[1]

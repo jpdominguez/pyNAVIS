@@ -82,3 +82,16 @@ def loadAERDATA(p_path, p_settings):
         except Exception as inst:
             pass
     return events, timestamps
+
+
+"""
+def save_AERDATA(blockAddr, blockTs, path, settings):
+    with open(path, 'wb') as f:
+        for i in range(len(blockAddr)):
+            addr = struct.pack('>L', blockAddr[i])
+            ts = struct.pack('>L', blockTs[i]/settings.ts_tick)
+            f.write(addr)
+            f.write(ts)
+
+#def mono_to_stereo(allAddr, allTs, settings, path):
+"""
