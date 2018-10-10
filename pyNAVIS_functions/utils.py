@@ -7,9 +7,9 @@ import time
 def extract_addr_and_ts(aedat_addr_ts):
     return [x[0] for x in aedat_addr_ts], [x[1] for x in aedat_addr_ts]
 
-def execution_time(p_function, p_params):
+def execution_time(executing_function, function_params):
     start_time = time.time()
-    p_function(*p_params)
+    executing_function(*function_params)
     return time.time() - start_time
 
 def getKey(item):

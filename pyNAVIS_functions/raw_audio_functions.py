@@ -2,10 +2,10 @@ from scipy.io import wavfile
 from matplotlib import pyplot as plt
 import numpy as np
 
-def wav_loadWAV(p_path, p_normalize=True):
-    samplerate, data = wavfile.read(p_path)
+def wav_loadWAV(path, normalize=True):
+    samplerate, data = wavfile.read(path)
 
-    if p_normalize:
+    if normalize:
         if data.dtype == 'int16':
             nb_bits = 16 # -> 16-bit wav files
         elif data.dtype == 'int32':
@@ -15,14 +15,14 @@ def wav_loadWAV(p_path, p_normalize=True):
     return data, samplerate
 
 
-def wav_plot(p_data, p_fs):
-    times = np.arange(len(p_data))/float(p_fs)
+def wav_plot(data, fs):
+    times = np.arange(len(data))/float(fs)
 
     plt.style.use('seaborn-whitegrid')
     wav_fig = plt.figure()
 
     wav_fig.canvas.set_window_title('Raw WAV file')
-    plt.plot(times, p_data)
+    plt.plot(times, data)
     plt.title('Raw WAV file', fontsize='x-large')
 
     plt.xlabel('Time (ms)', fontsize='large')
@@ -31,12 +31,12 @@ def wav_plot(p_data, p_fs):
     wav_fig.show()
 
 
-def wav_spectrogram(p_data, p_fs):
+def wav_spectrogram(data, fs):
     plt.style.use('default')
     sptgrm_fig = plt.figure()
 
     sptgrm_fig.canvas.set_window_title('Spectrogram')
-    plt.specgram(p_data,Fs=p_fs)
+    plt.specgram(data,Fs=fs)
     plt.title('Spectrogram', fontsize='x-large')
 
     plt.xlabel('Time (ms)', fontsize='large')
