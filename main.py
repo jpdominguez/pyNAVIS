@@ -19,13 +19,14 @@
 ##                                                                             ##
 #################################################################################
 
-
-from pyNAVIS_functions.screens_plot import *
-from pyNAVIS_functions.utils import *
-from pyNAVIS_functions.raw_audio_functions import *
-from pyNAVIS_functions.aedat_functions import *
-from pyNAVIS_functions.aedat_splitters import *
-from pyNAVIS_settings.main_settings import *
+## IMPORTS ##################################################################################################################
+from pyNAVIS_functions.screens_plot import *                                                                                #
+from pyNAVIS_functions.utils import *                                                                                       #
+from pyNAVIS_functions.raw_audio_functions import *                                                                         #
+from pyNAVIS_functions.aedat_functions import *                                                                             #
+from pyNAVIS_functions.aedat_splitters import *                                                                             #
+from pyNAVIS_settings.main_settings import *                                                                                #
+#############################################################################################################################
 
 ## PARAMETERS ###############################################################################################################
 num_channels = 32      # Number of NAS channels (not addresses but channels).                                               #
