@@ -1,3 +1,24 @@
+#################################################################################
+##                                                                             ##
+##    Copyright © 2018  Juan P. Dominguez-Morales                              ##
+##                                                                             ##
+##    This file is part of pyNAVIS.                                            ##
+##                                                                             ##
+##    pyNAVIS is free software: you can redistribute it and/or modify          ##
+##    it under the terms of the GNU General Public License as published by     ##
+##    the Free Software Foundation, either version 3 of the License, or        ##
+##    (at your option) any later version.                                      ##
+##                                                                             ##
+##    pyNAVIS is distributed in the hope that it will be useful,               ##
+##    but WITHOUT ANY WARRANTY; without even the implied warranty of           ##
+##    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the              ##
+##    GNU General Public License for more details.                             ##
+##                                                                             ##
+##    You should have received a copy of the GNU General Public License        ##
+##    along with pyNAVIS.  If not, see <http://www.gnu.org/licenses/>.         ##
+##                                                                             ##
+#################################################################################
+
 class MainSettings:
 
     mono_stereo = 0
@@ -21,14 +42,14 @@ class MainSettings:
 
 
 
-    def __init__(self, p_num_channels, p_mono_stereo, p_address_size, p_ts_tick, p_bin_size, p_on_off_both = 2, p_reset_timestamp = True, p_spikegram_dot_size = 0.2, p_bar_line = 1, p_spikegram_dot_freq = 1):
-        self.num_channels = p_num_channels
-        self.mono_stereo = p_mono_stereo
-        self.address_size = p_address_size
-        self.ts_tick = p_ts_tick
-        self.bin_size = p_bin_size
-        self.on_off_both = p_on_off_both
-        self.reset_timestamp = p_reset_timestamp
-        self.spikegram_dot_size = p_spikegram_dot_size
-        self.bar_line = p_bar_line
-        self.spikegram_dot_freq = p_spikegram_dot_freq
+    def __init__(self, num_channels, mono_stereo, address_size, ts_tick, bin_size, on_off_both = 2, reset_timestamp = True, spikegram_dot_size = 0.2, bar_line = 1, spikegram_dot_freq = 1):
+        self.num_channels = num_channels
+        self.mono_stereo = mono_stereo
+        self.address_size = address_size
+        self.ts_tick = ts_tick
+        self.bin_size = bin_size
+        self.on_off_both = on_off_both
+        self.reset_timestamp = reset_timestamp
+        self.spikegram_dot_size = spikegram_dot_size
+        self.bar_line = bar_line
+        self.spikegram_dot_freq = spikegram_dot_freq
