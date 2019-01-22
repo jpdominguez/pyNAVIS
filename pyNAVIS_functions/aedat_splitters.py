@@ -1,6 +1,6 @@
 #################################################################################
 ##                                                                             ##
-##    Copyright © 2018  Juan P. Dominguez-Morales                              ##
+##    Copyright C 2018  Juan P. Dominguez-Morales                              ##
 ##                                                                             ##
 ##    This file is part of pyNAVIS.                                            ##
 ##                                                                             ##
