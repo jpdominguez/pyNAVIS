@@ -20,10 +20,10 @@
 #################################################################################
 
 import math
-import struct
+#import struct
 
 import random
-import collections
+#import collections
 
 import matplotlib.pyplot as plt
 import numpy as np
