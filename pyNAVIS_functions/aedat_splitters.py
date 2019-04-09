@@ -93,3 +93,14 @@ def automatic_aedat_splitter(allAddr, allTs, noiseTolerance, noiseThreshold, set
         #save_AERDATA(splitted_aedat[i][0], splitted_aedat[i][1], str(i) +".aedat", settings)
     print cont
 """
+
+def stereoToMono(allAddr, allTs, left_right, path, settings):
+    if settings.mono_stereo:
+        aedat_addr_ts = zip(allAddr, allTs)
+        aedat_addr_ts = [x for x in aedat_addr_ts if x[0] >= left_right*settings.num_channels*2 and x[0] < (left_right+1)*settings.num_channels*2]
+        print len(aedat_addr_ts)
+
+        allAddr_mono, allTs_mono = extract_addr_and_ts(aedat_addr_ts)
+        save_AERDATA(allAddr_mono, allTs_mono, path, settings)
+    else:
+        print "StereoToMono: this functionality cannot be performed over a mono aedat file."                                                                                                                                                                           

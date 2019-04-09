@@ -29,17 +29,17 @@ from pyNAVIS_settings.main_settings import *                                    
 #############################################################################################################################
 
 ## PARAMETERS ###############################################################################################################
-num_channels = 32      # Number of NAS channels (not addresses but channels).                                               #
+num_channels = 64      # Number of NAS channels (not addresses but channels).                                               #
 mono_stereo = 1        # 0 for a monaural NAS or 1 for a binaural NAS.                                                      #
 address_size = 4       # 2 if .aedats are recorded with USBAERmini2 or 4 if .aedats are recorded with jAER.                 #
 ts_tick = 1            # 0.2 if .aedats are recorded with USBAERmini2 or 1 if .aedats are recorded with jAER.               #
 bin_size = 20000       # Time bin (in microseconds) used to integrate the spiking information.                              #
 bar_line = 1           # 0 if you want the histogram to be a bar plot or 1 if you want the histogram to be a line plot.     #
-spike_dot_freq = 5     # When plotting the cochleogram, it plots one spike for every spike_dot_freq spikes.                 #
+spike_dot_freq = 5     # When plotting the cochleogram, it plots one spike for every spike_dot_frPeq spikes.                #
 #############################################################################################################################
 
 
-path = 'C:\\Users\\jpdominguez\\Desktop\\NAS_sEMD_recordings\\Cascade\\1000Hz_0.aedat'
+path = 'C:\\Users\\jpdominguez\\Desktop\\test_.aedat'
 
 settings = MainSettings(num_channels=num_channels, mono_stereo=mono_stereo, address_size=address_size, ts_tick=ts_tick, bin_size=bin_size, bar_line=bar_line, spikegram_dot_freq=spike_dot_freq)
 
@@ -50,12 +50,15 @@ checkAERDATA(add, ts, settings)
 print "The file contains", len(add), "spikes"
 print "The audio has", max(ts), 'microsec'
 
-
+"""
 print execution_time(spikegram, (add, ts, settings))
 print execution_time(sonogram, (add, ts, settings))
 print execution_time(histogram, (add, settings))
 print execution_time(average_activity,(add, ts, settings))
 print execution_time(difference_between_LR, (add, ts, settings))
+"""
 #manual_aedat_splitter(add, ts, 0, max(ts), "a.aedat", settings)
 
-raw_input()
+stereoToMono(add, ts, 0, 'C:\\Users\\jpdominguez\\Desktop\\en_un_mono_left.aedat', settings)
+stereoToMono(add, ts, 1, 'C:\\Users\\jpdominguez\\Desktop\\en_un_mono_right.aedat', settings)
+#raw_input()
