@@ -101,6 +101,11 @@ def stereoToMono(allAddr, allTs, left_right, path, settings):
         print len(aedat_addr_ts)
 
         allAddr_mono, allTs_mono = extract_addr_and_ts(aedat_addr_ts)
+        if left_right:
+            allAddr_mono = [x-left_right*settings.num_channels*2 for x in allAddr_mono]
         save_AERDATA(allAddr_mono, allTs_mono, path, settings)
     else:
-        print "StereoToMono: this functionality cannot be performed over a mono aedat file."                                                                                                                                                                           
+        print "StereoToMono: this functionality cannot be performed over a mono aedat file."
+
+def monoToStereo(allAddr, allTs, delay, path, settings):
+    
