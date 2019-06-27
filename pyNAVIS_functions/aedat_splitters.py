@@ -94,11 +94,11 @@ def automatic_aedat_splitter(allAddr, allTs, noiseTolerance, noiseThreshold, set
     print cont
 """
 
-def stereoToMono(allAddr, allTs, left_right, path, settings):
+def stereoToMono(allAddr, allTs, left_right, path, settings): # NEEDS TO BE TESTED
     if settings.mono_stereo:
         aedat_addr_ts = zip(allAddr, allTs)
         aedat_addr_ts = [x for x in aedat_addr_ts if x[0] >= left_right*settings.num_channels*2 and x[0] < (left_right+1)*settings.num_channels*2]
-        print len(aedat_addr_ts)
+        #print len(aedat_addr_ts)
 
         allAddr_mono, allTs_mono = extract_addr_and_ts(aedat_addr_ts)
         if left_right:
@@ -107,5 +107,18 @@ def stereoToMono(allAddr, allTs, left_right, path, settings):
     else:
         print "StereoToMono: this functionality cannot be performed over a mono aedat file."
 
-def monoToStereo(allAddr, allTs, delay, path, settings):
+def monoToStereo(allAddr, allTs, delay, path, settings): # NEEDS TO BE TESTED
+    if settings.mono_stereo == 0:
+        allAddr = allAddr.extend(allAddr)
+        newTs = allTs + delay
+        allTs = allTs.extend(newTs)
+        
+        aedat_addr_ts = zip(allAddr, allTs)
+        aedat_addr_ts = sorted(aedat_addr_ts, key=getKey)
+
+        allAddr, allTs = extract_addr_and_ts(aedat_addr_ts)
+        save_AERDATA(allAddr, allTs, path, settings)
+    else:
+        print "MonoToStereo: this functionality cannot be performed over a stereo aedat file."
+
     
