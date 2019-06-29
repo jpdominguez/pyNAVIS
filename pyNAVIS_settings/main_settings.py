@@ -42,7 +42,7 @@ class MainSettings:
 
 
 
-    def __init__(self, num_channels, mono_stereo, address_size, ts_tick, bin_size, on_off_both = 2, reset_timestamp = True, spikegram_dot_size = 0.2, bar_line = 1, spikegram_dot_freq = 1):
+    def __init__(self, num_channels, mono_stereo, address_size = 2, ts_tick = 0.2, bin_size = 20000, on_off_both = 2, reset_timestamp = True, spikegram_dot_size = 0.2, bar_line = 1, spikegram_dot_freq = 1):
         self.num_channels = num_channels
         self.mono_stereo = mono_stereo
         self.address_size = address_size
