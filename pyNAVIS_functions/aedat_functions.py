@@ -111,6 +111,3 @@ def save_AERDATA(blockAddr, blockTs, path, settings):
             ts = struct.pack('>L', blockTs[i]/settings.ts_tick)
             f.write(addr)
             f.write(ts)
-"""
-#def mono_to_stereo(allAddr, allTs, settings, path):
-"""
