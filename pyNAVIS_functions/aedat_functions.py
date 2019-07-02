@@ -23,6 +23,7 @@ import struct
 import numpy as np
 import matplotlib.pyplot as plt
 import math
+import time
 
 def checkAERDATA(allAddr, allTs, settings):
 
@@ -105,9 +106,17 @@ def loadAERDATA(path, settings):
     return events, timestamps
 
 def save_AERDATA(blockAddr, blockTs, path, settings):
+    start_time = time.time()
+    unpack_param = '>L'
+    if settings.address_size == 2:
+        unpack_param = ">H"
+    elif settings.address_size == 4:
+        unpack_param = ">L"
+
     with open(path, 'wb') as f:
         for i in range(len(blockAddr)):
-            addr = struct.pack('>L', blockAddr[i])
+            addr = struct.pack(unpack_param, blockAddr[i])
             ts = struct.pack('>L', blockTs[i]/settings.ts_tick)
             f.write(addr)
             f.write(ts)
+        print "AERDATA file saved correctly.Took:", time.time() - start_time, 'seconds'
