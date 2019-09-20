@@ -19,27 +19,47 @@
 ##                                                                             ##
 #################################################################################
 
-class MainSettings:
+import struct
+import time
 
-    mono_stereo = 0
-    bin_size = 20000
-    ts_tick = 0.2
-    num_channels = 32
-    address_size = 2
-    on_off_both = 2
-    reset_timestamp = True
-    spikegram_dot_size = 0.2
-    bar_line = 1
-    spikegram_dot_freq = 1
+def save_AERDATA(blockAddr, blockTs, path, settings, verbose = 0):
+    start_time = time.time()
+    unpack_param = '>L'
+    if settings.address_size == 2:
+        unpack_param = ">H"
+    elif settings.address_size == 4:
+        unpack_param = ">L"
 
-    def __init__(self, num_channels, mono_stereo, address_size = 2, ts_tick = 0.2, bin_size = 20000, on_off_both = 2, reset_timestamp = True, spikegram_dot_size = 0.2, bar_line = 1, spikegram_dot_freq = 1):
-        self.num_channels = num_channels
-        self.mono_stereo = mono_stereo
-        self.address_size = address_size
-        self.ts_tick = ts_tick
-        self.bin_size = bin_size
-        self.on_off_both = on_off_both
-        self.reset_timestamp = reset_timestamp
-        self.spikegram_dot_size = spikegram_dot_size
-        self.bar_line = bar_line
-        self.spikegram_dot_freq = spikegram_dot_freq
+    with open(path, 'wb') as f:
+        for i in range(len(blockAddr)):
+            addr = struct.pack(unpack_param, blockAddr[i])
+            ts = struct.pack('>L', blockTs[i]/settings.ts_tick)
+            f.write(addr)
+            f.write(ts)
+        if verbose == 1:
+            print "AERDATA file saved correctly.Took:", time.time() - start_time, 'seconds'
+
+
+def save_CSV(blockAddr, blockTs, path, verbose = 0):
+    if verbose == 1: 
+        start_time = time.time()
+
+    with open(path + '.csv', 'wb') as f:
+        for i in range(len(blockAddr)):
+            f.write(str(blockAddr[i]) + ', ' + str(blockTs[i]) + "\n")    
+    if verbose == 1:
+        print "TXT fie saved correctly. Took:", time.time() - start_time, "seconds"
+
+
+def save_TXT(blockAddr, blockTs, path, verbose = 0):
+    if verbose == 1: 
+        start_time = time.time()
+
+    with open(path+'_addrs.txt', 'wb') as f:
+        for addr in blockAddr:
+            f.write(str(addr) + '\n')
+    with open(path+'_tss.txt', 'wb') as f:
+        for ts in blockTs:
+            f.write(str(ts) + '\n')    
+    if verbose == 1:
+        print "TXT fie saved correctly. Took:", time.time() - start_time, "seconds"

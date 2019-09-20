@@ -28,19 +28,19 @@ import time
 def checkAERDATA(allAddr, allTs, settings):
 
     number_of_addresses = settings.num_channels*2
-    # Check all timestamps are greater than zero
+    # Check if all timestamps are greater than zero
     a = all(item >= 0  for item in allTs)
 
     if not a:
         print "The AER-DATA file that you loaded has at least one timestamp that is below 0."
 
-    # Check every timestamp is greater than its previous one
+    # Check if each timestamp is greater than its previous one
     b = not any(i > 0 and allTs[i] < allTs[i-1] for i in range(len(allTs)))
 
     if not b:
         print "The AER-DATA file that you loaded has at least one timestamp whose value is lesser than its previous one."
 
-    # Check all addresses are between zero and the total number of addresses
+    # Check if all addresses are between zero and the total number of addresses
     c = all(item >= 0 and item < number_of_addresses*(settings.mono_stereo+1) for item in allAddr)
 
     if not c:
@@ -104,19 +104,3 @@ def loadAERDATA(path, settings):
         except Exception as inst:
             pass
     return events, timestamps
-
-def save_AERDATA(blockAddr, blockTs, path, settings):
-    start_time = time.time()
-    unpack_param = '>L'
-    if settings.address_size == 2:
-        unpack_param = ">H"
-    elif settings.address_size == 4:
-        unpack_param = ">L"
-
-    with open(path, 'wb') as f:
-        for i in range(len(blockAddr)):
-            addr = struct.pack(unpack_param, blockAddr[i])
-            ts = struct.pack('>L', blockTs[i]/settings.ts_tick)
-            f.write(addr)
-            f.write(ts)
-        print "AERDATA file saved correctly.Took:", time.time() - start_time, 'seconds'

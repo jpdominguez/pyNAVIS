@@ -58,9 +58,10 @@ def spikegram(allAddr, allTs, settings):
     spk_fig.show()
 
 
-def sonogram(allAddr, allTs, settings):
+def sonogram(allAddr, allTs, settings, return_data = False, verbose = False):
     
-    start_time = time.time()
+    if verbose == True: start_time = time.time()
+
     total_time = max(allTs) - min(allTs)
 
     sonogram = np.zeros((settings.num_channels*2*(settings.mono_stereo+1), int(math.ceil(total_time/settings.bin_size))))
@@ -86,31 +87,34 @@ def sonogram(allAddr, allTs, settings):
         last_time += settings.bin_size
         sonogram[:, i] = spikes
 
-    print 'SONOGRAM CALCULATION', time.time() - start_time
+    if verbose == True: print 'SONOGRAM CALCULATION', time.time() - start_time
     
-    # REPRESENTATION
-    plt.style.use('default')
-    sng_fig = plt.figure()
-    sng_fig.canvas.set_window_title('Sonogram')
+    if return_data == False:
+        # REPRESENTATION
+        plt.style.use('default')
+        sng_fig = plt.figure()
+        sng_fig.canvas.set_window_title('Sonogram')
 
-    plt.imshow(sonogram, aspect="auto") #, aspect="auto")
-    plt.gca().invert_yaxis()
+        plt.imshow(sonogram, aspect="auto") #, aspect="auto")
+        plt.gca().invert_yaxis()
 
-    plt.xlabel('Bin ('+str(settings.bin_size) + '$\mu$s width)', fontsize='large')
-    plt.ylabel('Address', fontsize='large')
+        plt.xlabel('Bin ('+str(settings.bin_size) + '$\mu$s width)', fontsize='large')
+        plt.ylabel('Address', fontsize='large')
 
-    plt.title('Sonogram', fontsize='x-large')
+        plt.title('Sonogram', fontsize='x-large')
 
-    colorbar = plt.colorbar()
-    colorbar.set_label('No. of spikes', rotation=270, fontsize='large', labelpad= 10) #, rotation=270)
+        colorbar = plt.colorbar()
+        colorbar.set_label('No. of spikes', rotation=270, fontsize='large', labelpad= 10) #, rotation=270)
 
-    sng_fig.show()
+        sng_fig.show()
+    else:
+        return sonogram
 
 
-def histogram(allAddr, settings):
+def histogram(allAddr, settings, verbose = False):
     start_time = time.time()
     spikes_count = np.bincount(allAddr)
-    print 'TIEMPO HISTOGRAM:', time.time() - start_time
+    if verbose == True: print 'TIEMPO HISTOGRAM:', time.time() - start_time
 
     plt.style.use('seaborn-whitegrid')
     hst_fig = plt.figure()
@@ -195,7 +199,7 @@ def average_activity(allAddr, allTs, settings):
     avg_fig.show()
 
 
-def difference_between_LR(allAddr, allTs, settings):
+def difference_between_LR(allAddr, allTs, settings, verbose = False):
     if settings.mono_stereo == 1:    
         total_time = max(allTs) - min(allTs)
         diff = np.zeros((settings.num_channels*2, int(math.ceil(total_time/settings.bin_size))))
@@ -209,7 +213,7 @@ def difference_between_LR(allAddr, allTs, settings):
         aedat_addr_ts = sorted(aedat_addr_ts, key=getKey)
         allAddr, allTs = extract_addr_and_ts(aedat_addr_ts)
 
-        start_time = time.time()
+        if verbose == True: start_time = time.time()
         for i in range(its):
             a =  bisect_left(allTs, last_time)
             b =  bisect_right(allTs, last_time + settings.bin_size)
@@ -221,7 +225,7 @@ def difference_between_LR(allAddr, allTs, settings):
             last_time += settings.bin_size
 
             diff[:, i] = [x1 - x2 for (x1, x2) in zip(spikes[0:settings.num_channels*2], spikes[settings.num_channels*2:settings.num_channels*2*2])]
-        print 'DIFF CALCULATION', time.time() - start_time
+        if verbose == True: print 'DIFF CALCULATION', time.time() - start_time
         diff = diff*100/max(abs(np.min(diff)), np.max(diff))
         
         # REPRESENTATION
@@ -243,108 +247,4 @@ def difference_between_LR(allAddr, allTs, settings):
         colorbar.ax.invert_xaxis()
         sng_fig.show()
     else:
-        print "This functionality is only available for stereo AER-DATA files"
-
-"""
-def difference_between_LR_old(allAddr, allTs, settings):
-    aedat_addr_ts = zip(allAddr, allTs)
-    total_time = max(allTs) - min(allTs)
-    diff = np.zeros((settings.num_channels*2, int(math.ceil(total_time/settings.bin_size))))
-
-    spikes = [0 for i in range(settings.num_channels*2*2)]
-    last_time = aedat_addr_ts[0][1]
-
-    for i in range(int(math.ceil(total_time/settings.bin_size))):
-
-        blockAddr = [item[0] for item in aedat_addr_ts if item[1] >= last_time and item[1] < (last_time + settings.bin_size)]
-        
-        for t in range(len(blockAddr)):
-            spikes[blockAddr[t]] = spikes[blockAddr[t]] + 1
-        
-        last_time = last_time + settings.bin_size
-        diff[:, i] = [x1 - x2 for (x1, x2) in zip(spikes[0:settings.num_channels*2], spikes[settings.num_channels*2:settings.num_channels*2*2])] #  spikes[0:settings.num_channels*2] - spikes[settings.num_channels*2:settings.num_channels*2*2]
-        spikes = [0 for i in range(settings.num_channels*2*2)]
-        
-    #print np.max(diff)
-    diff = diff*100/max(abs(np.min(diff)), np.max(diff))
-    
-    # REPRESENTATION
-    plt.style.use('default')
-    sng_fig = plt.figure()
-    sng_fig.canvas.set_window_title('Diff. between L and R cochlea')
-
-    plt.imshow(diff, vmin=-100, vmax=100) #, aspect="auto")
-    plt.gca().invert_yaxis()
-
-    plt.xlabel('Bin ('+str(settings.bin_size) + '$\mu$s width)', fontsize='large')
-    plt.ylabel('Address', fontsize='large')
-
-    plt.title('Diff. between L and R cochlea', fontsize='x-large')
-
-    colorbar = plt.colorbar(ticks=[100, 50, 0, -50, -100], orientation='horizontal')
-    colorbar.set_label('Cochlea predominance', rotation=0, fontsize='large', labelpad= 10)
-    colorbar.ax.set_xticklabels(['100% L cochlea', '50%', '0% L==R', '50%', '100% R cochlea'])
-    colorbar.ax.invert_xaxis()
-    sng_fig.show()
-"""
-
-"""
-def sonogram_debug(allAddr, allTs, settings):
-
-    start_time = time.time()
-    aedat_addr_ts = zip(allAddr, allTs)
-    print 'ZIP:', time.time() - start_time
-
-    start_time = time.time()
-    total_time = max(allTs) - min(allTs)
-    print 'MAX - MIN:', time.time() - start_time
-
-    start_time = time.time()
-    sonogram = np.zeros((settings.num_channels*2*(settings.mono_stereo+1), int(math.ceil(total_time/settings.bin_size))))
-    print 'CREATE MATRIX', time.time() - start_time
-
-    #last_time = aedat_addr_ts[0][1]
-    last_time = min(allTs)
-
-    its = int(math.ceil(total_time/settings.bin_size))
-
-    aedat_addr_ts = sorted(aedat_addr_ts, key=getKey)
-    allAddr, allTs = extract_addr_and_ts(aedat_addr_ts)
-
-    for i in range(its):
-        start_time = time.time()
-        a =  bisect_left(allTs, last_time)
-        b =  bisect_right(allTs, last_time + settings.bin_size)
-
-        blockAddr = allAddr[a:b]
-        print 'BLOCK ADDR_new', time.time() - start_time
-
-        start_time = time.time()
-        spikes = np.bincount(blockAddr, minlength=settings.num_channels*2*(settings.mono_stereo+1))        
-        print 'FREQ', time.time() - start_time
-
-        start_time = time.time()
-        last_time += settings.bin_size
-        sonogram[:, i] = spikes
-
-        print 'INC LAST TIME + ADD COLUMN TO SONOGRAM', time.time() - start_time
-
-    
-    # REPRESENTATION
-    plt.style.use('default')
-    sng_fig = plt.figure()
-    sng_fig.canvas.set_window_title('Sonogram')
-
-    plt.imshow(sonogram, aspect="auto") #, aspect="auto")
-    plt.gca().invert_yaxis()
-
-    plt.xlabel('Bin ('+str(settings.bin_size) + '$\mu$s width)', fontsize='large')
-    plt.ylabel('Address', fontsize='large')
-
-    plt.title('Sonogram', fontsize='x-large')
-
-    colorbar = plt.colorbar()
-    colorbar.set_label('No. of spikes', rotation=270, fontsize='large', labelpad= 10) #, rotation=270)
-
-    sng_fig.show()
-"""
+        print "This functionality is only available for stereo AER-DATA files."

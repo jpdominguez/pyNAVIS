@@ -23,6 +23,7 @@
 from pyNAVIS_functions.utils import *
 from bisect import bisect_left, bisect_right
 from pyNAVIS_functions.aedat_functions import *
+from pyNAVIS_functions.savers import save_AERDATA
 
 
 def manual_aedat_splitter(allAddr, allTs, init, end, path, settings):

@@ -19,27 +19,34 @@
 ##                                                                             ##
 #################################################################################
 
-class MainSettings:
+import os
+import matplotlib
+from pyNAVIS_functions.screens_plot import *
+from pyNAVIS_functions.aedat_functions import *
 
-    mono_stereo = 0
-    bin_size = 20000
-    ts_tick = 0.2
-    num_channels = 32
-    address_size = 2
-    on_off_both = 2
-    reset_timestamp = True
-    spikegram_dot_size = 0.2
-    bar_line = 1
-    spikegram_dot_freq = 1
 
-    def __init__(self, num_channels, mono_stereo, address_size = 2, ts_tick = 0.2, bin_size = 20000, on_off_both = 2, reset_timestamp = True, spikegram_dot_size = 0.2, bar_line = 1, spikegram_dot_freq = 1):
-        self.num_channels = num_channels
-        self.mono_stereo = mono_stereo
-        self.address_size = address_size
-        self.ts_tick = ts_tick
-        self.bin_size = bin_size
-        self.on_off_both = on_off_both
-        self.reset_timestamp = reset_timestamp
-        self.spikegram_dot_size = spikegram_dot_size
-        self.bar_line = bar_line
-        self.spikegram_dot_freq = spikegram_dot_freq
+def generate_sonogram_dataset(path_input_folder, path_output_folder, settings, allow_subdirectories = False, verbose = False):
+    if verbose == True:
+        print "---- DATASET SONOGRAM GENERATION ----"
+        start_time = time.time()    
+    if not os.path.exists(path_output_folder):
+        os.makedirs(path_output_folder)
+    files = []
+    progress = 0    
+    for r, d, f in os.walk(path_input_folder): # r=root, d=directories, f = files
+        for file in f:
+            if '.aedat' in file:
+                files.append(os.path.join(r, file))
+        if allow_subdirectories == False:
+            break
+
+    for file in files:
+        addrs, ts = loadAERDATA(file, settings)
+        sonogram_data = sonogram(addrs, ts, settings, return_data = True)
+        matplotlib.image.imsave(os.path.join(path_output_folder, os.path.basename(file)) + '.png', sonogram_data)
+        
+        if verbose == True:
+            progress += 1
+            print "Progress: " + str(float(progress)*100/len(files)) + "%"
+    
+    if verbose == True: print 'Dataset generation process completed. Took ' + str(time.time()-start_time) + " seconds."

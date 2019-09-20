@@ -30,7 +30,7 @@ from pyNAVIS_functions.aedat_generators import *                                
 #############################################################################################################################
 
 ## PARAMETERS ###############################################################################################################
-num_channels = 2      # Number of NAS channels (not addresses but channels).                                               #
+num_channels = 32      # Number of NAS channels (not addresses but channels).                                               #
 mono_stereo = 0        # 0 for a monaural NAS or 1 for a binaural NAS.                                                      #
 address_size = 2       # 2 if .aedats are recorded with USBAERmini2 or 4 if .aedats are recorded with jAER.                 #
 ts_tick = 0.2            # 0.2 if .aedats are recorded with USBAERmini2 or 1 if .aedats are recorded with jAER.               #
@@ -40,25 +40,36 @@ spike_dot_freq = 1     # When plotting the cochleogram, it plots one spike for e
 #############################################################################################################################
 
 
-#random_addrs(freq=100000, num_ch=10, length=2, path='C:\\Users\\juado\\Desktop\\en_un_mono_left.aedat')
-sweep(freq=80, cycles=2, num_ch=4, length=5000, path='C:\\Users\\juado\\Desktop\\en_un_mono_left.aedat')
+#random_addrs(freq=100, num_ch=64, length=2, path='C:\\Users\\juado\\Desktop\\en_un_mono_left.aedat')
+sweep(freq=80, cycles=4, num_ch=64, length=1000000, path='C:\\Users\\juado\\Desktop\\en_un_mono_left', output_format='aedat')
+#shift(freq=10, num_ch=64, length=1000000, path='C:\\Users\\juado\\Desktop\\en_un_mono_left.aedat', output_format='aedat')
 
 
-path = 'C:\\Users\\juado\\Desktop\\en_un_mono_left.aedat'
+
+from pyNAVIS_functions.dataset_gen import generate_sonogram_dataset
+
+path = 'C:\\Users\\juado\\Desktop'
 
 settings = MainSettings(num_channels=num_channels, mono_stereo=mono_stereo, address_size=address_size, ts_tick=ts_tick, bin_size=bin_size, bar_line=bar_line, spikegram_dot_freq=spike_dot_freq)
 
+generate_sonogram_dataset(path, "C:\\Users\\juado\\Desktop\\test", settings, verbose=True)
+
+
+"""
 add, ts = loadAERDATA(path, settings)
 ts = adaptAERDATA(ts, settings)
 checkAERDATA(add, ts, settings)
+"""
+#save_CSV(add, ts, 'C:\\Users\\juado\\Desktop\\en_un_mono_left')
+#save_TXT(add, ts, 'C:\\Users\\juado\\Desktop\\en_un_mono_left')
 
 #print "The file contains", len(add), "spikes"
 #print "The audio has", max(ts), 'microsec'
 
 
-print execution_time(spikegram, (add, ts, settings))
-print execution_time(sonogram, (add, ts, settings))
-print execution_time(histogram, (add, settings))
+#print execution_time(spikegram, (add, ts, settings))
+#print execution_time(sonogram, (add, ts, settings))
+#print execution_time(histogram, (add, settings))
 #print execution_time(average_activity,(add, ts, settings))
 #print execution_time(difference_between_LR, (add, ts, settings))
 
