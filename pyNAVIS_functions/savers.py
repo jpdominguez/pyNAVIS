@@ -63,3 +63,20 @@ def save_TXT(blockAddr, blockTs, path, verbose = 0):
             f.write(str(ts) + '\n')    
     if verbose == 1:
         print "TXT fie saved correctly. Took:", time.time() - start_time, "seconds"
+
+
+def save_TXT_relativeTS(blockAddr, blockTs, path, verbose = 0):
+    if verbose == 1: 
+        start_time = time.time()
+
+    with open(path+'_addrs.txt', 'wb') as f:
+        for addr in blockAddr:
+            f.write(str(addr) + '\n')
+    with open(path+'_tss.txt', 'wb') as f:
+        for i in range(len(blockTs)):
+            if i == 0:
+                f.write(str(0) + '\n')
+            else:
+                f.write(str(blockTs[i]-blockTs[i-1]) + '\n')    
+    if verbose == 1:
+        print "TXT fie saved correctly. Took:", time.time() - start_time, "seconds"

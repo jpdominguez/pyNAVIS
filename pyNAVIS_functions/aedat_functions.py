@@ -104,3 +104,26 @@ def loadAERDATA(path, settings):
         except Exception as inst:
             pass
     return events, timestamps
+
+
+def phaseLock(allAddr, allTs, settings):
+    prevSpike = [None] * (settings.num_channels) * (1 + settings.mono_stereo)
+    #print (settings.num_channels/2) * (1 + settings.mono_stereo)
+    #print prevSpike
+    phaseLockedAddrs = []
+    phaseLockedTs = []
+    for i in range(len(allAddr)):
+        #print "spike addr", allAddr[i]/2
+        if prevSpike[allAddr[i]/2] == None:            
+            prevSpike[allAddr[i]/2] = allAddr[i]%2
+        else:
+            if prevSpike[allAddr[i]/2] == 0 and allAddr[i]%2 == 1:
+                phaseLockedAddrs.append(allAddr[i]/2)
+                phaseLockedTs.append(allTs[i])
+                prevSpike[allAddr[i]/2] = allAddr[i]%2
+            else:
+                prevSpike[allAddr[i]/2] = allAddr[i]%2
+
+    return phaseLockedAddrs, phaseLockedTs
+
+

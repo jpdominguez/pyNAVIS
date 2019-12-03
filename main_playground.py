@@ -27,39 +27,52 @@ from pyNAVIS_functions.aedat_functions import *                                 
 from pyNAVIS_functions.aedat_splitters import *                                                                             #
 from pyNAVIS_settings.main_settings import *                                                                                #
 from pyNAVIS_functions.aedat_generators import *                                                                            #
+from pyNAVIS_functions.dataset_gen import generate_sonogram_dataset                                                         #
 #############################################################################################################################
 
 ## PARAMETERS ###############################################################################################################
 num_channels = 32      # Number of NAS channels (not addresses but channels).                                               #
 mono_stereo = 0        # 0 for a monaural NAS or 1 for a binaural NAS.                                                      #
 address_size = 2       # 2 if .aedats are recorded with USBAERmini2 or 4 if .aedats are recorded with jAER.                 #
-ts_tick = 0.2            # 0.2 if .aedats are recorded with USBAERmini2 or 1 if .aedats are recorded with jAER.               #
+ts_tick = 0.2          # 0.2 if .aedats are recorded with USBAERmini2 or 1 if .aedats are recorded with jAER.               #
 bin_size = 20000       # Time bin (in microseconds) used to integrate the spiking information.                              #
 bar_line = 1           # 0 if you want the histogram to be a bar plot or 1 if you want the histogram to be a line plot.     #
 spike_dot_freq = 1     # When plotting the cochleogram, it plots one spike for every spike_dot_frPeq spikes.                #
+spike_dot_size = 1     # Size of the dots that are plotted on the spikegram                                                 #
 #############################################################################################################################
 
 
 #random_addrs(freq=100, num_ch=64, length=2, path='C:\\Users\\juado\\Desktop\\en_un_mono_left.aedat')
-sweep(freq=80, cycles=4, num_ch=64, length=1000000, path='C:\\Users\\juado\\Desktop\\en_un_mono_left', output_format='aedat')
+#sweep(freq=80, cycles=4, num_ch=64, length=1000000, path='C:\\Users\\juado\\Desktop\\en_un_mono_left', output_format='aedat')
 #shift(freq=10, num_ch=64, length=1000000, path='C:\\Users\\juado\\Desktop\\en_un_mono_left.aedat', output_format='aedat')
 
 
 
-from pyNAVIS_functions.dataset_gen import generate_sonogram_dataset
+
 
 path = 'C:\\Users\\juado\\Desktop'
 
-settings = MainSettings(num_channels=num_channels, mono_stereo=mono_stereo, address_size=address_size, ts_tick=ts_tick, bin_size=bin_size, bar_line=bar_line, spikegram_dot_freq=spike_dot_freq)
+settings = MainSettings(num_channels=num_channels, mono_stereo=mono_stereo, address_size=address_size, ts_tick=ts_tick, bin_size=bin_size, bar_line=bar_line, spikegram_dot_freq=spike_dot_freq, spikegram_dot_size=spike_dot_size)
 
-generate_sonogram_dataset(path, "C:\\Users\\juado\\Desktop\\test", settings, verbose=True)
+#generate_sonogram_dataset(path, "C:\\Users\\juado\\Desktop\\test", settings, verbose=True)
 
 
-"""
-add, ts = loadAERDATA(path, settings)
+
+add, ts = loadAERDATA('0a2b400e_nohash_0.wav.aedat', settings)
 ts = adaptAERDATA(ts, settings)
 checkAERDATA(add, ts, settings)
-"""
+print "The file contains", len(add), "spikes"
+print execution_time(spikegram, (add, ts, settings))
+
+
+psAddrs, psTs = phaseLock(add, ts, settings)
+print "The file contains", len(psAddrs), "spikes"
+settings = MainSettings(num_channels=num_channels/2, mono_stereo=mono_stereo, address_size=address_size, ts_tick=ts_tick, bin_size=bin_size, bar_line=bar_line, spikegram_dot_freq=spike_dot_freq, spikegram_dot_size=spike_dot_size)
+print execution_time(spikegram, (psAddrs, psTs, settings))
+print execution_time(sonogram, (psAddrs, psTs, settings))
+print execution_time(histogram, (psAddrs, settings))
+print execution_time(average_activity,(psAddrs, psTs, settings))
+
 #save_CSV(add, ts, 'C:\\Users\\juado\\Desktop\\en_un_mono_left')
 #save_TXT(add, ts, 'C:\\Users\\juado\\Desktop\\en_un_mono_left')
 
