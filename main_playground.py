@@ -61,23 +61,17 @@ settings = MainSettings(num_channels=num_channels, mono_stereo=mono_stereo, addr
 add, ts = loadAERDATA('0a2b400e_nohash_0.wav.aedat', settings)
 ts = adaptAERDATA(ts, settings)
 checkAERDATA(add, ts, settings)
-print "The file contains", len(add), "spikes"
+get_info(add, ts)
 print execution_time(spikegram, (add, ts, settings))
 
 
 psAddrs, psTs = phaseLock(add, ts, settings)
-print "The file contains", len(psAddrs), "spikes"
+get_info(psAddrs, psTs)
 settings = MainSettings(num_channels=num_channels/2, mono_stereo=mono_stereo, address_size=address_size, ts_tick=ts_tick, bin_size=bin_size, bar_line=bar_line, spikegram_dot_freq=spike_dot_freq, spikegram_dot_size=spike_dot_size)
 print execution_time(spikegram, (psAddrs, psTs, settings))
-print execution_time(sonogram, (psAddrs, psTs, settings))
-print execution_time(histogram, (psAddrs, settings))
-print execution_time(average_activity,(psAddrs, psTs, settings))
 
 #save_CSV(add, ts, 'C:\\Users\\juado\\Desktop\\en_un_mono_left')
 #save_TXT(add, ts, 'C:\\Users\\juado\\Desktop\\en_un_mono_left')
-
-#print "The file contains", len(add), "spikes"
-#print "The audio has", max(ts), 'microsec'
 
 
 #print execution_time(spikegram, (add, ts, settings))

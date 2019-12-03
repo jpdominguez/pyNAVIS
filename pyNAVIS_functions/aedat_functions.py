@@ -127,3 +127,6 @@ def phaseLock(allAddr, allTs, settings):
     return phaseLockedAddrs, phaseLockedTs
 
 
+def get_info(allAddrs, allTs):
+    print "The file contains", len(allAddrs), "spikes"
+    print "The audio has", max(allTs), 'microsec'
