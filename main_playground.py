@@ -56,29 +56,23 @@ settings = MainSettings(num_channels=num_channels, mono_stereo=mono_stereo, addr
 
 #generate_sonogram_dataset(path, "C:\\Users\\juado\\Desktop\\test", settings, verbose=True)
 
-
-
 add, ts = loadAERDATA('0a2b400e_nohash_0.wav.aedat', settings)
 ts = adaptAERDATA(ts, settings)
 checkAERDATA(add, ts, settings)
 get_info(add, ts)
-print execution_time(spikegram, (add, ts, settings))
+spikegram(add, ts, settings, verbose=True)
 
 
 psAddrs, psTs = phaseLock(add, ts, settings)
 get_info(psAddrs, psTs)
 settings = MainSettings(num_channels=num_channels/2, mono_stereo=mono_stereo, address_size=address_size, ts_tick=ts_tick, bin_size=bin_size, bar_line=bar_line, spikegram_dot_freq=spike_dot_freq, spikegram_dot_size=spike_dot_size)
-print execution_time(spikegram, (psAddrs, psTs, settings))
+spikegram(psAddrs, psTs, settings, verbose=True)
+
+
+
 
 #save_CSV(add, ts, 'C:\\Users\\juado\\Desktop\\en_un_mono_left')
 #save_TXT(add, ts, 'C:\\Users\\juado\\Desktop\\en_un_mono_left')
-
-
-#print execution_time(spikegram, (add, ts, settings))
-#print execution_time(sonogram, (add, ts, settings))
-#print execution_time(histogram, (add, settings))
-#print execution_time(average_activity,(add, ts, settings))
-#print execution_time(difference_between_LR, (add, ts, settings))
 
 #manual_aedat_splitter(add, ts, 0, max(ts), "a.aedat", settings)
 

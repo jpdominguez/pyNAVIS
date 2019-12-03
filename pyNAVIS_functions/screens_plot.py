@@ -31,8 +31,9 @@ import numpy as np
 from bisect import bisect_left, bisect_right
 from pyNAVIS_functions.utils import *
 
-def spikegram(allAddr, allTs, settings):
+def spikegram(allAddr, allTs, settings, verbose = False):
 
+    if verbose == True: start_time = time.time()
     #REPRESENTATION
     plt.style.use('seaborn-whitegrid')
     spk_fig = plt.figure()
@@ -50,8 +51,9 @@ def spikegram(allAddr, allTs, settings):
         plt.scatter(ts[0::settings.spikegram_dot_freq], addr[0::settings.spikegram_dot_freq], s=settings.spikegram_dot_size, label='Right cochlea')
         plt.legend(fancybox=False, ncol=2, loc='upper center', markerscale=2/settings.spikegram_dot_size, frameon=True)
         
-    plt.title('Spikegram', fontsize='x-large')
+    if verbose == True: print 'SPIKEGRAM CALCULATION', time.time() - start_time
 
+    plt.title('Spikegram', fontsize='x-large')
     plt.xlabel('Timestamp ($\mu$s)', fontsize='large')
     plt.ylabel('Address', fontsize='large')
 
@@ -140,7 +142,7 @@ def histogram(allAddr, settings, verbose = False):
     hst_fig.show()
 
 
-def average_activity(allAddr, allTs, settings):
+def average_activity(allAddr, allTs, settings, verbose=False):
     aedat_addr_ts = zip(allAddr, allTs)
     total_time = int(max(allTs))
     last_ts = 0
@@ -152,6 +154,7 @@ def average_activity(allAddr, allTs, settings):
     aedat_addr_ts = sorted(aedat_addr_ts, key=getKey)
     allAddr, allTs = extract_addr_and_ts(aedat_addr_ts)
 
+    if verbose == True: start_time = time.time()
     if settings.mono_stereo == 1: 
         for i in range(0, total_time, settings.bin_size):        
             evtL = 0
@@ -184,6 +187,7 @@ def average_activity(allAddr, allTs, settings):
 
             average_activity_L[i/settings.bin_size] = evtL
             last_ts = last_ts + settings.bin_size
+    if verbose == True: print 'AVERAGE ACTIVITY CALCULATION', time.time() - start_time
 
     plt.style.use('seaborn-whitegrid')
     avg_fig = plt.figure()

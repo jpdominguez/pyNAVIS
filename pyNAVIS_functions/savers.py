@@ -22,8 +22,8 @@
 import struct
 import time
 
-def save_AERDATA(blockAddr, blockTs, path, settings, verbose = 0):
-    start_time = time.time()
+def save_AERDATA(blockAddr, blockTs, path, settings, verbose = False):
+    if verbose == True: start_time = time.time()
     unpack_param = '>L'
     if settings.address_size == 2:
         unpack_param = ">H"
@@ -36,24 +36,22 @@ def save_AERDATA(blockAddr, blockTs, path, settings, verbose = 0):
             ts = struct.pack('>L', blockTs[i]/settings.ts_tick)
             f.write(addr)
             f.write(ts)
-        if verbose == 1:
+        if verbose == True:
             print "AERDATA file saved correctly.Took:", time.time() - start_time, 'seconds'
 
 
-def save_CSV(blockAddr, blockTs, path, verbose = 0):
-    if verbose == 1: 
-        start_time = time.time()
+def save_CSV(blockAddr, blockTs, path, verbose = False):
+    if verbose == True: start_time = time.time()
 
     with open(path + '.csv', 'wb') as f:
         for i in range(len(blockAddr)):
             f.write(str(blockAddr[i]) + ', ' + str(blockTs[i]) + "\n")    
-    if verbose == 1:
+    if verbose == True:
         print "TXT fie saved correctly. Took:", time.time() - start_time, "seconds"
 
 
-def save_TXT(blockAddr, blockTs, path, verbose = 0):
-    if verbose == 1: 
-        start_time = time.time()
+def save_TXT(blockAddr, blockTs, path, verbose = False):
+    if verbose == True: start_time = time.time()
 
     with open(path+'_addrs.txt', 'wb') as f:
         for addr in blockAddr:
@@ -61,13 +59,12 @@ def save_TXT(blockAddr, blockTs, path, verbose = 0):
     with open(path+'_tss.txt', 'wb') as f:
         for ts in blockTs:
             f.write(str(ts) + '\n')    
-    if verbose == 1:
+    if verbose == True:
         print "TXT fie saved correctly. Took:", time.time() - start_time, "seconds"
 
 
-def save_TXT_relativeTS(blockAddr, blockTs, path, verbose = 0):
-    if verbose == 1: 
-        start_time = time.time()
+def save_TXT_relativeTS(blockAddr, blockTs, path, verbose = False):
+    if verbose == True: start_time = time.time()
 
     with open(path+'_addrs.txt', 'wb') as f:
         for addr in blockAddr:
@@ -78,5 +75,5 @@ def save_TXT_relativeTS(blockAddr, blockTs, path, verbose = 0):
                 f.write(str(0) + '\n')
             else:
                 f.write(str(blockTs[i]-blockTs[i-1]) + '\n')    
-    if verbose == 1:
+    if verbose == True:
         print "TXT fie saved correctly. Took:", time.time() - start_time, "seconds"
