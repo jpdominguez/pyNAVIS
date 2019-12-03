@@ -108,12 +108,9 @@ def loadAERDATA(path, settings):
 
 def phaseLock(allAddr, allTs, settings):
     prevSpike = [None] * (settings.num_channels) * (1 + settings.mono_stereo)
-    #print (settings.num_channels/2) * (1 + settings.mono_stereo)
-    #print prevSpike
     phaseLockedAddrs = []
     phaseLockedTs = []
     for i in range(len(allAddr)):
-        #print "spike addr", allAddr[i]/2
         if prevSpike[allAddr[i]/2] == None:            
             prevSpike[allAddr[i]/2] = allAddr[i]%2
         else:
