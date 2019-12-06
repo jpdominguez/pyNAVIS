@@ -15,6 +15,8 @@ spike_dot_freq = 1     # When plotting the cochleogram, it plots one spike for e
 spike_dot_size = 1     # Size of the dots that are plotted on the spikegram                                                 #
 #############################################################################################################################
 
+sg.ChangeLookAndFeel('Default1')
+
 
 settings_layout = [[]]
 
@@ -46,6 +48,8 @@ while True:
         #sp = subprocess.Popen([CHROME, values['_URL_']], shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         
         spikegram(add, ts, settings, verbose=True)
+    if event == 'Settings':
+        print 'Hey'
     print event
 
 form.close()
