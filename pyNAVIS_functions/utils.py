@@ -24,9 +24,13 @@ import numpy as np
 import matplotlib.pyplot as plt
 import math
 import time
+from pyNAVIS_functions.loaders import SpikesFile
 
 def extract_addr_and_ts(aedat_addr_ts):
-    return [x[0] for x in aedat_addr_ts], [x[1] for x in aedat_addr_ts]
+    spikes_file = SpikesFile()
+    spikes_file.addresses = [x[0] for x in aedat_addr_ts]
+    spikes_file.timestamps = [x[1] for x in aedat_addr_ts]
+    return spikes_file
 
 def execution_time(executing_function, function_params):
     start_time = time.time()

@@ -24,20 +24,21 @@ from pyNAVIS_functions.utils import *
 from bisect import bisect_left, bisect_right
 from pyNAVIS_functions.aedat_functions import *
 from pyNAVIS_functions.savers import save_AERDATA
+import random
 
 
-def manual_aedat_splitter(allAddr, allTs, init, end, path, settings):
+def manual_aedat_splitter(spikes_file, init, end, path, settings):
 
     #THIS IS NOT NEEDED IF TS ARE SORTED
-    aedat_addr_ts = zip(allAddr, allTs)
+    aedat_addr_ts = zip(spikes_file.addresses, spikes_file.timestamps)
     aedat_addr_ts = sorted(aedat_addr_ts, key=getKey)
-    allAddr, allTs = extract_addr_and_ts(aedat_addr_ts)
+    spikes_file = extract_addr_and_ts(aedat_addr_ts)
 
-    a =  bisect_left(allTs, init)
-    b =  bisect_right(allTs, end)
+    a =  bisect_left(spikes_file.timestamps, init)
+    b =  bisect_right(spikes_file.timestamps, end)
 
-    blockAddr = allAddr[a:b]
-    blockTs = allTs[a:b]
+    blockAddr = spikes_file.addresses[a:b]
+    blockTs = spikes_file.timestamps[a:b]
 
     save_AERDATA(blockAddr, blockTs, path, settings)
 
@@ -95,30 +96,31 @@ def automatic_aedat_splitter(allAddr, allTs, noiseTolerance, noiseThreshold, set
     print cont
 """
 
-def stereoToMono(allAddr, allTs, left_right, path, settings): # NEEDS TO BE TESTED
+def stereoToMono(spikes_file, left_right, path, settings): # NEEDS TO BE TESTED
     if settings.mono_stereo:
-        aedat_addr_ts = zip(allAddr, allTs)
+        aedat_addr_ts = zip(spikes_file.addresses, spikes_file.timestamps)
         aedat_addr_ts = [x for x in aedat_addr_ts if x[0] >= left_right*settings.num_channels*2 and x[0] < (left_right+1)*settings.num_channels*2]
         #print len(aedat_addr_ts)
 
-        allAddr_mono, allTs_mono = extract_addr_and_ts(aedat_addr_ts)
+        spikes_file_mono = extract_addr_and_ts(aedat_addr_ts)
         if left_right:
-            allAddr_mono = [x-left_right*settings.num_channels*2 for x in allAddr_mono]
-        save_AERDATA(allAddr_mono, allTs_mono, path, settings)
+            spikes_file_mono.addresses = [x-left_right*settings.num_channels*2 for x in spikes_file_mono.addresses]
+        save_AERDATA(spikes_file, path, settings)
     else:
         print("StereoToMono: this functionality cannot be performed over a mono aedat file.")
 
-def monoToStereo(allAddr, allTs, delay, path, settings): # NEEDS TO BE TESTED
+def monoToStereo(spikes_file, delay, path, settings):
     if settings.mono_stereo == 0:
-        allAddr = allAddr.extend(allAddr)
-        newTs = allTs + delay
-        allTs = allTs.extend(newTs)
-        
-        aedat_addr_ts = zip(allAddr, allTs)
-        aedat_addr_ts = sorted(aedat_addr_ts, key=getKey)
+        newAddrs = [(x + settings.num_channels*2) for x in spikes_file.addresses]
+        spikes_file.addresses.extend(newAddrs)
+        newTs = [(x + delay) for x in spikes_file.timestamps]
+        spikes_file.timestamps.extend(newTs)
+        aedat_addr_ts = list(zip(spikes_file.addresses, spikes_file.timestamps))
+        aedat_addr_ts = sorted(aedat_addr_ts, key=lambda v: (v, random.random())) #key=getKey)  #THIS DISORDERS TSS
+        spikes_file = extract_addr_and_ts(aedat_addr_ts)
 
-        allAddr, allTs = extract_addr_and_ts(aedat_addr_ts)
-        save_AERDATA(allAddr, allTs, path, settings)
+        settings.mono_stereo = 1
+        save_AERDATA(spikes_file, path, settings)
     else:
         print("MonoToStereo: this functionality cannot be performed over a stereo aedat file.")
 

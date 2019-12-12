@@ -27,7 +27,8 @@ from pyNAVIS_functions.aedat_functions import *                                 
 from pyNAVIS_functions.aedat_splitters import *                                                                             #
 from pyNAVIS_settings.main_settings import *                                                                                #
 from pyNAVIS_functions.aedat_generators import *                                                                            #
-from pyNAVIS_functions.dataset_gen import generate_sonogram_dataset                                                         #
+from pyNAVIS_functions.dataset_gen import generate_sonogram_dataset
+from pyNAVIS_functions.loaders import *                                                  #
 #############################################################################################################################
 
 ## PARAMETERS ###############################################################################################################
@@ -56,17 +57,32 @@ settings = MainSettings(num_channels=num_channels, mono_stereo=mono_stereo, addr
 
 #generate_sonogram_dataset(path, "C:\\Users\\juado\\Desktop\\test", settings, verbose=True)
 
-add, ts = loadAERDATA('0a2b400e_nohash_0.wav.aedat', settings)
-ts = adaptAERDATA(ts, settings)
-checkAERDATA(add, ts, settings)
-get_info(add, ts)
-spikegram(add, ts, settings, verbose=True)
+spikes_file = loadAERDATA('0a2b400e_nohash_0.wav.aedat', settings)
+spikes_file = adaptAERDATA(spikes_file, settings)
+checkAERDATA(spikes_file, settings)
+get_info(spikes_file)
+#spikegram(spikes_file, settings, verbose=True)
+#sonogram(spikes_file, settings, verbose=True)
+#histogram(spikes_file, settings, verbose=True)
+#average_activity(spikes_file, settings, verbose=True)
+#difference_between_LR(spikes_file, settings, verbose=True)     #NEEDS TEST
+#save_AERDATA(spikes_file, "hey.aedat", settings,verbose=True)
+#save_CSV(spikes_file, "hey.csv", verbose=True)
+#save_TXT(spikes_file, "heyTxt.txt", verbose=True)
+#save_TXT_relativeTS(spikes_file, "heyTXTrelative", verbose=True)
+monoToStereo(spikes_file, 0, "stereo.aedat", settings)
 
-
-psAddrs, psTs = phaseLock(add, ts, settings)
-get_info(psAddrs, psTs)
-settings = MainSettings(num_channels=num_channels/2, mono_stereo=mono_stereo, address_size=address_size, ts_tick=ts_tick, bin_size=bin_size, bar_line=bar_line, spikegram_dot_freq=spike_dot_freq, spikegram_dot_size=spike_dot_size)
-spikegram(psAddrs, psTs, settings, verbose=True)
+phaseLocked_spikes = phaseLock(spikes_file, settings)
+get_info(phaseLocked_spikes)
+settings = MainSettings(num_channels=int(num_channels/2), mono_stereo=mono_stereo, address_size=address_size, ts_tick=ts_tick, bin_size=bin_size, bar_line=bar_line, spikegram_dot_freq=spike_dot_freq, spikegram_dot_size=spike_dot_size)
+#spikegram(phaseLocked_spikes, settings, verbose=True)
+#sonogram(phaseLocked_spikes, settings, verbose=True)
+#histogram(phaseLocked_spikes, settings, verbose=True)
+#average_activity(phaseLocked_spikes, settings, verbose=True)
+#save_AERDATA(phaseLocked_spikes, "hey.aedat", settings,verbose=True)
+#save_CSV(phaseLocked_spikes, "hey.csv", verbose=True)
+#save_TXT(phaseLocked_spikes, "heyTxt.txt", verbose=True)
+#save_TXT_relativeTS(phaseLocked_spikes, "heyTXTrelative", verbose=True)
 
 plt.show()
 #save_CSV(add, ts, 'C:\\Users\\juado\\Desktop\\en_un_mono_left')

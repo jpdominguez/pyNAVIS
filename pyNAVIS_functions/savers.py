@@ -22,7 +22,7 @@
 import struct
 import time
 
-def save_AERDATA(blockAddr, blockTs, path, settings, verbose = False):
+def save_AERDATA(spikes_file, path, settings, verbose = False):
     if verbose == True: start_time = time.time()
     unpack_param = '>L'
     if settings.address_size == 2:
@@ -31,49 +31,49 @@ def save_AERDATA(blockAddr, blockTs, path, settings, verbose = False):
         unpack_param = ">L"
 
     with open(path, 'wb') as f:
-        for i in range(len(blockAddr)):
-            addr = struct.pack(unpack_param, blockAddr[i])
-            ts = struct.pack('>L', blockTs[i]/settings.ts_tick)
+        for i in range(len(spikes_file.addresses)):
+            addr = struct.pack(unpack_param, int(spikes_file.addresses[i]))
+            ts = struct.pack('>L', int(spikes_file.timestamps[i]//settings.ts_tick))
             f.write(addr)
             f.write(ts)
         if verbose == True:
             print("AERDATA file saved correctly.Took:", time.time() - start_time, 'seconds')
 
 
-def save_CSV(blockAddr, blockTs, path, verbose = False):
+def save_CSV(spikes_file, path, verbose = False):
     if verbose == True: start_time = time.time()
 
-    with open(path + '.csv', 'wb') as f:
-        for i in range(len(blockAddr)):
-            f.write(str(blockAddr[i]) + ', ' + str(blockTs[i]) + "\n")    
+    with open(path + '.csv', 'w') as f:
+        for i in range(len(spikes_file.addresses)):
+            f.write(str(spikes_file.addresses[i]) + ', ' + str(int(spikes_file.timestamps[i])) + "\n")    
+    if verbose == True:
+        print("CSV fie saved correctly. Took:", time.time() - start_time, "seconds")
+
+
+def save_TXT(spikes_file, path, verbose = False):
+    if verbose == True: start_time = time.time()
+
+    with open(path+'_addrs.txt', 'w') as f:
+        for addr in spikes_file.addresses:
+            f.write(str(addr) + '\n')
+    with open(path+'_tss.txt', 'w') as f:
+        for ts in spikes_file.timestamps:
+            f.write(str(int(ts)) + '\n')    
     if verbose == True:
         print("TXT fie saved correctly. Took:", time.time() - start_time, "seconds")
 
 
-def save_TXT(blockAddr, blockTs, path, verbose = False):
+def save_TXT_relativeTS(spikes_file, path, verbose = False):
     if verbose == True: start_time = time.time()
 
-    with open(path+'_addrs.txt', 'wb') as f:
-        for addr in blockAddr:
+    with open(path+'_addrs.txt', 'w') as f:
+        for addr in spikes_file.addresses:
             f.write(str(addr) + '\n')
-    with open(path+'_tss.txt', 'wb') as f:
-        for ts in blockTs:
-            f.write(str(ts) + '\n')    
-    if verbose == True:
-        print("TXT fie saved correctly. Took:", time.time() - start_time, "seconds")
-
-
-def save_TXT_relativeTS(blockAddr, blockTs, path, verbose = False):
-    if verbose == True: start_time = time.time()
-
-    with open(path+'_addrs.txt', 'wb') as f:
-        for addr in blockAddr:
-            f.write(str(addr) + '\n')
-    with open(path+'_tss.txt', 'wb') as f:
-        for i in range(len(blockTs)):
+    with open(path+'_tss.txt', 'w') as f:
+        for i in range(len(spikes_file.timestamps)):
             if i == 0:
                 f.write(str(0) + '\n')
             else:
-                f.write(str(blockTs[i]-blockTs[i-1]) + '\n')    
+                f.write(str(int(spikes_file.timestamps[i]-spikes_file.timestamps[i-1])) + '\n')    
     if verbose == True:
         print("TXT fie saved correctly. Took:", time.time() - start_time, "seconds")

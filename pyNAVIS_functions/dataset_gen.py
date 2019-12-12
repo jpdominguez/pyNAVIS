@@ -23,6 +23,7 @@ import os
 import matplotlib
 from pyNAVIS_functions.screens_plot import *
 from pyNAVIS_functions.aedat_functions import *
+from pyNAVIS_functions.loaders import *
 
 
 def generate_sonogram_dataset(path_input_folder, path_output_folder, settings, allow_subdirectories = False, verbose = False):
@@ -41,8 +42,8 @@ def generate_sonogram_dataset(path_input_folder, path_output_folder, settings, a
             break
 
     for file in files:
-        addrs, ts = loadAERDATA(file, settings)
-        sonogram_data = sonogram(addrs, ts, settings, return_data = True)
+        spikes_file = loadAERDATA(file, settings)
+        sonogram_data = sonogram(spikes_file.addresses, spikes_file.timestamps, settings, return_data = True)
         matplotlib.image.imsave(os.path.join(path_output_folder, os.path.basename(file)) + '.png', sonogram_data)
         
         if verbose == True:

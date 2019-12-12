@@ -24,24 +24,25 @@ import numpy as np
 import matplotlib.pyplot as plt
 import math
 import time
+from pyNAVIS_functions.loaders import SpikesFile
 
-def checkAERDATA(allAddr, allTs, settings):
+def checkAERDATA(spikes_file, settings):
 
     number_of_addresses = settings.num_channels*2
     # Check if all timestamps are greater than zero
-    a = all(item >= 0  for item in allTs)
+    a = all(item >= 0  for item in spikes_file.timestamps)
 
     if not a:
         print("The AER-DATA file that you loaded has at least one timestamp that is below 0.")
 
     # Check if each timestamp is greater than its previous one
-    b = not any(i > 0 and allTs[i] < allTs[i-1] for i in range(len(allTs)))
+    b = not any(i > 0 and spikes_file.timestamps[i] < spikes_file.timestamps[i-1] for i in range(len(spikes_file.timestamps)))
 
     if not b:
         print("The AER-DATA file that you loaded has at least one timestamp whose value is lesser than its previous one.")
 
     # Check if all addresses are between zero and the total number of addresses
-    c = all(item >= 0 and item < number_of_addresses*(settings.mono_stereo+1) for item in allAddr)
+    c = all(item >= 0 and item < number_of_addresses*(settings.mono_stereo+1) for item in spikes_file.addresses)
 
     if not c:
         print("The AER-DATA file that you loaded has at least one event whose address is either below 0 or above the number of addresses that you specified.")
@@ -51,77 +52,33 @@ def checkAERDATA(allAddr, allTs, settings):
             
 
 # Function to subtract the smallest timestamp to all of the events (to start from 0) and adapt them based on the tick frequency of the tool used to log the file.
-def adaptAERDATA(allTs, settings):
-    minimum_ts = min(allTs)
+def adaptAERDATA(spikes_file, settings):
+    minimum_ts = min(spikes_file.timestamps)
     if settings.reset_timestamp:
-        return [(x - minimum_ts)*settings.ts_tick for x in allTs]
+        spikes_file.timestamps = [(x - minimum_ts)*settings.ts_tick for x in spikes_file.timestamps]
     else:
-        return [x*settings.ts_tick for x in allTs]
+        spikes_file.timestamps = [x*settings.ts_tick for x in spikes_file.timestamps]
+    return spikes_file
 
 
-def loadAERDATA(path, settings):
-    unpack_param = ">H"
-    
-    if settings.address_size == 2:
-        unpack_param = ">H"
-    elif settings.address_size == 4:
-        unpack_param = ">L"
-    else:
-        print("Only address sizes implemented are 2 and 4 bytes")
-
-    with open(path, 'rb') as f:
-        ## Check header ##
-        p = 0
-        lt = f.readline()
-        while lt and lt[0] == "#":
-            p += len(lt)
-            lt = f.readline()
-        f.seek(p)
-
-        f.seek(0, 2)
-        eof = f.tell()
-
-        num_events = math.floor((eof-p)/(settings.address_size + 4))
-
-        f.seek(p)
-
-        events = [0] * int(num_events)
-        timestamps = [0] * int(num_events)
-
-        ## Read file ##
-        i = 0
-        try:
-            while 1:
-                buff = f.read(settings.address_size)
-                x = struct.unpack(unpack_param, buff)[0]
-                events[i] = x
-
-                buff = f.read(4)
-                x = struct.unpack('>L', buff)[0]
-                timestamps[i] = x
-
-                i += 1
-        except Exception as inst:
-            pass
-    return events, timestamps
-
-
-def phaseLock(allAddr, allTs, settings):
+def phaseLock(spikes_file, settings):
     prevSpike = [None] * (settings.num_channels) * (1 + settings.mono_stereo)
     phaseLockedAddrs = []
     phaseLockedTs = []
-    for i in range(len(allAddr)):
-        if prevSpike[allAddr[i]//2] == None:
-            prevSpike[allAddr[i]//2] = allAddr[i]%2
+    for i in range(len(spikes_file.addresses)):
+        if prevSpike[spikes_file.addresses[i]//2] == None:
+            prevSpike[spikes_file.addresses[i]//2] = spikes_file.addresses[i]%2
         else:
-            if prevSpike[allAddr[i]//2] == 0 and allAddr[i]%2 == 1:
-                phaseLockedAddrs.append(allAddr[i]/2)
-                phaseLockedTs.append(allTs[i])
-                prevSpike[allAddr[i]//2] = allAddr[i]%2
+            if prevSpike[spikes_file.addresses[i]//2] == 0 and spikes_file.addresses[i]%2 == 1:
+                phaseLockedAddrs.append(spikes_file.addresses[i]/2)
+                phaseLockedTs.append(spikes_file.timestamps[i])
+                prevSpike[spikes_file.addresses[i]//2] = spikes_file.addresses[i]%2
             else:
-                prevSpike[allAddr[i]//2] = allAddr[i]%2
-
-    return phaseLockedAddrs, phaseLockedTs
+                prevSpike[spikes_file.addresses[i]//2] = spikes_file.addresses[i]%2
+    spikes_file = SpikesFile()
+    spikes_file.addresses = phaseLockedAddrs
+    spikes_file.timestamps = phaseLockedTs
+    return spikes_file
 
 
 def extract_channels_activities(spikes_file, channels):
@@ -134,6 +91,6 @@ def extract_channels_activities(spikes_file, channels):
     return spikes_per_channel_addr, spikes_per_channels_ts
 
 
-def get_info(allAddrs, allTs):
-    print("The file contains", len(allAddrs), "spikes")
-    print("The audio has", max(allTs), 'microsec')
+def get_info(spikes_file):
+    print("The file contains", len(spikes_file.addresses), "spikes")
+    print("The audio has", max(spikes_file.timestamps), 'microsec')

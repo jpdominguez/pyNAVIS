@@ -31,7 +31,7 @@ import numpy as np
 from bisect import bisect_left, bisect_right
 from pyNAVIS_functions.utils import *
 
-def spikegram(allAddr, allTs, settings, verbose = False):
+def spikegram(spikes_file, settings, verbose = False):
 
     if verbose == True: start_time = time.time()
     #REPRESENTATION
@@ -42,9 +42,9 @@ def spikegram(allAddr, allTs, settings, verbose = False):
     random.seed('just some random seed')
 
     if settings.mono_stereo == 0:
-        plt.scatter(allTs[0::settings.spikegram_dot_freq], allAddr[0::settings.spikegram_dot_freq], s=settings.spikegram_dot_size)
+        plt.scatter(spikes_file.timestamps[0::settings.spikegram_dot_freq], spikes_file.addresses[0::settings.spikegram_dot_freq], s=settings.spikegram_dot_size)
     else:
-        aedat_addr_ts = zip(allAddr, allTs)
+        aedat_addr_ts = zip(spikes_file.addresses, spikes_file.timestamps)
         addr, ts = zip(*[(evt[0], evt[1]) for evt in aedat_addr_ts if evt[0] < settings.num_channels*(settings.on_off_both)])
         plt.scatter(ts[0::settings.spikegram_dot_freq], addr[0::settings.spikegram_dot_freq], s=settings.spikegram_dot_size, label='Left cochlea')
         addr, ts = zip(*[(evt[0], evt[1]) for evt in aedat_addr_ts if evt[0] >= settings.num_channels*(settings.on_off_both) and evt[0] < settings.num_channels*(settings.on_off_both)*2])
@@ -60,29 +60,29 @@ def spikegram(allAddr, allTs, settings, verbose = False):
     spk_fig.show()
 
 
-def sonogram(allAddr, allTs, settings, return_data = False, verbose = False):
+def sonogram(spikes_file, settings, return_data = False, verbose = False):
     
     if verbose == True: start_time = time.time()
 
-    total_time = max(allTs) - min(allTs)
+    total_time = max(spikes_file.timestamps) - min(spikes_file.timestamps)
 
     sonogram = np.zeros((settings.num_channels*2*(settings.mono_stereo+1), int(math.ceil(total_time/settings.bin_size))))
 
-    last_time = min(allTs)
+    last_time = min(spikes_file.timestamps)
 
     its = int(math.ceil(total_time/settings.bin_size))
     
     #THIS IS NOT NEEDED IF TS ARE SORTED
-    aedat_addr_ts = zip(allAddr, allTs)
+    aedat_addr_ts = zip(spikes_file.addresses, spikes_file.timestamps)
     aedat_addr_ts = sorted(aedat_addr_ts, key=getKey)
-    allAddr, allTs = extract_addr_and_ts(aedat_addr_ts)
+    spikes_file = extract_addr_and_ts(aedat_addr_ts)
     
     for i in range(its):
 
-        a =  bisect_left(allTs, last_time)
-        b =  bisect_right(allTs, last_time + settings.bin_size)
+        a =  bisect_left(spikes_file.timestamps, last_time)
+        b =  bisect_right(spikes_file.timestamps, last_time + settings.bin_size)
 
-        blockAddr = allAddr[a:b]
+        blockAddr = spikes_file.addresses[a:b]
 
         spikes = np.bincount(blockAddr, minlength=settings.num_channels*2*(settings.mono_stereo+1))        
 
@@ -113,9 +113,9 @@ def sonogram(allAddr, allTs, settings, return_data = False, verbose = False):
         return sonogram
 
 
-def histogram(allAddr, settings, verbose = False):
+def histogram(spikes_file, settings, verbose = False):
     start_time = time.time()
-    spikes_count = np.bincount(allAddr)
+    spikes_count = np.bincount(spikes_file.addresses)
     if verbose == True: print('TIEMPO HISTOGRAM:', time.time() - start_time)
 
     plt.style.use('seaborn-whitegrid')
@@ -142,9 +142,9 @@ def histogram(allAddr, settings, verbose = False):
     hst_fig.show()
 
 
-def average_activity(allAddr, allTs, settings, verbose=False):
-    aedat_addr_ts = zip(allAddr, allTs)
-    total_time = int(max(allTs))
+def average_activity(spikes_file, settings, verbose=False):
+    aedat_addr_ts = zip(spikes_file.addresses, spikes_file.timestamps)
+    total_time = int(max(spikes_file.timestamps))
     last_ts = 0
     average_activity_L = np.zeros(int(math.ceil(total_time/settings.bin_size))+1)
     if(settings.mono_stereo == 1):
@@ -152,7 +152,7 @@ def average_activity(allAddr, allTs, settings, verbose=False):
 
     #THIS TWO ONLY IF CHECK DETECTS AEDAT NOT IN ORDER
     aedat_addr_ts = sorted(aedat_addr_ts, key=getKey)
-    allAddr, allTs = extract_addr_and_ts(aedat_addr_ts)
+    spikes_file = extract_addr_and_ts(aedat_addr_ts)
 
     if verbose == True: start_time = time.time()
     if settings.mono_stereo == 1: 
@@ -160,10 +160,10 @@ def average_activity(allAddr, allTs, settings, verbose=False):
             evtL = 0
             evtR = 0
 
-            a =  bisect_left(allTs, last_ts)
-            b =  bisect_right(allTs, last_ts + settings.bin_size)
+            a =  bisect_left(spikes_file.timestamps, last_ts)
+            b =  bisect_right(spikes_file.timestamps, last_ts + settings.bin_size)
 
-            events_list = allAddr[a:b]
+            events_list = spikes_file.addresses[a:b]
             
             for j in events_list:
                 if j < settings.num_channels*2:
@@ -178,14 +178,14 @@ def average_activity(allAddr, allTs, settings, verbose=False):
         for i in range(0, total_time, settings.bin_size):
             evtL = 0
 
-            a =  bisect_left(allTs, last_ts)
-            b =  bisect_right(allTs, last_ts + settings.bin_size)
-            events_list = allAddr[a:b]
+            a =  bisect_left(spikes_file.timestamps, last_ts)
+            b =  bisect_right(spikes_file.timestamps, last_ts + settings.bin_size)
+            events_list = spikes_file.addresses[a:b]
             
             for j in events_list:
                 evtL = evtL + 1
 
-            average_activity_L[i/settings.bin_size] = evtL
+            average_activity_L[i//settings.bin_size] = evtL
             last_ts = last_ts + settings.bin_size
     if verbose == True: print('AVERAGE ACTIVITY CALCULATION', time.time() - start_time)
 
@@ -203,26 +203,26 @@ def average_activity(allAddr, allTs, settings, verbose=False):
     avg_fig.show()
 
 
-def difference_between_LR(allAddr, allTs, settings, verbose = False):
+def difference_between_LR(spikes_file, settings, verbose = False):
     if settings.mono_stereo == 1:    
-        total_time = max(allTs) - min(allTs)
+        total_time = max(spikes_file.timestamps) - min(spikes_file.timestamps)
         diff = np.zeros((settings.num_channels*2, int(math.ceil(total_time/settings.bin_size))))
 
-        last_time = min(allTs)
+        last_time = min(spikes_file.timestamps)
 
         its = int(math.ceil(total_time/settings.bin_size))
 
         #THIS IS NOT NEEDED IF TS ARE SORTED
-        aedat_addr_ts = zip(allAddr, allTs)
+        aedat_addr_ts = zip(spikes_file.addresses, spikes_file.timestamps)
         aedat_addr_ts = sorted(aedat_addr_ts, key=getKey)
         allAddr, allTs = extract_addr_and_ts(aedat_addr_ts)
 
         if verbose == True: start_time = time.time()
         for i in range(its):
-            a =  bisect_left(allTs, last_time)
-            b =  bisect_right(allTs, last_time + settings.bin_size)
+            a =  bisect_left(spikes_file.timestamps, last_time)
+            b =  bisect_right(spikes_file.timestamps, last_time + settings.bin_size)
 
-            blockAddr = allAddr[a:b]
+            blockAddr = spikes_file.addresses[a:b]
             
             spikes = np.bincount(blockAddr, minlength=settings.num_channels*2*(settings.mono_stereo+1))
             
