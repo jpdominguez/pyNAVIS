@@ -25,6 +25,7 @@ from bisect import bisect_left, bisect_right
 from pyNAVIS_functions.aedat_functions import *
 from pyNAVIS_functions.savers import save_AERDATA
 import random
+import copy
 
 
 def manual_aedat_splitter(spikes_file, init, end, path, settings):
@@ -111,7 +112,7 @@ def stereoToMono(spikes_file, left_right, path, settings): # NEEDS TO BE TESTED
 
 def monoToStereo(spikes_file, delay, path, settings):
     if settings.mono_stereo == 0:
-        newAddrs = [(x + settings.num_channels*2) for x in spikes_file.addresses]
+        newAddrs = [(x + settings.num_channels*(settings.on_off_both)) for x in spikes_file.addresses]
         spikes_file.addresses.extend(newAddrs)
         newTs = [(x + delay) for x in spikes_file.timestamps]
         spikes_file.timestamps.extend(newTs)
@@ -119,8 +120,9 @@ def monoToStereo(spikes_file, delay, path, settings):
         aedat_addr_ts = sorted(aedat_addr_ts, key=lambda v: (v, random.random())) #key=getKey)  #THIS DISORDERS TSS
         spikes_file = extract_addr_and_ts(aedat_addr_ts)
 
-        settings.mono_stereo = 1
-        save_AERDATA(spikes_file, path, settings)
+        settings_new = copy.deepcopy(settings)
+        settings_new.mono_stereo = 1
+        save_AERDATA(spikes_file, path, settings_new)
     else:
         print("MonoToStereo: this functionality cannot be performed over a stereo aedat file.")
 

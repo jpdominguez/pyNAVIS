@@ -61,7 +61,7 @@ spikes_file = loadAERDATA('0a2b400e_nohash_0.wav.aedat', settings)
 spikes_file = adaptAERDATA(spikes_file, settings)
 checkAERDATA(spikes_file, settings)
 get_info(spikes_file)
-#spikegram(spikes_file, settings, verbose=True)
+spikegram(spikes_file, settings, verbose=True)
 #sonogram(spikes_file, settings, verbose=True)
 #histogram(spikes_file, settings, verbose=True)
 #average_activity(spikes_file, settings, verbose=True)
@@ -70,12 +70,13 @@ get_info(spikes_file)
 #save_CSV(spikes_file, "hey.csv", verbose=True)
 #save_TXT(spikes_file, "heyTxt.txt", verbose=True)
 #save_TXT_relativeTS(spikes_file, "heyTXTrelative", verbose=True)
-monoToStereo(spikes_file, 0, "stereo.aedat", settings)
+#monoToStereo(spikes_file, 0, "stereo.aedat", settings)
+
 
 phaseLocked_spikes = phaseLock(spikes_file, settings)
 get_info(phaseLocked_spikes)
-settings = MainSettings(num_channels=int(num_channels/2), mono_stereo=mono_stereo, address_size=address_size, ts_tick=ts_tick, bin_size=bin_size, bar_line=bar_line, spikegram_dot_freq=spike_dot_freq, spikegram_dot_size=spike_dot_size)
-#spikegram(phaseLocked_spikes, settings, verbose=True)
+settings = MainSettings(num_channels=num_channels, on_off_both=1, mono_stereo=mono_stereo, address_size=address_size, ts_tick=ts_tick, bin_size=bin_size, bar_line=bar_line, spikegram_dot_freq=spike_dot_freq, spikegram_dot_size=spike_dot_size)
+spikegram(phaseLocked_spikes, settings, verbose=True)
 #sonogram(phaseLocked_spikes, settings, verbose=True)
 #histogram(phaseLocked_spikes, settings, verbose=True)
 #average_activity(phaseLocked_spikes, settings, verbose=True)
@@ -83,7 +84,28 @@ settings = MainSettings(num_channels=int(num_channels/2), mono_stereo=mono_stere
 #save_CSV(phaseLocked_spikes, "hey.csv", verbose=True)
 #save_TXT(phaseLocked_spikes, "heyTxt.txt", verbose=True)
 #save_TXT_relativeTS(phaseLocked_spikes, "heyTXTrelative", verbose=True)
+monoToStereo(phaseLocked_spikes, 0, "stereoPS.aedat", settings)
 
+
+
+#settings = MainSettings(num_channels=int(num_channels//2), mono_stereo=1, address_size=address_size, ts_tick=ts_tick, bin_size=bin_size, bar_line=bar_line, spikegram_dot_freq=spike_dot_freq, spikegram_dot_size=spike_dot_size)
+
+settings = MainSettings(num_channels=32, on_off_both=1, mono_stereo=1, address_size=address_size, ts_tick=ts_tick, bin_size=bin_size, bar_line=bar_line, spikegram_dot_freq=spike_dot_freq, spikegram_dot_size=spike_dot_size)
+spikes_file = loadAERDATA('stereoPS.aedat', settings)
+spikes_file = adaptAERDATA(spikes_file, settings)
+checkAERDATA(spikes_file, settings)
+get_info(spikes_file)
+spikegram(spikes_file, settings, verbose=True)
+
+"""
+settings = MainSettings(num_channels=32, mono_stereo=1, address_size=address_size, ts_tick=ts_tick, bin_size=bin_size, bar_line=bar_line, spikegram_dot_freq=spike_dot_freq, spikegram_dot_size=spike_dot_size)
+spikes_file = loadAERDATA('stereo.aedat', settings)
+spikes_file = adaptAERDATA(spikes_file, settings)
+checkAERDATA(spikes_file, settings)
+get_info(spikes_file)
+spikegram(spikes_file, settings, verbose=True)
+
+"""
 plt.show()
 #save_CSV(add, ts, 'C:\\Users\\juado\\Desktop\\en_un_mono_left')
 #save_TXT(add, ts, 'C:\\Users\\juado\\Desktop\\en_un_mono_left')

@@ -44,7 +44,7 @@ def spikegram(spikes_file, settings, verbose = False):
     if settings.mono_stereo == 0:
         plt.scatter(spikes_file.timestamps[0::settings.spikegram_dot_freq], spikes_file.addresses[0::settings.spikegram_dot_freq], s=settings.spikegram_dot_size)
     else:
-        aedat_addr_ts = zip(spikes_file.addresses, spikes_file.timestamps)
+        aedat_addr_ts = list(zip(spikes_file.addresses, spikes_file.timestamps))
         addr, ts = zip(*[(evt[0], evt[1]) for evt in aedat_addr_ts if evt[0] < settings.num_channels*(settings.on_off_both)])
         plt.scatter(ts[0::settings.spikegram_dot_freq], addr[0::settings.spikegram_dot_freq], s=settings.spikegram_dot_size, label='Left cochlea')
         addr, ts = zip(*[(evt[0], evt[1]) for evt in aedat_addr_ts if evt[0] >= settings.num_channels*(settings.on_off_both) and evt[0] < settings.num_channels*(settings.on_off_both)*2])
