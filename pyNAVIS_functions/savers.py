@@ -37,7 +37,7 @@ def save_AERDATA(blockAddr, blockTs, path, settings, verbose = False):
             f.write(addr)
             f.write(ts)
         if verbose == True:
-            print "AERDATA file saved correctly.Took:", time.time() - start_time, 'seconds'
+            print("AERDATA file saved correctly.Took:", time.time() - start_time, 'seconds')
 
 
 def save_CSV(blockAddr, blockTs, path, verbose = False):
@@ -47,7 +47,7 @@ def save_CSV(blockAddr, blockTs, path, verbose = False):
         for i in range(len(blockAddr)):
             f.write(str(blockAddr[i]) + ', ' + str(blockTs[i]) + "\n")    
     if verbose == True:
-        print "TXT fie saved correctly. Took:", time.time() - start_time, "seconds"
+        print("TXT fie saved correctly. Took:", time.time() - start_time, "seconds")
 
 
 def save_TXT(blockAddr, blockTs, path, verbose = False):
@@ -60,7 +60,7 @@ def save_TXT(blockAddr, blockTs, path, verbose = False):
         for ts in blockTs:
             f.write(str(ts) + '\n')    
     if verbose == True:
-        print "TXT fie saved correctly. Took:", time.time() - start_time, "seconds"
+        print("TXT fie saved correctly. Took:", time.time() - start_time, "seconds")
 
 
 def save_TXT_relativeTS(blockAddr, blockTs, path, verbose = False):
@@ -76,4 +76,4 @@ def save_TXT_relativeTS(blockAddr, blockTs, path, verbose = False):
             else:
                 f.write(str(blockTs[i]-blockTs[i-1]) + '\n')    
     if verbose == True:
-        print "TXT fie saved correctly. Took:", time.time() - start_time, "seconds"
+        print("TXT fie saved correctly. Took:", time.time() - start_time, "seconds")

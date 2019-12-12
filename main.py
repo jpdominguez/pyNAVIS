@@ -1,6 +1,6 @@
-import PySimpleGUI27 as sg
+import PySimpleGUI as sg
 from pyNAVIS_functions.aedat_functions import *
-from pyNAVIS_settings.main_settings import MainSettings
+from pyNAVIS_settings.main_settings import *
 from pyNAVIS_functions.screens_plot import *
 
 
@@ -15,7 +15,7 @@ spike_dot_freq = 1     # When plotting the cochleogram, it plots one spike for e
 spike_dot_size = 1     # Size of the dots that are plotted on the spikegram                                                 #
 #############################################################################################################################
 
-sg.ChangeLookAndFeel('Default1')
+sg.ChangeLookAndFeel('SystemDefault')
 
 
 settings_layout = [[]]
@@ -28,14 +28,14 @@ menu_def = [['File', ['Load AER-DATA', 'Settings', 'Exit']],
 layout = [[sg.Menu(menu_def, tearoff=True)],
           [sg.Text('Select an .aedat file to load:'), sg.Input(key='_FILEBROWSE_', enable_events=True, visible=False), sg.FileBrowse('Browse AER-DATA', key='browse_AERDATA',  file_types=(("AER-DATA Files", "*.aedat"),))],
           [],
-          [sg.Button('Spikegram', key='graph_Spikegram')]]
+          [sg.Button('Spikegram', key='graph_Spikegram'),
+          sg.Button('Histogram', key='graph_Histogram')]]
 
 form = sg.Window("pyNAVIS", layout)
 
 while True:
     event, values = form.read()
-
-    if event is None or event == 'Exit':  
+    if event is None or event == 'Exit':
         break 
     if event == '_FILEBROWSE_':
         settings = MainSettings(num_channels=num_channels, mono_stereo=mono_stereo, address_size=address_size, ts_tick=ts_tick, bin_size=bin_size, bar_line=bar_line, spikegram_dot_freq=spike_dot_freq, spikegram_dot_size=spike_dot_size)
@@ -44,12 +44,14 @@ while True:
         ts = adaptAERDATA(ts, settings)
         checkAERDATA(add, ts, settings)
         get_info(add, ts)
-    if event == 'graph_Spikegram':  
+    if event == 'graph_Spikegram':
         #sp = subprocess.Popen([CHROME, values['_URL_']], shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        
         spikegram(add, ts, settings, verbose=True)
+    if event == 'graph_Histogram':  
+        #sp = subprocess.Popen([CHROME, values['_URL_']], shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        histogram(add, settings, verbose=True)
     if event == 'Settings':
-        print 'Hey'
-    print event
+        print('Hey')
+    print(event)
 
 form.close()

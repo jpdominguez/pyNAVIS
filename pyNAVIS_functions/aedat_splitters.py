@@ -106,7 +106,7 @@ def stereoToMono(allAddr, allTs, left_right, path, settings): # NEEDS TO BE TEST
             allAddr_mono = [x-left_right*settings.num_channels*2 for x in allAddr_mono]
         save_AERDATA(allAddr_mono, allTs_mono, path, settings)
     else:
-        print "StereoToMono: this functionality cannot be performed over a mono aedat file."
+        print("StereoToMono: this functionality cannot be performed over a mono aedat file.")
 
 def monoToStereo(allAddr, allTs, delay, path, settings): # NEEDS TO BE TESTED
     if settings.mono_stereo == 0:
@@ -120,6 +120,6 @@ def monoToStereo(allAddr, allTs, delay, path, settings): # NEEDS TO BE TESTED
         allAddr, allTs = extract_addr_and_ts(aedat_addr_ts)
         save_AERDATA(allAddr, allTs, path, settings)
     else:
-        print "MonoToStereo: this functionality cannot be performed over a stereo aedat file."
+        print("MonoToStereo: this functionality cannot be performed over a stereo aedat file.")
 
     

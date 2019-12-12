@@ -68,9 +68,7 @@ get_info(psAddrs, psTs)
 settings = MainSettings(num_channels=num_channels/2, mono_stereo=mono_stereo, address_size=address_size, ts_tick=ts_tick, bin_size=bin_size, bar_line=bar_line, spikegram_dot_freq=spike_dot_freq, spikegram_dot_size=spike_dot_size)
 spikegram(psAddrs, psTs, settings, verbose=True)
 
-
-
-
+plt.show()
 #save_CSV(add, ts, 'C:\\Users\\juado\\Desktop\\en_un_mono_left')
 #save_TXT(add, ts, 'C:\\Users\\juado\\Desktop\\en_un_mono_left')
 
@@ -78,5 +76,4 @@ spikegram(psAddrs, psTs, settings, verbose=True)
 
 #stereoToMono(add, ts, 0, 'C:\\Users\\jpdominguez\\Desktop\\en_un_mono_left.aedat', settings)
 #stereoToMono(add, ts, 1, 'C:\\Users\\jpdominguez\\Desktop\\en_un_mono_right.aedat', settings)
-raw_input()
-
+#raw_input()

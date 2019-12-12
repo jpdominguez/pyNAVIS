@@ -46,7 +46,7 @@ def shift(freq, num_ch, length, path, output_format):
 
 
 def poisson():
-    print "to do"
+    print("to do")
 
 def random_addrs(freq, num_ch, length, path, output_format):
     addrs = [0] * int(freq*length)

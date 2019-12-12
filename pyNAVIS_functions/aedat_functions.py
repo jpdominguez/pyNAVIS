@@ -32,22 +32,22 @@ def checkAERDATA(allAddr, allTs, settings):
     a = all(item >= 0  for item in allTs)
 
     if not a:
-        print "The AER-DATA file that you loaded has at least one timestamp that is below 0."
+        print("The AER-DATA file that you loaded has at least one timestamp that is below 0.")
 
     # Check if each timestamp is greater than its previous one
     b = not any(i > 0 and allTs[i] < allTs[i-1] for i in range(len(allTs)))
 
     if not b:
-        print "The AER-DATA file that you loaded has at least one timestamp whose value is lesser than its previous one."
+        print("The AER-DATA file that you loaded has at least one timestamp whose value is lesser than its previous one.")
 
     # Check if all addresses are between zero and the total number of addresses
     c = all(item >= 0 and item < number_of_addresses*(settings.mono_stereo+1) for item in allAddr)
 
     if not c:
-        print "The AER-DATA file that you loaded has at least one event whose address is either below 0 or above the number of addresses that you specified."
+        print("The AER-DATA file that you loaded has at least one event whose address is either below 0 or above the number of addresses that you specified.")
 
     if a and b and c:
-        print "The loaded AER-DATA file has been checked and it's OK"
+        print("The loaded AER-DATA file has been checked and it's OK")
             
 
 # Function to subtract the smallest timestamp to all of the events (to start from 0) and adapt them based on the tick frequency of the tool used to log the file.
@@ -67,7 +67,7 @@ def loadAERDATA(path, settings):
     elif settings.address_size == 4:
         unpack_param = ">L"
     else:
-        print "Only address sizes implemented are 2 and 4 bytes"
+        print("Only address sizes implemented are 2 and 4 bytes")
 
     with open(path, 'rb') as f:
         ## Check header ##
@@ -92,7 +92,7 @@ def loadAERDATA(path, settings):
         i = 0
         try:
             while 1:
-                buff = f.read(settings.address_size)                
+                buff = f.read(settings.address_size)
                 x = struct.unpack(unpack_param, buff)[0]
                 events[i] = x
 
@@ -111,19 +111,29 @@ def phaseLock(allAddr, allTs, settings):
     phaseLockedAddrs = []
     phaseLockedTs = []
     for i in range(len(allAddr)):
-        if prevSpike[allAddr[i]/2] == None:            
-            prevSpike[allAddr[i]/2] = allAddr[i]%2
+        if prevSpike[allAddr[i]//2] == None:
+            prevSpike[allAddr[i]//2] = allAddr[i]%2
         else:
-            if prevSpike[allAddr[i]/2] == 0 and allAddr[i]%2 == 1:
+            if prevSpike[allAddr[i]//2] == 0 and allAddr[i]%2 == 1:
                 phaseLockedAddrs.append(allAddr[i]/2)
                 phaseLockedTs.append(allTs[i])
-                prevSpike[allAddr[i]/2] = allAddr[i]%2
+                prevSpike[allAddr[i]//2] = allAddr[i]%2
             else:
-                prevSpike[allAddr[i]/2] = allAddr[i]%2
+                prevSpike[allAddr[i]//2] = allAddr[i]%2
 
     return phaseLockedAddrs, phaseLockedTs
 
 
+def extract_channels_activities(spikes_file, channels):
+    spikes_per_channels_ts = []
+    spikes_per_channel_addr = []
+    for i in range(len(spikes_file.timestamps)):
+        if spikes_file.addresses[i] in channels:
+            spikes_per_channels_ts.append(spikes_file.timestamps[i])
+            spikes_per_channel_addr.append(spikes_file.addresses[i])
+    return spikes_per_channel_addr, spikes_per_channels_ts
+
+
 def get_info(allAddrs, allTs):
-    print "The file contains", len(allAddrs), "spikes"
-    print "The audio has", max(allTs), 'microsec'
+    print("The file contains", len(allAddrs), "spikes")
+    print("The audio has", max(allTs), 'microsec')

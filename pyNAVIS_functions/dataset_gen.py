@@ -27,7 +27,7 @@ from pyNAVIS_functions.aedat_functions import *
 
 def generate_sonogram_dataset(path_input_folder, path_output_folder, settings, allow_subdirectories = False, verbose = False):
     if verbose == True:
-        print "---- DATASET SONOGRAM GENERATION ----"
+        print("---- DATASET SONOGRAM GENERATION ----")
         start_time = time.time()    
     if not os.path.exists(path_output_folder):
         os.makedirs(path_output_folder)
@@ -47,6 +47,6 @@ def generate_sonogram_dataset(path_input_folder, path_output_folder, settings, a
         
         if verbose == True:
             progress += 1
-            print "Progress: " + str(float(progress)*100/len(files)) + "%"
+            print("Progress: " + str(float(progress)*100/len(files)) + "%")
     
-    if verbose == True: print 'Dataset generation process completed. Took ' + str(time.time()-start_time) + " seconds."
+    if verbose == True: print('Dataset generation process completed. Took ' + str(time.time()-start_time) + " seconds.")

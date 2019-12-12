@@ -51,7 +51,7 @@ def spikegram(allAddr, allTs, settings, verbose = False):
         plt.scatter(ts[0::settings.spikegram_dot_freq], addr[0::settings.spikegram_dot_freq], s=settings.spikegram_dot_size, label='Right cochlea')
         plt.legend(fancybox=False, ncol=2, loc='upper center', markerscale=2/settings.spikegram_dot_size, frameon=True)
         
-    if verbose == True: print 'SPIKEGRAM CALCULATION', time.time() - start_time
+    if verbose == True: print('SPIKEGRAM CALCULATION', time.time() - start_time)
 
     plt.title('Spikegram', fontsize='x-large')
     plt.xlabel('Timestamp ($\mu$s)', fontsize='large')
@@ -89,7 +89,7 @@ def sonogram(allAddr, allTs, settings, return_data = False, verbose = False):
         last_time += settings.bin_size
         sonogram[:, i] = spikes
 
-    if verbose == True: print 'SONOGRAM CALCULATION', time.time() - start_time
+    if verbose == True: print('SONOGRAM CALCULATION', time.time() - start_time)
     
     if return_data == False:
         # REPRESENTATION
@@ -116,7 +116,7 @@ def sonogram(allAddr, allTs, settings, return_data = False, verbose = False):
 def histogram(allAddr, settings, verbose = False):
     start_time = time.time()
     spikes_count = np.bincount(allAddr)
-    if verbose == True: print 'TIEMPO HISTOGRAM:', time.time() - start_time
+    if verbose == True: print('TIEMPO HISTOGRAM:', time.time() - start_time)
 
     plt.style.use('seaborn-whitegrid')
     hst_fig = plt.figure()
@@ -187,7 +187,7 @@ def average_activity(allAddr, allTs, settings, verbose=False):
 
             average_activity_L[i/settings.bin_size] = evtL
             last_ts = last_ts + settings.bin_size
-    if verbose == True: print 'AVERAGE ACTIVITY CALCULATION', time.time() - start_time
+    if verbose == True: print('AVERAGE ACTIVITY CALCULATION', time.time() - start_time)
 
     plt.style.use('seaborn-whitegrid')
     avg_fig = plt.figure()
@@ -229,7 +229,7 @@ def difference_between_LR(allAddr, allTs, settings, verbose = False):
             last_time += settings.bin_size
 
             diff[:, i] = [x1 - x2 for (x1, x2) in zip(spikes[0:settings.num_channels*2], spikes[settings.num_channels*2:settings.num_channels*2*2])]
-        if verbose == True: print 'DIFF CALCULATION', time.time() - start_time
+        if verbose == True: print('DIFF CALCULATION', time.time() - start_time)
         diff = diff*100/max(abs(np.min(diff)), np.max(diff))
         
         # REPRESENTATION
@@ -251,4 +251,4 @@ def difference_between_LR(allAddr, allTs, settings, verbose = False):
         colorbar.ax.invert_xaxis()
         sng_fig.show()
     else:
-        print "This functionality is only available for stereo AER-DATA files."
+        print("This functionality is only available for stereo AER-DATA files.")
