@@ -206,16 +206,16 @@ def average_activity(spikes_file, settings, verbose=False):
 def difference_between_LR(spikes_file, settings, verbose = False):
     if settings.mono_stereo == 1:    
         total_time = max(spikes_file.timestamps) - min(spikes_file.timestamps)
-        diff = np.zeros((settings.num_channels*2, int(math.ceil(total_time/settings.bin_size))))
+        diff = np.zeros((settings.num_channels*settings.on_off_both, int(math.ceil(total_time/settings.bin_size))))
 
         last_time = min(spikes_file.timestamps)
 
         its = int(math.ceil(total_time/settings.bin_size))
 
         #THIS IS NOT NEEDED IF TS ARE SORTED
-        aedat_addr_ts = zip(spikes_file.addresses, spikes_file.timestamps)
+        aedat_addr_ts = list(zip(spikes_file.addresses, spikes_file.timestamps))
         aedat_addr_ts = sorted(aedat_addr_ts, key=getKey)
-        allAddr, allTs = extract_addr_and_ts(aedat_addr_ts)
+        spikes_file = extract_addr_and_ts(aedat_addr_ts)
 
         if verbose == True: start_time = time.time()
         for i in range(its):
@@ -224,14 +224,21 @@ def difference_between_LR(spikes_file, settings, verbose = False):
 
             blockAddr = spikes_file.addresses[a:b]
             
-            spikes = np.bincount(blockAddr, minlength=settings.num_channels*2*(settings.mono_stereo+1))
+            spikes = np.bincount(blockAddr, minlength=settings.num_channels*settings.on_off_both*(settings.mono_stereo+1))
             
             last_time += settings.bin_size
 
-            diff[:, i] = [x1 - x2 for (x1, x2) in zip(spikes[0:settings.num_channels*2], spikes[settings.num_channels*2:settings.num_channels*2*2])]
+            diff[:, i] = [x1 - x2 for (x1, x2) in list(zip(spikes[0:settings.num_channels*settings.on_off_both], spikes[settings.num_channels*settings.on_off_both:settings.num_channels*settings.on_off_both*2]))]
         if verbose == True: print('DIFF CALCULATION', time.time() - start_time)
-        diff = diff*100/max(abs(np.min(diff)), np.max(diff))
+        print(diff)
         
+        if max(abs(np.min(diff)), np.max(diff)) != 0: diff = diff*100/max(abs(np.min(diff)), np.max(diff))
+        
+        print(np.min(diff))
+        print(abs(np.min(diff)))
+        print(np.max(diff))
+        print(100/max(abs(np.min(diff)), np.max(diff)))
+
         # REPRESENTATION
         plt.style.use('default')
         sng_fig = plt.figure()

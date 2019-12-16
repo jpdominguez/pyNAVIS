@@ -62,33 +62,39 @@ def adaptAERDATA(spikes_file, settings):
 
 
 def phaseLock(spikes_file, settings):
-    prevSpike = [None] * (settings.num_channels) * (1 + settings.mono_stereo)
-    phaseLockedAddrs = []
-    phaseLockedTs = []
-    for i in range(len(spikes_file.addresses)):
-        if prevSpike[spikes_file.addresses[i]//2] == None:
-            prevSpike[spikes_file.addresses[i]//2] = spikes_file.addresses[i]%2
-        else:
-            if prevSpike[spikes_file.addresses[i]//2] == 0 and spikes_file.addresses[i]%2 == 1:
-                phaseLockedAddrs.append(spikes_file.addresses[i]/2)
-                phaseLockedTs.append(spikes_file.timestamps[i])
+    if settings.on_off_both == 2:
+        prevSpike = [None] * (settings.num_channels) * (1 + settings.mono_stereo)
+        phaseLockedAddrs = []
+        phaseLockedTs = []
+        for i in range(len(spikes_file.addresses)):
+            if prevSpike[spikes_file.addresses[i]//2] == None:
                 prevSpike[spikes_file.addresses[i]//2] = spikes_file.addresses[i]%2
             else:
-                prevSpike[spikes_file.addresses[i]//2] = spikes_file.addresses[i]%2
-    spikes_file = SpikesFile()
-    spikes_file.addresses = phaseLockedAddrs
-    spikes_file.timestamps = phaseLockedTs
-    return spikes_file
+                if prevSpike[spikes_file.addresses[i]//2] == 0 and spikes_file.addresses[i]%2 == 1:
+                    phaseLockedAddrs.append(spikes_file.addresses[i]/2)
+                    phaseLockedTs.append(spikes_file.timestamps[i])
+                    prevSpike[spikes_file.addresses[i]//2] = spikes_file.addresses[i]%2
+                else:
+                    prevSpike[spikes_file.addresses[i]//2] = spikes_file.addresses[i]%2
+        spikes_file = SpikesFile()
+        spikes_file.addresses = phaseLockedAddrs
+        spikes_file.timestamps = phaseLockedTs
+        return spikes_file
+    else:
+        print("Phase Lock: this functionality cannot be applied to files that do not have ON/positive and OFF/negative addresses. Check the on_of_both setting for more information.")
 
 
-def extract_channels_activities(spikes_file, channels):
+def extract_channels_activities(spikes_file, addresses):
     spikes_per_channels_ts = []
     spikes_per_channel_addr = []
     for i in range(len(spikes_file.timestamps)):
-        if spikes_file.addresses[i] in channels:
+        if spikes_file.addresses[i] in addresses:
             spikes_per_channels_ts.append(spikes_file.timestamps[i])
             spikes_per_channel_addr.append(spikes_file.addresses[i])
-    return spikes_per_channel_addr, spikes_per_channels_ts
+    new_spikes_file = SpikesFile()
+    new_spikes_file.addresses = spikes_per_channel_addr
+    new_spikes_file.timestamps = spikes_per_channels_ts
+    return new_spikes_file
 
 
 def get_info(spikes_file):

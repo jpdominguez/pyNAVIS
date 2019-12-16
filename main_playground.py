@@ -86,7 +86,7 @@ spikegram(phaseLocked_spikes, settings, verbose=True)
 #save_TXT_relativeTS(phaseLocked_spikes, "heyTXTrelative", verbose=True)
 monoToStereo(phaseLocked_spikes, 0, "stereoPS.aedat", settings)
 
-
+#prueba = extract_channels_activities(phaseLocked_spikes, [0,1,2,3])
 
 #settings = MainSettings(num_channels=int(num_channels//2), mono_stereo=1, address_size=address_size, ts_tick=ts_tick, bin_size=bin_size, bar_line=bar_line, spikegram_dot_freq=spike_dot_freq, spikegram_dot_size=spike_dot_size)
 
@@ -96,6 +96,7 @@ spikes_file = adaptAERDATA(spikes_file, settings)
 checkAERDATA(spikes_file, settings)
 get_info(spikes_file)
 spikegram(spikes_file, settings, verbose=True)
+difference_between_LR(spikes_file, settings, verbose=True)
 
 """
 settings = MainSettings(num_channels=32, mono_stereo=1, address_size=address_size, ts_tick=ts_tick, bin_size=bin_size, bar_line=bar_line, spikegram_dot_freq=spike_dot_freq, spikegram_dot_size=spike_dot_size)
