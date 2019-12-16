@@ -112,17 +112,18 @@ def stereoToMono(spikes_file, left_right, path, settings): # NEEDS TO BE TESTED
 
 def monoToStereo(spikes_file, delay, path, settings):
     if settings.mono_stereo == 0:
-        newAddrs = [(x + settings.num_channels*(settings.on_off_both)) for x in spikes_file.addresses]
-        spikes_file.addresses.extend(newAddrs)
-        newTs = [(x + delay) for x in spikes_file.timestamps]
-        spikes_file.timestamps.extend(newTs)
-        aedat_addr_ts = list(zip(spikes_file.addresses, spikes_file.timestamps))
+        spikes_file_new = copy.deepcopy(spikes_file)
+        newAddrs = [(x + settings.num_channels*(settings.on_off_both)) for x in spikes_file_new.addresses]
+        spikes_file_new.addresses.extend(newAddrs)
+        newTs = [(x + delay) for x in spikes_file_new.timestamps]
+        spikes_file_new.timestamps.extend(newTs)
+        aedat_addr_ts = list(zip(spikes_file_new.addresses, spikes_file_new.timestamps))
         aedat_addr_ts = sorted(aedat_addr_ts, key=lambda v: (v, random.random())) #key=getKey)  #THIS DISORDERS TSS
-        spikes_file = extract_addr_and_ts(aedat_addr_ts)
+        spikes_file_new = extract_addr_and_ts(aedat_addr_ts)
 
         settings_new = copy.deepcopy(settings)
         settings_new.mono_stereo = 1
-        save_AERDATA(spikes_file, path, settings_new)
+        save_AERDATA(spikes_file_new, path, settings_new)
     else:
         print("MonoToStereo: this functionality cannot be performed over a stereo aedat file.")
 

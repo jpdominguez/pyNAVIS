@@ -71,7 +71,7 @@ def phaseLock(spikes_file, settings):
                 prevSpike[spikes_file.addresses[i]//2] = spikes_file.addresses[i]%2
             else:
                 if prevSpike[spikes_file.addresses[i]//2] == 0 and spikes_file.addresses[i]%2 == 1:
-                    phaseLockedAddrs.append(spikes_file.addresses[i]/2)
+                    phaseLockedAddrs.append(spikes_file.addresses[i]//2)
                     phaseLockedTs.append(spikes_file.timestamps[i])
                     prevSpike[spikes_file.addresses[i]//2] = spikes_file.addresses[i]%2
                 else:
@@ -84,13 +84,16 @@ def phaseLock(spikes_file, settings):
         print("Phase Lock: this functionality cannot be applied to files that do not have ON/positive and OFF/negative addresses. Check the on_of_both setting for more information.")
 
 
-def extract_channels_activities(spikes_file, addresses):
+def extract_channels_activities(spikes_file, addresses, verbose = False):
+    if verbose == True: start_time = time.time()
     spikes_per_channels_ts = []
     spikes_per_channel_addr = []
+    #s = set(addresses)
     for i in range(len(spikes_file.timestamps)):
         if spikes_file.addresses[i] in addresses:
             spikes_per_channels_ts.append(spikes_file.timestamps[i])
             spikes_per_channel_addr.append(spikes_file.addresses[i])
+    if verbose == True: print('EXTRACT CHANNELS CALCULATION', time.time() - start_time)
     new_spikes_file = SpikesFile()
     new_spikes_file.addresses = spikes_per_channel_addr
     new_spikes_file.timestamps = spikes_per_channels_ts

@@ -31,13 +31,13 @@ import numpy as np
 from bisect import bisect_left, bisect_right
 from pyNAVIS_functions.utils import *
 
-def spikegram(spikes_file, settings, verbose = False):
+def spikegram(spikes_file, settings, graph_tile = 'Spikegram', verbose = False):
 
     if verbose == True: start_time = time.time()
     #REPRESENTATION
     plt.style.use('seaborn-whitegrid')
     spk_fig = plt.figure()
-    spk_fig.canvas.set_window_title('Spikegram')
+    spk_fig.canvas.set_window_title(graph_tile)
 
     random.seed('just some random seed')
 
@@ -230,14 +230,8 @@ def difference_between_LR(spikes_file, settings, verbose = False):
 
             diff[:, i] = [x1 - x2 for (x1, x2) in list(zip(spikes[0:settings.num_channels*settings.on_off_both], spikes[settings.num_channels*settings.on_off_both:settings.num_channels*settings.on_off_both*2]))]
         if verbose == True: print('DIFF CALCULATION', time.time() - start_time)
-        print(diff)
         
         if max(abs(np.min(diff)), np.max(diff)) != 0: diff = diff*100/max(abs(np.min(diff)), np.max(diff))
-        
-        print(np.min(diff))
-        print(abs(np.min(diff)))
-        print(np.max(diff))
-        print(100/max(abs(np.min(diff)), np.max(diff)))
 
         # REPRESENTATION
         plt.style.use('default')
