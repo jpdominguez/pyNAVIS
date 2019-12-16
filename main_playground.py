@@ -62,7 +62,7 @@ spikes_file = adaptAERDATA(spikes_file, settings)
 checkAERDATA(spikes_file, settings)
 get_info(spikes_file)
 spikegram(spikes_file, settings, graph_tile='Original aedat', verbose=True)
-#sonogram(spikes_file, settings, verbose=True)
+sonogram(spikes_file, settings, verbose=True)
 #histogram(spikes_file, settings, verbose=True)
 #average_activity(spikes_file, settings, verbose=True)
 #difference_between_LR(spikes_file, settings, verbose=True)     #NEEDS TEST
@@ -73,6 +73,13 @@ spikegram(spikes_file, settings, graph_tile='Original aedat', verbose=True)
 #monoToStereo(spikes_file, 0, "stereo.aedat", settings)
 
 
+sweep_spikes = sweep(freq=5, cycles=5, num_ch=64, length=1000000, path='C:\\Users\\juado\\Desktop\\sweep', return_save_both=0)
+sweep_settings = MainSettings(num_channels=64, mono_stereo=0, on_off_both=1, address_size=address_size, ts_tick=ts_tick, bin_size=bin_size, bar_line=bar_line, spikegram_dot_freq=spike_dot_freq, spikegram_dot_size=spike_dot_size)
+spikegram(sweep_spikes, sweep_settings)
+sonogram(sweep_spikes, sweep_settings)
+
+#TEST phaselock
+"""
 phaseLocked_spikes = phaseLock(spikes_file, settings)
 get_info(phaseLocked_spikes)
 settings = MainSettings(num_channels=num_channels, on_off_both=1, mono_stereo=mono_stereo, address_size=address_size, ts_tick=ts_tick, bin_size=bin_size, bar_line=bar_line, spikegram_dot_freq=spike_dot_freq, spikegram_dot_size=spike_dot_size)
@@ -85,12 +92,17 @@ spikegram(phaseLocked_spikes, settings, graph_tile='phaseLock', verbose=True)
 #save_TXT(phaseLocked_spikes, "heyTxt.txt", verbose=True)
 #save_TXT_relativeTS(phaseLocked_spikes, "heyTXTrelative", verbose=True)
 monoToStereo(phaseLocked_spikes, 0, "stereoPS.aedat", settings)
+"""
 
-
+#TEST extract channels activity
+"""
 prueba = extract_channels_activities(phaseLocked_spikes, range(0, 16), verbose=True)
 spikegram(prueba, settings, graph_tile='phaseLock spikes extract addresses', verbose=False)
+"""
 
 
+#TEST MONO TO STEREO LOAD
+"""
 settings = MainSettings(num_channels=32, on_off_both=1, mono_stereo=1, address_size=address_size, ts_tick=ts_tick, bin_size=bin_size, bar_line=bar_line, spikegram_dot_freq=spike_dot_freq, spikegram_dot_size=spike_dot_size)
 spikes_file = loadAERDATA('stereoPS.aedat', settings)
 spikes_file = adaptAERDATA(spikes_file, settings)
@@ -98,23 +110,7 @@ checkAERDATA(spikes_file, settings)
 get_info(spikes_file)
 spikegram(spikes_file, settings, graph_tile='phaselock monoToStereo', verbose=True)
 difference_between_LR(spikes_file, settings, verbose=True)
-
-
 """
-settings = MainSettings(num_channels=32, mono_stereo=1, address_size=address_size, ts_tick=ts_tick, bin_size=bin_size, bar_line=bar_line, spikegram_dot_freq=spike_dot_freq, spikegram_dot_size=spike_dot_size)
-spikes_file = loadAERDATA('stereo.aedat', settings)
-spikes_file = adaptAERDATA(spikes_file, settings)
-checkAERDATA(spikes_file, settings)
-get_info(spikes_file)
-spikegram(spikes_file, settings, verbose=True)
-"""
+
 
 plt.show()
-#save_CSV(add, ts, 'C:\\Users\\juado\\Desktop\\en_un_mono_left')
-#save_TXT(add, ts, 'C:\\Users\\juado\\Desktop\\en_un_mono_left')
-
-#manual_aedat_splitter(add, ts, 0, max(ts), "a.aedat", settings)
-
-#stereoToMono(add, ts, 0, 'C:\\Users\\jpdominguez\\Desktop\\en_un_mono_left.aedat', settings)
-#stereoToMono(add, ts, 1, 'C:\\Users\\jpdominguez\\Desktop\\en_un_mono_right.aedat', settings)
-#raw_input()

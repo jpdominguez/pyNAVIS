@@ -66,7 +66,7 @@ def sonogram(spikes_file, settings, return_data = False, verbose = False):
 
     total_time = max(spikes_file.timestamps) - min(spikes_file.timestamps)
 
-    sonogram = np.zeros((settings.num_channels*2*(settings.mono_stereo+1), int(math.ceil(total_time/settings.bin_size))))
+    sonogram = np.zeros((settings.num_channels*settings.on_off_both*(settings.mono_stereo+1), int(math.ceil(total_time/settings.bin_size))))
 
     last_time = min(spikes_file.timestamps)
 
@@ -84,7 +84,7 @@ def sonogram(spikes_file, settings, return_data = False, verbose = False):
 
         blockAddr = spikes_file.addresses[a:b]
 
-        spikes = np.bincount(blockAddr, minlength=settings.num_channels*2*(settings.mono_stereo+1))        
+        spikes = np.bincount(blockAddr, minlength=settings.num_channels*settings.on_off_both*(settings.mono_stereo+1))        
 
         last_time += settings.bin_size
         sonogram[:, i] = spikes
