@@ -2,6 +2,7 @@ import PySimpleGUI as sg
 from pyNAVIS_functions.aedat_functions import *
 from pyNAVIS_settings.main_settings import *
 from pyNAVIS_functions.screens_plot import *
+from pyNAVIS_functions.loaders import loadAERDATA
 
 
 ## PARAMETERS ###############################################################################################################
@@ -18,7 +19,13 @@ spike_dot_size = 1     # Size of the dots that are plotted on the spikegram     
 sg.ChangeLookAndFeel('SystemDefault')
 
 
-settings_layout = [[]]
+settings_main_layout =  [[sg.T('This is inside tab 1')]]    
+
+settings_tools_layout = [[sg.T('This is inside tab 2')],    
+               [sg.In(key='in')]]    
+
+settings_layout = [[sg.TabGroup([[sg.Tab('Main settings', settings_main_layout, tooltip='tip'), sg.Tab('Tools', settings_tools_layout)]], tooltip='TIP2')],    
+          [sg.Button('Save')]]    
 
 
 menu_def = [['File', ['Load AER-DATA', 'Settings', 'Exit']],      
@@ -31,8 +38,17 @@ layout = [[sg.Menu(menu_def, tearoff=True)],
           [sg.Button('Spikegram', key='graph_Spikegram'),
           sg.Button('Histogram', key='graph_Histogram')]]
 
-form = sg.Window("pyNAVIS", layout)
+#form = sg.Window("pyNAVIS", layout)
 
+form = sg.Window("pyNAVIS settings", settings_layout)
+
+while True:
+    event, values = form.read()
+    if event is None or event == 'Exit':
+        break
+form.close()
+
+"""
 while True:
     event, values = form.read()
     if event is None or event == 'Exit':
@@ -40,18 +56,16 @@ while True:
     if event == '_FILEBROWSE_':
         settings = MainSettings(num_channels=num_channels, mono_stereo=mono_stereo, address_size=address_size, ts_tick=ts_tick, bin_size=bin_size, bar_line=bar_line, spikegram_dot_freq=spike_dot_freq, spikegram_dot_size=spike_dot_size)
 
-        add, ts = loadAERDATA(values['browse_AERDATA'], settings)
-        ts = adaptAERDATA(ts, settings)
-        checkAERDATA(add, ts, settings)
-        get_info(add, ts)
+        spikes_file = loadAERDATA(values['browse_AERDATA'], settings)
+        spikes_file = adaptAERDATA(spikes_file, settings)
+        checkAERDATA(spikes_file, settings)
+        get_info(spikes_file)
     if event == 'graph_Spikegram':
-        #sp = subprocess.Popen([CHROME, values['_URL_']], shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        spikegram(add, ts, settings, verbose=True)
-    if event == 'graph_Histogram':  
-        #sp = subprocess.Popen([CHROME, values['_URL_']], shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        histogram(add, settings, verbose=True)
+        spikegram(spikes_file, settings, verbose=True)
+    if event == 'graph_Histogram':
+        histogram(spikes_file, settings, verbose=True)
     if event == 'Settings':
         print('Hey')
     print(event)
-
+"""
 form.close()

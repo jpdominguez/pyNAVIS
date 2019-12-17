@@ -27,8 +27,8 @@ from pyNAVIS_functions.aedat_functions import *                                 
 from pyNAVIS_functions.aedat_splitters import *                                                                             #
 from pyNAVIS_settings.main_settings import *                                                                                #
 from pyNAVIS_functions.aedat_generators import *                                                                            #
-from pyNAVIS_functions.dataset_gen import generate_sonogram_dataset
-from pyNAVIS_functions.loaders import *                                                  #
+from pyNAVIS_functions.dataset_gen import generate_sonogram_dataset                                                         #
+from pyNAVIS_functions.loaders import *                                                                                     #
 #############################################################################################################################
 
 ## PARAMETERS ###############################################################################################################
@@ -41,15 +41,6 @@ bar_line = 1           # 0 if you want the histogram to be a bar plot or 1 if yo
 spike_dot_freq = 1     # When plotting the cochleogram, it plots one spike for every spike_dot_frPeq spikes.                #
 spike_dot_size = 1     # Size of the dots that are plotted on the spikegram                                                 #
 #############################################################################################################################
-
-
-#random_addrs(freq=100, num_ch=64, length=2, path='C:\\Users\\juado\\Desktop\\en_un_mono_left.aedat')
-#sweep(freq=80, cycles=4, num_ch=64, length=1000000, path='C:\\Users\\juado\\Desktop\\en_un_mono_left', output_format='aedat')
-#shift(freq=10, num_ch=64, length=1000000, path='C:\\Users\\juado\\Desktop\\en_un_mono_left.aedat', output_format='aedat')
-
-
-
-
 
 path = 'C:\\Users\\juado\\Desktop'
 
@@ -73,10 +64,27 @@ sonogram(spikes_file, settings, verbose=True)
 #monoToStereo(spikes_file, 0, "stereo.aedat", settings)
 
 
+manual_split_spikes = manual_aedat_splitter(spikes_file, init=20000, end=200000, settings=settings, return_save_both=0 )
+spikegram(manual_split_spikes, settings, graph_tile='Original aedat', verbose=True)
+sonogram(manual_split_spikes, settings, verbose=True)
+# TEST GENERATORS
+"""
 sweep_spikes = sweep(freq=5, cycles=5, num_ch=64, length=1000000, path='C:\\Users\\juado\\Desktop\\sweep', return_save_both=0)
 sweep_settings = MainSettings(num_channels=64, mono_stereo=0, on_off_both=1, address_size=address_size, ts_tick=ts_tick, bin_size=bin_size, bar_line=bar_line, spikegram_dot_freq=spike_dot_freq, spikegram_dot_size=spike_dot_size)
 spikegram(sweep_spikes, sweep_settings)
 sonogram(sweep_spikes, sweep_settings)
+
+random_spikes = random_addrs(freq=10000, num_ch=64, length=1000000, path='C:\\Users\\juado\\Desktop\\random.aedat')
+random_settings = MainSettings(num_channels=64, mono_stereo=0, on_off_both=1, address_size=address_size, ts_tick=ts_tick, bin_size=bin_size, bar_line=bar_line, spikegram_dot_freq=spike_dot_freq, spikegram_dot_size=spike_dot_size)
+spikegram(random_spikes, random_settings)
+sonogram(random_spikes, random_settings)
+
+
+shift_spikes = shift(freq=1, num_ch=64, length=1000000, path='C:\\Users\\juado\\Desktop\\shift.aedat')
+shift_settings = MainSettings(num_channels=64, mono_stereo=0, on_off_both=1, address_size=address_size, ts_tick=ts_tick, bin_size=bin_size, bar_line=bar_line, spikegram_dot_freq=spike_dot_freq, spikegram_dot_size=spike_dot_size)
+spikegram(shift_spikes, shift_settings)
+sonogram(shift_spikes, shift_settings)
+"""
 
 #TEST phaselock
 """

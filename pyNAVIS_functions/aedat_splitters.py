@@ -28,20 +28,28 @@ import random
 import copy
 
 
-def manual_aedat_splitter(spikes_file, init, end, path, settings):
-
+def manual_aedat_splitter(spikes_file, init, end, settings,  return_save_both = 0, output_format = '.aedat', path=None):
     #THIS IS NOT NEEDED IF TS ARE SORTED
-    aedat_addr_ts = zip(spikes_file.addresses, spikes_file.timestamps)
+    aedat_addr_ts = list(zip(spikes_file.addresses, spikes_file.timestamps))
     aedat_addr_ts = sorted(aedat_addr_ts, key=getKey)
-    spikes_file = extract_addr_and_ts(aedat_addr_ts)
+    spikes_file_new = copy.deepcopy(spikes_file)
+    spikes_file_new = extract_addr_and_ts(aedat_addr_ts)
 
-    a =  bisect_left(spikes_file.timestamps, init)
-    b =  bisect_right(spikes_file.timestamps, end)
+    a =  bisect_left(spikes_file_new.timestamps, init)
+    b =  bisect_right(spikes_file_new.timestamps, end)
 
-    blockAddr = spikes_file.addresses[a:b]
-    blockTs = spikes_file.timestamps[a:b]
+    spikes_file_new.addresses = spikes_file_new.addresses[a:b]
+    spikes_file_new.timestamps = spikes_file_new.timestamps[a:b]
 
-    save_AERDATA(blockAddr, blockTs, path, settings)
+    if return_save_both == 0:
+        return spikes_file_new
+    elif return_save_both == 1 or return_save_both == 2:
+        if output_format == 'aedat' or 'AEDAT' or 'AERDATA' or 'AER-DATA' or 'Aedat' or '.aedat':
+            save_AERDATA(spikes_file_new, path + '.aedat', settings)
+        elif output_format == 'csv' or 'CSV' or '.csv':
+            save_CSV(spikes_file_new, path + '.csv', settings)        
+        if return_save_both == 2:
+            return spikes_file_new
 
 """
 def automatic_aedat_splitter(allAddr, allTs, noiseTolerance, noiseThreshold, settings, path):
@@ -99,7 +107,7 @@ def automatic_aedat_splitter(allAddr, allTs, noiseTolerance, noiseThreshold, set
 
 def stereoToMono(spikes_file, left_right, path, settings): # NEEDS TO BE TESTED
     if settings.mono_stereo:
-        aedat_addr_ts = zip(spikes_file.addresses, spikes_file.timestamps)
+        aedat_addr_ts = list(zip(spikes_file.addresses, spikes_file.timestamps))
         aedat_addr_ts = [x for x in aedat_addr_ts if x[0] >= left_right*settings.num_channels*2 and x[0] < (left_right+1)*settings.num_channels*2]
         #print len(aedat_addr_ts)
 
@@ -109,6 +117,7 @@ def stereoToMono(spikes_file, left_right, path, settings): # NEEDS TO BE TESTED
         save_AERDATA(spikes_file, path, settings)
     else:
         print("StereoToMono: this functionality cannot be performed over a mono aedat file.")
+
 
 def monoToStereo(spikes_file, delay, path, settings):
     if settings.mono_stereo == 0:
@@ -126,5 +135,3 @@ def monoToStereo(spikes_file, delay, path, settings):
         save_AERDATA(spikes_file_new, path, settings_new)
     else:
         print("MonoToStereo: this functionality cannot be performed over a stereo aedat file.")
-
-    
