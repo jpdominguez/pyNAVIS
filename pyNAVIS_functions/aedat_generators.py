@@ -5,7 +5,7 @@ from pyNAVIS_functions.savers import *
 from pyNAVIS_functions.loaders import SpikesFile
 
 
-def sweep(freq, cycles, num_ch, length, path, output_format = '.aedat', return_save_both = 0):
+def sweep(freq, cycles, num_ch, length, path = None, output_format = '.aedat', return_save_both = 0):
     spikes_file = SpikesFile()
     time_per_cycle = float(length) // cycles
     spikes_per_cycle = freq * (num_ch * 2 - 1)
@@ -37,7 +37,7 @@ def sweep(freq, cycles, num_ch, length, path, output_format = '.aedat', return_s
             return spikes_file
 
 
-def shift(freq, num_ch, length, path, output_format = '.aedat', return_save_both = 0):
+def shift(freq, num_ch, length, path = None, output_format = '.aedat', return_save_both = 0):
     spikes_file = SpikesFile()
     total_spikes_no = freq * num_ch
     addrs = [0] * int(total_spikes_no)
@@ -65,7 +65,7 @@ def shift(freq, num_ch, length, path, output_format = '.aedat', return_save_both
             return spikes_file
 
 
-def random_addrs(freq, num_ch, length, path, output_format = '.aedat', return_save_both = 0):
+def random_addrs(freq, num_ch, length, path = None, output_format = '.aedat', return_save_both = 0):
     spikes_file = SpikesFile()
     addrs = [0] * int(freq*length//1000000)
     timestamps = [0] * int(freq*length//1000000)
