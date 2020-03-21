@@ -1,4 +1,4 @@
-# pyNAVIS: an open-source cross-platform NeuromorphicAuditory VISualizer
+## pyNAVIS: an open-source cross-platform NeuromorphicAuditory VISualizer
 
 <h2 name="Description">Description</h2>
 <p align="justify">
