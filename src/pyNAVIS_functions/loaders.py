@@ -25,11 +25,29 @@ import struct
 
 
 class SpikesFile:
+    """
+    Class with all the addresses and timestamps of a file.
+
+    Attributes:
+        timestamps (int[]): timestamps of the file.
+        addresses (int[]): addresses of the file.
+        NOTE: timestamps and addresses are matches, which means that timestamps[0] is the timestamp for the spike with address addresses[0].
+    """
     timestamps = []
     addresses = []
 
 
 def loadAERDATA(path, settings):
+    '''
+    Loads an AER-DATA (.aedat) file.
+    
+        Parameters:
+                path (string): full path of the AER-DATA file to be loaded, including name and extension.
+                settings (MainSettings): configuration parameters for the file to load.
+
+        Returns:
+                spikes_file (SpikesFile): SpikesFile containing all the addresses and timestamps of the file.
+    '''
     unpack_param = ">H"
     
     if settings.address_size == 2:
