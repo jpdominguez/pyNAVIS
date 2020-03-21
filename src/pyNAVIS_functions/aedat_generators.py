@@ -1,8 +1,31 @@
+#################################################################################
+##                                                                             ##
+##    Copyright C 2018  Juan P. Dominguez-Morales                              ##
+##                                                                             ##
+##    This file is part of pyNAVIS.                                            ##
+##                                                                             ##
+##    pyNAVIS is free software: you can redistribute it and/or modify          ##
+##    it under the terms of the GNU General Public License as published by     ##
+##    the Free Software Foundation, either version 3 of the License, or        ##
+##    (at your option) any later version.                                      ##
+##                                                                             ##
+##    pyNAVIS is distributed in the hope that it will be useful,               ##
+##    but WITHOUT ANY WARRANTY; without even the implied warranty of           ##
+##    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the              ##
+##    GNU General Public License for more details.                             ##
+##                                                                             ##
+##    You should have received a copy of the GNU General Public License        ##
+##    along with pyNAVIS.  If not, see <http://www.gnu.org/licenses/>.         ##
+##                                                                             ##
+#################################################################################
+
 import random
+
 import numpy as np
-from pyNAVIS_settings.main_settings import MainSettings
-from pyNAVIS_functions.savers import *
+
 from pyNAVIS_functions.loaders import SpikesFile
+from pyNAVIS_functions.savers import *
+from pyNAVIS_settings.main_settings import MainSettings
 
 
 def sweep(freq, cycles, num_ch, length, path = None, output_format = '.aedat', return_save_both = 0):

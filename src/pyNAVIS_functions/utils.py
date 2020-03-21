@@ -19,23 +19,55 @@
 ##                                                                             ##
 #################################################################################
 
-import struct
-import numpy as np
-import matplotlib.pyplot as plt
 import math
+import struct
 import time
+
+import matplotlib.pyplot as plt
+import numpy as np
+
 from pyNAVIS_functions.loaders import SpikesFile
 
-def extract_addr_and_ts(aedat_addr_ts):
+
+def extract_addr_and_ts(zipped_addr_ts):
+    '''
+    Converts a list of [address, timestamp] tuples into a SpikesFile.
+
+            Parameters:
+                    aedat_addr_ts (list): A list of [address, timestamp] tuples.
+
+            Returns:
+                    spikes_file (SpikesFile): A SpikesFile object with the addresses and timestamps obtained from zipped_addr_ts
+    '''
     spikes_file = SpikesFile()
-    spikes_file.addresses = [x[0] for x in aedat_addr_ts]
-    spikes_file.timestamps = [x[1] for x in aedat_addr_ts]
+    spikes_file.addresses = [x[0] for x in zipped_addr_ts]
+    spikes_file.timestamps = [x[1] for x in zipped_addr_ts]
     return spikes_file
 
 def execution_time(executing_function, function_params):
+    '''
+    Calculate the time that a function takes to execute (in seconds).
+
+            Parameters:
+                    executing_function (function): The name of the function whose execution time wants to be calculated.
+                    function_params (list): List of the parameters that want to be used in the executing_function.
+
+            Returns:
+                    total_time (float): Time that the function takes to execute.
+    '''
     start_time = time.time()
     executing_function(*function_params)
-    return time.time() - start_time
+    total_time = time.time() - start_time
+    return total_time
 
 def getKey(item):
+    '''
+    Get timestamps. Used to sort zipped list of [address, timestamp] tuples by timestamp.
+
+            Parameters:
+                    item (tuple): [address, timestamp] tuple.
+
+            Returns:
+                    item[1] (int): Timestamp.
+    '''
     return item[1]

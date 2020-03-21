@@ -20,15 +20,15 @@
 #################################################################################
 
 ## IMPORTS ##################################################################################################################
-from pyNAVIS_functions.screens_plot import *                                                                                #
-from pyNAVIS_functions.utils import *                                                                                       #
-from pyNAVIS_functions.raw_audio_functions import *                                                                         #
-from pyNAVIS_functions.aedat_functions import *                                                                             #
-from pyNAVIS_functions.aedat_splitters import *                                                                             #
-from pyNAVIS_settings.main_settings import *                                                                                #
-from pyNAVIS_functions.aedat_generators import *                                                                            #
-from pyNAVIS_functions.dataset_gen import generate_sonogram_dataset                                                         #
-from pyNAVIS_functions.loaders import *                                                                                     #
+from pyNAVIS_functions.aedat_functions import *                                                                             # 
+from pyNAVIS_functions.aedat_generators import *                                                                            # 
+from pyNAVIS_functions.aedat_splitters import *                                                                             # 
+from pyNAVIS_functions.dataset_gen import generate_sonogram_dataset                                                         # 
+from pyNAVIS_functions.loaders import *                                                                                     # 
+from pyNAVIS_functions.raw_audio_functions import *                                                                         # 
+from pyNAVIS_functions.screens_plot import *                                                                                # 
+from pyNAVIS_functions.utils import *                                                                                       # 
+from pyNAVIS_settings.main_settings import *                                                                                # 
 #############################################################################################################################
 
 ## PARAMETERS ###############################################################################################################

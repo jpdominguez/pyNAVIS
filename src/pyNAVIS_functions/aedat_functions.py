@@ -19,12 +19,15 @@
 ##                                                                             ##
 #################################################################################
 
-import struct
-import numpy as np
-import matplotlib.pyplot as plt
 import math
+import struct
 import time
+
+import matplotlib.pyplot as plt
+import numpy as np
+
 from pyNAVIS_functions.loaders import SpikesFile
+
 
 def checkAERDATA(spikes_file, settings):
 

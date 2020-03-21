@@ -20,10 +20,12 @@
 #################################################################################
 
 import os
+
 import matplotlib
-from pyNAVIS_functions.screens_plot import *
+
 from pyNAVIS_functions.aedat_functions import *
 from pyNAVIS_functions.loaders import *
+from pyNAVIS_functions.screens_plot import *
 
 
 def generate_sonogram_dataset(path_input_folder, path_output_folder, settings, allow_subdirectories = False, verbose = False):

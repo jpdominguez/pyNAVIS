@@ -20,18 +20,29 @@
 #################################################################################
 
 import math
-#import struct
-
 import random
-#import collections
+from bisect import bisect_left, bisect_right
 
 import matplotlib.pyplot as plt
 import numpy as np
 
-from bisect import bisect_left, bisect_right
 from pyNAVIS_functions.utils import *
 
+
 def spikegram(spikes_file, settings, graph_tile = 'Spikegram', verbose = False):
+    '''
+    Plots the spikegram (also known as cochleogram or raster plot) of a SpikesFile.
+    This is, a graph where the X axis means time and the Y axis represents addresses (or cochlea channels), and where every spike is plotted as a dot.
+
+            Parameters:
+                    spikes_file (SpikesFile): file to plot.
+                    settings (MainSettings): configuration parameters for the file to plot.
+                    graph_tile (string, optional): Text that will appear as title for the graph.
+                    verbose (boolean, optional): Set to True if you want the execution time of the function to be printed.
+
+            Returns:
+                    None.
+    '''
 
     if verbose == True: start_time = time.time()
     #REPRESENTATION
@@ -61,7 +72,19 @@ def spikegram(spikes_file, settings, graph_tile = 'Spikegram', verbose = False):
 
 
 def sonogram(spikes_file, settings, return_data = False, verbose = False):
-    
+    '''
+    Plots the sonogram of a SpikesFile.
+    This is, a graph where the X axis means time and the Y axis represents addresses (or cochlea channels), and where the spiking activity is shown with color.
+
+            Parameters:
+                    spikes_file (SpikesFile): file to plot.
+                    settings (MainSettings): configuration parameters for the file to plot.
+                    return_data (boolean, optional): When set to True, the sonogram matrix will be returned instead of plotted.
+                    verbose (boolean, optional): Set to True if you want the execution time of the function to be printed.
+
+            Returns:
+                    sonogram (int[,]): sonogram matrix. Only returned if return_data is set to True.
+    '''
     if verbose == True: start_time = time.time()
 
     total_time = max(spikes_file.timestamps) - min(spikes_file.timestamps)
@@ -114,6 +137,19 @@ def sonogram(spikes_file, settings, return_data = False, verbose = False):
 
 
 def histogram(spikes_file, settings, verbose = False):
+    '''
+    Plots the histogram of a SpikesFile.
+    This is, a graph where addresses (or cochlea channels) are represented in the X axis, and number of spikes in the Y axis.
+
+            Parameters:
+                    spikes_file (SpikesFile): file to plot.
+                    settings (MainSettings): configuration parameters for the file to plot.
+                    verbose (boolean, optional): Set to True if you want the execution time of the function to be printed.
+
+            Returns:
+                    None.
+    '''
+
     start_time = time.time()
     spikes_count = np.bincount(spikes_file.addresses)
     if verbose == True: print('TIEMPO HISTOGRAM:', time.time() - start_time)
@@ -143,6 +179,18 @@ def histogram(spikes_file, settings, verbose = False):
 
 
 def average_activity(spikes_file, settings, verbose=False):
+    '''
+    Plots the average activity plot of a SpikesFile.
+    This is, a graph where time is represented in the X axis, and average number of spikes in the Y axis.
+
+            Parameters:
+                    spikes_file (SpikesFile): file to plot.
+                    settings (MainSettings): configuration parameters for the file to plot.
+                    verbose (boolean, optional): Set to True if you want the execution time of the function to be printed.
+
+            Returns:
+                    None.
+    '''
     aedat_addr_ts = zip(spikes_file.addresses, spikes_file.timestamps)
     total_time = int(max(spikes_file.timestamps))
     last_ts = 0
@@ -204,6 +252,21 @@ def average_activity(spikes_file, settings, verbose=False):
 
 
 def difference_between_LR(spikes_file, settings, verbose = False):
+    '''
+    Plots a plot showing the differente between the left and the right activity of a SpikesFile.
+    NOTE: This function can only be called if the mono_stereo parameter in settings is set to 1.
+
+            Parameters:
+                    spikes_file (SpikesFile): file to plot.
+                    settings (MainSettings): configuration parameters for the file to plot.
+                    verbose (boolean, optional): Set to True if you want the execution time of the function to be printed.
+
+            Returns:
+                    None.
+
+            Raises:
+                ValueError: if settings.mono_stereo == 0
+    '''
     if settings.mono_stereo == 1:    
         total_time = max(spikes_file.timestamps) - min(spikes_file.timestamps)
         diff = np.zeros((settings.num_channels*settings.on_off_both, int(math.ceil(total_time/settings.bin_size))))
@@ -252,4 +315,5 @@ def difference_between_LR(spikes_file, settings, verbose = False):
         colorbar.ax.invert_xaxis()
         sng_fig.show()
     else:
-        print("This functionality is only available for stereo AER-DATA files.")
+        #print("This functionality is only available for stereo AER-DATA files.")
+        raise ValueError("This functionality is only available for stereo AER-DATA files.")

@@ -1,7 +1,7 @@
 import PySimpleGUI as sg
 from pyNAVIS_functions.aedat_functions import *
 from pyNAVIS_settings.main_settings import *
-from pyNAVIS_functions.screens_plot import *
+from pyNAVIS_functions.plots import *
 from pyNAVIS_functions.loaders import loadAERDATA
 
 
