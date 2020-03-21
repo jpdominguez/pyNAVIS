@@ -1,4 +1,4 @@
-## pyNAVIS: an open-source cross-platform NeuromorphicAuditory VISualizer
+## pyNAVIS: an open-source cross-platform Neuromorphic Auditory VISualizer
 
 <p align="justify">
 <img align="right" src="https://github.com/jpdominguez/NAVIS-Tool/blob/master/NAVIS/Wiki_Images/navis-logo-128.png">
