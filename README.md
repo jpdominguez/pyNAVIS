@@ -19,11 +19,9 @@ This software presents diverse utilities to develop the first post-processing la
 
 <h2 name="GettingStarted">1. Getting started</h2>
 <p align="justify">
-The following step-by-step guide will show you how to download, install and start using NAVIS. If you prefer a more user-friendly tutorial, you can watch the NAVIS' Getting Started video by clicking on the next image.
+The following step-by-step guide will show you how to download, install and start using pyNAVIS.
 </p>
-<p align="center">
-<a href="https://www.youtube.com/watch?v=xJ27ZqqyDRo"><img align="center" src="http://img.youtube.com/vi/xJ27ZqqyDRo/0.jpg"></a>
-</p>
+
 <h3>1.1. Prerequisites</h3>
 <p align="justify">
 NAVIS requires Python 3.5 or greater to be executed, along with a set of packages that can be installed from the requirements.txt file.
@@ -31,7 +29,7 @@ NAVIS requires Python 3.5 or greater to be executed, along with a set of package
 
 <h3>1.2. Installation</h3>
 <p align="justify">
-To use NAVIS, first you need to download the latest release. This can be done by clicking on the <a href="https://github.com/jpdominguez/pyNAVIS/releases">"releases" button</a> on the home page or just by cloning/downloading the repository.
+To use pyNAVIS, first you need to download the latest release. This can be done by clicking on the <a href="https://github.com/jpdominguez/pyNAVIS/releases">"releases" button</a> on the home page or just by cloning/downloading the repository.
 </p>
 
 <p align="justify">
@@ -53,7 +51,7 @@ If you get an error when trying to execute pyNAVIS, please check that no file ha
 
 
 
-<h2 name="Contributing">Contributing</h2>
+<h2 name="Contributing">3. Contributing</h2>
 <p align="justify">
 New functionalities or improvements to the existing project are welcome. To contribute to this project please follow these guidelines:
 <ol align="justify">
@@ -72,7 +70,7 @@ If it is a new feature request (e.g., a new functionality), post an issue to dis
 Thank you for contributing to pyNAVIS!
 </p>
 
-<h2 name="Credits">Credits</h2>
+<h2 name="Credits">4. Credits</h2>
 <p align="justify">
 The author of the pyNAVIS' original idea is Juan P. Dominguez-Morales.
 </p>
@@ -85,7 +83,7 @@ The authors would like to thank and give credit to:
 </ul>
 </p>
 
-<h2 name="License">License</h2>
+<h2 name="License">5. License</h2>
 
 <p align="justify">
 This project is licensed under the GPL License - see the <a href="https://raw.githubusercontent.com/jpdominguez/NAVIS-Tool/master/LICENSE">LICENSE.md</a> file for details.
