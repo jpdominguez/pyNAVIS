@@ -75,6 +75,7 @@ The author of the pyNAVIS' original idea is Juan P. Dominguez-Morales.
 <p align="justify">
 The authors would like to thank and give credit to:
 <ul align="justify">
+<li>Dominguez-Morales, J. P., Jimenez-Fernandez, A., Dominguez-Morales, M., & Jimenez-Moreno, G. (2017). Navis: neuromorphic auditory visualizer tool. Neurocomputing, 237, 418-422.</li>
 <li>Jiménez-Fernández, A., Cerezuela-Escudero, E., Miró-Amarante, L., Domínguez-Morales, M. J., de Asís Gómez-Rodríguez, F., Linares-Barranco, A., & Jiménez-Moreno, G. (2016). "A binaural neuromorphic auditory sensor for FPGA: a spike signal processing approach". IEEE Transactions on Neural Networks and Learning Systems.Year: 2016, Volume: PP, Issue: 99. Pages: 1 - 15, DOI: 10.1109/TNNLS.2016.2583223.</li>
 <li>Delbrück, T., “jAER Open Source Project,” 2007. [Online]. Available: http://sourceforge.net/p/jaer/wiki/Home/.</li>
 <li>R. Berner et al., “A 5 Meps $100 USB2.0 Address-Event Monitor-Sequencer Interface,” 2007 IEEE ISCAS, 2007.</li>
