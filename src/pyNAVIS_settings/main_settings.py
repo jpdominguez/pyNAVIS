@@ -20,6 +20,23 @@
 #################################################################################
 
 class MainSettings:
+    """
+    Class that collects the main configuration settings of pyNAVIS
+
+    Attributes:
+        mono_stereo (int): Dummy text
+        bin_size (int): Dummy text
+        ts_tick (float): Dummy text
+        num_channels (int): Dummy text
+        address_size (int): Dummy text
+        on_off_both (int): Dummy text
+        reset_timestamp (boolean): Dummy text
+        spikegram_dot_size (float): Dummy text
+        bar_line (int): Dummy text
+        spikegram_dot_freq (int): Dummy text
+
+
+    """
 
     mono_stereo = 0
     bin_size = 20000
