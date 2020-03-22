@@ -71,3 +71,18 @@ def getKey(item):
                     item[1] (int): Timestamp.
     '''
     return item[1]
+
+def order_timestamps(spikes_file):
+            '''
+    Order the spikes contained in a SpikesFile by timestamp.
+
+            Parameters:
+                    spikes_file (SpikesFile): Input SpikesFile to order.
+
+            Returns:
+                    spikes_file_ordered (SpikesFile): Ordered SpikesFile.
+    '''
+    
+	aedat_addr_ts = zip(spikes_file.addresses, spikes_file.timestamps)
+	aedat_addr_ts = sorted(aedat_addr_ts, key=getKey)
+	spikes_file_ordered = extract_addr_and_ts(aedat_addr_ts)
