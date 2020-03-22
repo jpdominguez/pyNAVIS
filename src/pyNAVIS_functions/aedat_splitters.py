@@ -182,4 +182,4 @@ def monoToStereo(spikes_file, delay, path, settings):
         settings_new.mono_stereo = 1
         save_AERDATA(spikes_file_new, path, settings_new)
     else:
-        print("MonoToStereo: this functionality cannot be performed over a stereo aedat file.")
+        raise AttributeError("MonoToStereo: this functionality cannot be performed over a stereo aedat file.")
