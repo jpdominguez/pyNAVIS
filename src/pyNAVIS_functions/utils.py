@@ -73,7 +73,7 @@ def getKey(item):
     return item[1]
 
 def order_timestamps(spikes_file):
-            '''
+	'''
     Order the spikes contained in a SpikesFile by timestamp.
 
             Parameters:
