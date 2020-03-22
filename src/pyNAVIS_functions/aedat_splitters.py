@@ -30,6 +30,22 @@ from pyNAVIS_functions.utils import *
 
 
 def manual_aedat_splitter(spikes_file, init, end, settings,  return_save_both = 0, output_format = '.aedat', path=None):
+    '''
+    Extract a portion of the input SpikesFile file.
+
+        Parameters:
+                spikes_file (SpikesFile): Input file.
+                init (int): First timestamp from which to start extracting. 
+                end (int): Last timestamp from which to stop extracting. 
+                settings (MainSettings): Configuration parameters for the input file.
+                return_save_both (int, optional): Set it to 0 to return the resultant SpikesFile, to 1 to save the SpikesFile in the output path, and to 2 to do both.
+                outoutput_format (string, optional): Output format of the file. Currently supports '.aedat' and '.csv'.put_format.
+                path (string, optional): Path where the output file will be saved. Format should not be specified. Not needed if return_save_both is set to 0.
+
+        Returns:
+                spikes_file_new (SpikesFile, optional): SpikesFile containing the extracted portion of the input file. Returned only if return_save_both is either 0 or 2.
+    '''
+
     #THIS IS NOT NEEDED IF TS ARE SORTED
     aedat_addr_ts = list(zip(spikes_file.addresses, spikes_file.timestamps))
     aedat_addr_ts = sorted(aedat_addr_ts, key=getKey)
@@ -107,6 +123,22 @@ def automatic_aedat_splitter(allAddr, allTs, noiseTolerance, noiseThreshold, set
 """
 
 def stereoToMono(spikes_file, left_right, path, settings): # NEEDS TO BE TESTED
+    '''
+    Generates a mono AER-DATA SpikesFile from a stereo SpikesFile.
+
+        Parameters:
+                spikes_file (SpikesFile): Input file.
+                left_right (int): Set to 0 if you want to extract the left part of the SpikesFile, or to 1 if you want the right part.
+                path (string, optional): Path where the output file will be saved. Filename and format should be specified.
+                settings (MainSettings): Configuration parameters for the input file.
+
+        Returns:
+                None.
+        
+        Raises:
+            AttributeError: if the input file is a mono SpikesFile (settings.mono_stereo is set to 0).
+    '''
+
     if settings.mono_stereo:
         aedat_addr_ts = list(zip(spikes_file.addresses, spikes_file.timestamps))
         aedat_addr_ts = [x for x in aedat_addr_ts if x[0] >= left_right*settings.num_channels*2 and x[0] < (left_right+1)*settings.num_channels*2]
@@ -116,10 +148,26 @@ def stereoToMono(spikes_file, left_right, path, settings): # NEEDS TO BE TESTED
             spikes_file_mono.addresses = [x-left_right*settings.num_channels*2 for x in spikes_file_mono.addresses]
         save_AERDATA(spikes_file, path, settings)
     else:
-        print("StereoToMono: this functionality cannot be performed over a mono aedat file.")
+        raise AttributeError("StereoToMono: this functionality cannot be performed over a mono aedat file.")
 
 
 def monoToStereo(spikes_file, delay, path, settings):
+    '''
+    Generates a stereo AER-DATA SpikesFile from a mono SpikesFile with a specific delay between both.
+
+        Parameters:
+                spikes_file (SpikesFile): Input file.
+                delay (int): Delay introduced from left and right spikes. Can be either negative or positive.
+                path (string, optional): Path where the output file will be saved. Filename and format should be specified.
+                settings (MainSettings): Configuration parameters for the input file.
+
+        Returns:
+                None.
+        
+        Raises:
+            AttributeError: if the input file is a stereo SpikesFile (settings.mono_stereo is set to 1).
+    '''
+
     if settings.mono_stereo == 0:
         spikes_file_new = copy.deepcopy(spikes_file)
         newAddrs = [(x + settings.num_channels*(settings.on_off_both)) for x in spikes_file_new.addresses]
