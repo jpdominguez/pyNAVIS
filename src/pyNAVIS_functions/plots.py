@@ -64,14 +64,14 @@ def spikegram(spikes_file, settings, graph_tile = 'Spikegram', verbose = False):
         
     if verbose == True: print('SPIKEGRAM CALCULATION', time.time() - start_time)
 
-    plt.title('Spikegram', fontsize='x-large')
+    plt.title(graph_tile, fontsize='x-large')
     plt.xlabel('Timestamp ($\mu$s)', fontsize='large')
     plt.ylabel('Address', fontsize='large')
 
     spk_fig.show()
 
 
-def sonogram(spikes_file, settings, return_data = False, verbose = False):
+def sonogram(spikes_file, settings, return_data = False, graph_tile = 'Sonogram', verbose = False):
     '''
     Plots the sonogram of a SpikesFile.
     This is, a graph where the X axis means time and the Y axis represents addresses (or cochlea channels), and where the spiking activity is shown with color.
@@ -80,6 +80,7 @@ def sonogram(spikes_file, settings, return_data = False, verbose = False):
                 spikes_file (SpikesFile): file to plot.
                 settings (MainSettings): configuration parameters for the file to plot.
                 return_data (boolean, optional): When set to True, the sonogram matrix will be returned instead of plotted.
+                graph_tile (string, optional): Text that will appear as title for the graph.
                 verbose (boolean, optional): Set to True if you want the execution time of the function to be printed.
 
         Returns:
@@ -118,7 +119,7 @@ def sonogram(spikes_file, settings, return_data = False, verbose = False):
         # REPRESENTATION
         plt.style.use('default')
         sng_fig = plt.figure()
-        sng_fig.canvas.set_window_title('Sonogram')
+        sng_fig.canvas.set_window_title(graph_tile)
 
         plt.imshow(sonogram, aspect="auto") #, aspect="auto")
         plt.gca().invert_yaxis()
@@ -126,7 +127,7 @@ def sonogram(spikes_file, settings, return_data = False, verbose = False):
         plt.xlabel('Bin ('+str(settings.bin_size) + '$\mu$s width)', fontsize='large')
         plt.ylabel('Address', fontsize='large')
 
-        plt.title('Sonogram', fontsize='x-large')
+        plt.title(graph_tile, fontsize='x-large')
 
         colorbar = plt.colorbar()
         colorbar.set_label('No. of spikes', rotation=270, fontsize='large', labelpad= 10) #, rotation=270)
@@ -136,7 +137,7 @@ def sonogram(spikes_file, settings, return_data = False, verbose = False):
         return sonogram
 
 
-def histogram(spikes_file, settings, verbose = False):
+def histogram(spikes_file, settings, graph_tile = 'Histogram', verbose = False):
     '''
     Plots the histogram of a SpikesFile.
     This is, a graph where addresses (or cochlea channels) are represented in the X axis, and number of spikes in the Y axis.
@@ -144,6 +145,7 @@ def histogram(spikes_file, settings, verbose = False):
         Parameters:
                 spikes_file (SpikesFile): file to plot.
                 settings (MainSettings): configuration parameters for the file to plot.
+                graph_tile (string, optional): Text that will appear as title for the graph.
                 verbose (boolean, optional): Set to True if you want the execution time of the function to be printed.
 
         Returns:
@@ -156,8 +158,8 @@ def histogram(spikes_file, settings, verbose = False):
 
     plt.style.use('seaborn-whitegrid')
     hst_fig = plt.figure()
-    hst_fig.canvas.set_window_title('Histogram')
-    plt.title('Histogram', fontsize='x-large')
+    hst_fig.canvas.set_window_title(graph_tile)
+    plt.title(graph_tile, fontsize='x-large')
     plt.xlabel('Address', fontsize='large')
     plt.ylabel('No. of spikes', fontsize='large')
 
@@ -178,7 +180,7 @@ def histogram(spikes_file, settings, verbose = False):
     hst_fig.show()
 
 
-def average_activity(spikes_file, settings, verbose=False):
+def average_activity(spikes_file, settings, graph_tile = 'Average activity', verbose=False):
     '''
     Plots the average activity plot of a SpikesFile.
     This is, a graph where time is represented in the X axis, and average number of spikes in the Y axis.
@@ -186,6 +188,7 @@ def average_activity(spikes_file, settings, verbose=False):
         Parameters:
                 spikes_file (SpikesFile): file to plot.
                 settings (MainSettings): configuration parameters for the file to plot.
+                graph_tile (string, optional): Text that will appear as title for the graph.
                 verbose (boolean, optional): Set to True if you want the execution time of the function to be printed.
 
         Returns:
@@ -239,8 +242,8 @@ def average_activity(spikes_file, settings, verbose=False):
 
     plt.style.use('seaborn-whitegrid')
     avg_fig = plt.figure()
-    avg_fig.canvas.set_window_title('Average activity')
-    plt.title('Average activity', fontsize='x-large')
+    avg_fig.canvas.set_window_title(graph_tile)
+    plt.title(graph_tile, fontsize='x-large')
     plt.xlabel('Bin ('+str(settings.bin_size) + '$\mu$s width)', fontsize='large')
     plt.ylabel('No. of spikes', fontsize='large')
 
@@ -251,7 +254,7 @@ def average_activity(spikes_file, settings, verbose=False):
     avg_fig.show()
 
 
-def difference_between_LR(spikes_file, settings, verbose = False):
+def difference_between_LR(spikes_file, settings, graph_tile = 'Diff. between L and R cochlea', verbose = False):
     '''
     Plots a plot showing the differente between the left and the right activity of a SpikesFile.
     NOTE: This function can only be called if the mono_stereo parameter in settings is set to 1.
@@ -259,6 +262,7 @@ def difference_between_LR(spikes_file, settings, verbose = False):
         Parameters:
                 spikes_file (SpikesFile): file to plot.
                 settings (MainSettings): configuration parameters for the file to plot.
+                graph_tile (string, optional): Text that will appear as title for the graph.
                 verbose (boolean, optional): Set to True if you want the execution time of the function to be printed.
 
         Returns:
@@ -299,7 +303,7 @@ def difference_between_LR(spikes_file, settings, verbose = False):
         # REPRESENTATION
         plt.style.use('default')
         sng_fig = plt.figure()
-        sng_fig.canvas.set_window_title('Diff. between L and R cochlea')
+        sng_fig.canvas.set_window_title(graph_tile)
 
         plt.imshow(diff, vmin=-100, vmax=100, aspect="auto") #, aspect="auto")
         plt.gca().invert_yaxis()
@@ -307,7 +311,7 @@ def difference_between_LR(spikes_file, settings, verbose = False):
         plt.xlabel('Bin ('+str(settings.bin_size) + '$\mu$s width)', fontsize='large')
         plt.ylabel('Address', fontsize='large')
 
-        plt.title('Diff. between L and R cochlea', fontsize='x-large')
+        plt.title(graph_tile, fontsize='x-large')
 
         colorbar = plt.colorbar(ticks=[100, 50, 0, -50, -100], orientation='horizontal')
         colorbar.set_label('Cochlea predominance', rotation=0, fontsize='large', labelpad= 10)
