@@ -29,6 +29,20 @@ from pyNAVIS_functions.screens_plot import *
 
 
 def generate_sonogram_dataset(path_input_folder, path_output_folder, settings, allow_subdirectories = False, verbose = False):
+    '''
+    Automatically generates and saves sonograms from a set of AER-DATA files.
+    
+        Parameters:
+                path_input_folder (string): Path of the folder where AER-DATA files are.
+                path_output_folder (string): Path of the folder where sonogram images will be saved.
+                settings (MainSettings): Configuration parameters of the files in the path_input_folder.
+                allow_subdirectories (boolean, optional): Allow the function to navigate deeper in the path_input_folder folder structure to look for input files.
+                verbose (boolean, optional): Set to True if you want the execution time of the function to be printed.
+
+        Returns:
+                None.
+    '''
+
     if verbose == True:
         print("---- DATASET SONOGRAM GENERATION ----")
         start_time = time.time()    

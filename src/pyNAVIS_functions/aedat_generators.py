@@ -29,6 +29,22 @@ from pyNAVIS_settings.main_settings import MainSettings
 
 
 def sweep(freq, cycles, num_ch, length, path = None, output_format = '.aedat', return_save_both = 0):
+    '''
+    Generates a SpikesFile with spikes going from address 0 to address N and back, repeating it for a specific number of cycles.
+    
+        Parameters:
+                freq (int): Number of spikes generated per address and half-cycle.
+                cycles (int): Number of repetitions.
+                num_ch (int): Number of addresses that the sweep will consider.
+                length (int): Number of microseconds that the SpikesFile will have.
+                path (string, optional): Path where the output file will be saved. Format should not be specified. Not needed if return_save_both is set to 0.
+                output_format (string, optional): Output format of the file. Currently supports '.aedat' and '.csv'.
+                return_save_both (int, optional): Set it to 0 to return the SpikesFile, to 1 to save the SpikesFile in the output path, and to 2 to do both.
+
+        Returns:
+                spikes_file (SpikesFile, optional): SpikesFile containing the sweep. Returned only if return_save_both is either 0 or 2.
+    '''
+
     spikes_file = SpikesFile()
     time_per_cycle = float(length) // cycles
     spikes_per_cycle = freq * (num_ch * 2 - 1)
@@ -61,6 +77,21 @@ def sweep(freq, cycles, num_ch, length, path = None, output_format = '.aedat', r
 
 
 def shift(freq, num_ch, length, path = None, output_format = '.aedat', return_save_both = 0):
+    '''
+    Generates a SpikesFile with spikes going from address 0 to address N.
+    
+        Parameters:
+                freq (int): Number of spikes generated per address.
+                num_ch (int): Number of addresses that the shift will consider.
+                length (int): Number of microseconds that the SpikesFile will have.
+                path (string, optional): Path where the output file will be saved. Format should not be specified. Not needed if return_save_both is set to 0.
+                output_format (string, optional): Output format of the file. Currently supports '.aedat' and '.csv'.
+                return_save_both (int, optional): Set it to 0 to return the SpikesFile, to 1 to save the SpikesFile in the output path, and to 2 to do both.
+
+        Returns:
+                spikes_file (SpikesFile, optional): SpikesFile containing the shift. Returned only if return_save_both is either 0 or 2.
+    '''
+
     spikes_file = SpikesFile()
     total_spikes_no = freq * num_ch
     addrs = [0] * int(total_spikes_no)
@@ -89,6 +120,21 @@ def shift(freq, num_ch, length, path = None, output_format = '.aedat', return_sa
 
 
 def random_addrs(freq, num_ch, length, path = None, output_format = '.aedat', return_save_both = 0):
+    '''
+    Generates a SpikesFile with spikes going from address 0 to address N.
+    
+        Parameters:
+                freq (int): Frequency of the spikes generated per address.
+                num_ch (int): Number of addresses that the process will consider.
+                length (int): Number of microseconds that the SpikesFile will have.
+                path (string, optional): Path where the output file will be saved. Format should not be specified. Not needed if return_save_both is set to 0.
+                output_format (string, optional): Output format of the file. Currently supports '.aedat' and '.csv'.
+                return_save_both (int, optional): Set it to 0 to return the SpikesFile, to 1 to save the SpikesFile in the output path, and to 2 to do both.
+
+        Returns:
+                spikes_file (SpikesFile, optional): SpikesFile containing the spikes. Returned only if return_save_both is either 0 or 2.
+    '''
+
     spikes_file = SpikesFile()
     addrs = [0] * int(freq*length//1000000)
     timestamps = [0] * int(freq*length//1000000)
