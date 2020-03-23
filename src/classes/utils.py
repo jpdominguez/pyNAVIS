@@ -96,3 +96,18 @@ class Utils:
 		aedat_addr_ts = sorted(aedat_addr_ts, key=Utils.getKey)
 		spikes_file_ordered = Utils.extract_addr_and_ts(aedat_addr_ts)
 		return spikes_file_ordered
+
+	@staticmethod
+	def get_info(spikes_file):
+		'''
+		Prints the number of spikes and the number of microseconds of audio that the SpikesFile contains.
+		
+		Parameters:
+				spikes_file (SpikesFile): file to get the information from.
+
+		Returns:
+				None.
+		'''
+
+		print("The file contains", len(spikes_file.addresses), "spikes")
+		print("The audio has", max(spikes_file.timestamps), 'microsec')

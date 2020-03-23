@@ -22,11 +22,15 @@
 import math
 import struct
 import time
+import copy
+import random
 
 import matplotlib.pyplot as plt
 import numpy as np
 
 from .loaders import SpikesFile
+from .savers import Savers
+from .utils import Utils
 
 class Functions:
 
@@ -50,6 +54,7 @@ class Functions:
 					NOTE: If on_off_both is set to 1 (both) in the MainSettings, then addresses should be less than num_channels*2.
 					NOTE: If mono_stereo is set to 1 and on_off_both is set to 1 in the MainSettings, then addresses should be less than num_channels*2*2.
 		'''
+
 		if settings.on_off_both == 1:
 			number_of_addresses = settings.num_channels*2
 		else:
@@ -136,7 +141,7 @@ class Functions:
 
 
 	@staticmethod
-	def stereoToMono(spikes_file, left_right, path, settings): # NEEDS TO BE TESTED
+	def stereo_to_mono(spikes_file, left_right, path, settings):
 		'''
 		Generates a mono AER-DATA SpikesFile from a stereo SpikesFile.
 
@@ -154,19 +159,19 @@ class Functions:
 		'''
 
 		if settings.mono_stereo:
-			aedat_addr_ts = list(zip(spikes_file.addresses, spikes_file.timestamps))
-			aedat_addr_ts = [x for x in aedat_addr_ts if x[0] >= left_right*settings.num_channels*2 and x[0] < (left_right+1)*settings.num_channels*2]
+			addr_ts = list(zip(spikes_file.addresses, spikes_file.timestamps))
+			addr_ts = [x for x in addr_ts if x[0] >= left_right*settings.num_channels*(settings.on_off_both + 1) and x[0] < (left_right+1)*settings.num_channels*(settings.on_off_both + 1)]
 
-			spikes_file_mono = extract_addr_and_ts(aedat_addr_ts)
+			spikes_file_mono = Utils.extract_addr_and_ts(addr_ts)
 			if left_right:
-				spikes_file_mono.addresses = [x-left_right*settings.num_channels*2 for x in spikes_file_mono.addresses]
-			save_AERDATA(spikes_file, path, settings)
+				spikes_file_mono.addresses = [x-left_right*settings.num_channels*(settings.on_off_both + 1) for x in spikes_file_mono.addresses]
+			Savers.save_AERDATA(spikes_file_mono, path, settings)
 		else:
 			raise AttributeError("StereoToMono: this functionality cannot be performed over a mono aedat file.")
 
 
 	@staticmethod
-	def monoToStereo(spikes_file, delay, path, settings):
+	def mono_to_stereo(spikes_file, delay, path, settings):
 		'''
 		Generates a stereo AER-DATA SpikesFile from a mono SpikesFile with a specific delay between both.
 
@@ -189,13 +194,15 @@ class Functions:
 			spikes_file_new.addresses.extend(newAddrs)
 			newTs = [(x + delay) for x in spikes_file_new.timestamps]
 			spikes_file_new.timestamps.extend(newTs)
-			aedat_addr_ts = list(zip(spikes_file_new.addresses, spikes_file_new.timestamps))
-			aedat_addr_ts = sorted(aedat_addr_ts, key=lambda v: (v, random.random())) #key=getKey)  #THIS DISORDERS TSS
-			spikes_file_new = extract_addr_and_ts(aedat_addr_ts)
+			addr_ts = list(zip(spikes_file_new.addresses, spikes_file_new.timestamps))
+			addr_ts = sorted(addr_ts, key=lambda v: (v, random.random())) #key=getKey)  #THIS DISORDERS TSS
+			spikes_file_new = Utils.extract_addr_and_ts(addr_ts)
 
+			if delay < 0:
+				spikes_file_new.timestamps = [x-delay for x in spikes_file_new.timestamps]
 			settings_new = copy.deepcopy(settings)
 			settings_new.mono_stereo = 1
-			save_AERDATA(spikes_file_new, path, settings_new)
+			Savers.save_AERDATA(spikes_file_new, path, settings_new)
 		else:
 			raise AttributeError("MonoToStereo: this functionality cannot be performed over a stereo aedat file.")        
 
@@ -227,19 +234,3 @@ class Functions:
 		new_spikes_file.addresses = spikes_per_channel_addr
 		new_spikes_file.timestamps = spikes_per_channels_ts
 		return new_spikes_file
-
-
-	@staticmethod
-	def get_info(spikes_file):
-		'''
-		Prints the number of spikes and the number of microseconds of audio that the SpikesFile contains.
-		
-		Parameters:
-				spikes_file (SpikesFile): file to get the information from.
-
-		Returns:
-				None.
-		'''
-
-		print("The file contains", len(spikes_file.addresses), "spikes")
-		print("The audio has", max(spikes_file.timestamps), 'microsec')
