@@ -41,19 +41,19 @@ class Loaders:
 
     @staticmethod
     def loadAERDATA(path, settings):
-        '''
+        """
         Loads an AER-DATA (.aedat) file.
         
-            Parameters:
-                    path (string): full path of the AER-DATA file to be loaded, including name and extension.
-                    settings (MainSettings): configuration parameters for the file to load.
+        Parameters:
+                path (string): full path of the AER-DATA file to be loaded, including name and extension.
+                settings (MainSettings): configuration parameters for the file to load.
 
-            Returns:
-                    spikes_file (SpikesFile): SpikesFile containing all the addresses and timestamps of the file.
-            Raises:
-                    SettingsError: if settings.address_size is different than 2 and 4.
+        Returns:
+                spikes_file (SpikesFile): SpikesFile containing all the addresses and timestamps of the file.
+        Raises:
+                SettingsError: if settings.address_size is different than 2 and 4.
 
-        '''
+        """
         unpack_param = ">H"
         
         if settings.address_size == 2:
@@ -105,16 +105,16 @@ class Loaders:
 
     @staticmethod
     def loadCSV(path):
-        '''
+        """
         Loads an Comma-Separated Values (.csv) file.
         
-            Parameters:
-                    path (string): full path of the CSV file to be loaded, including name and extension.
+        Parameters:
+                path (string): full path of the CSV file to be loaded, including name and extension.
 
-            Returns:
-                    spikes_file (SpikesFile): SpikesFile containing all the addresses and timestamps of the file.
+        Returns:
+                spikes_file (SpikesFile): SpikesFile containing all the addresses and timestamps of the file.
 
-        '''
+        """
         addresses = []
         timestamps = []
         

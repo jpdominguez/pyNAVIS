@@ -1,0 +1,980 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.7.5" />
+<title>pyNAVIS.functions API documentation</title>
+<meta name="description" content="" />
+<link href='https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.0/normalize.min.css' rel='stylesheet'>
+<link href='https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/8.0.0/sanitize.min.css' rel='stylesheet'>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css" rel="stylesheet">
+<style>.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{font-weight:bold}#index h4 + ul{margin-bottom:.6em}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>pyNAVIS.functions</code></h1>
+</header>
+<section id="section-intro">
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">#################################################################################
+##                                                                             ##
+##    Copyright C 2018  Juan P. Dominguez-Morales                              ##
+##                                                                             ##
+##    This file is part of pyNAVIS.                                            ##
+##                                                                             ##
+##    pyNAVIS is free software: you can redistribute it and/or modify          ##
+##    it under the terms of the GNU General Public License as published by     ##
+##    the Free Software Foundation, either version 3 of the License, or        ##
+##    (at your option) any later version.                                      ##
+##                                                                             ##
+##    pyNAVIS is distributed in the hope that it will be useful,               ##
+##    but WITHOUT ANY WARRANTY; without even the implied warranty of           ##
+##    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the              ##
+##    GNU General Public License for more details.                             ##
+##                                                                             ##
+##    You should have received a copy of the GNU General Public License        ##
+##    along with pyNAVIS.  If not, see &lt;http://www.gnu.org/licenses/&gt;.         ##
+##                                                                             ##
+#################################################################################
+
+import math
+import struct
+import time
+import copy
+import random
+
+import matplotlib.pyplot as plt
+import numpy as np
+
+from .loaders import SpikesFile
+from .savers import Savers
+from .utils import Utils
+
+class Functions:
+
+        @staticmethod
+        def check_SpikesFile(spikes_file, settings):
+                &#34;&#34;&#34;
+                Checks if the spiking information contained in the SpikesFile is correct and prints &#34;The loaded SpikesFile file has been checked and it&#39;s OK&#34; if the file passes all the checks.
+                
+                Parameters:
+                                spikes_file (SpikesFile): file to check.
+                                settings (MainSettings): configuration parameters for the file to check.
+
+                Returns:
+                                None.
+                
+                Raises:
+                                TimestampOrderError: if the SpikesFile contains at least one timestamp which value is less than 0.
+                                TimestampOrderError: if the SpikesFile contains at least one timestamp that is lesser than its previous one.
+                                AddressValueError: if the SpikesFile contains at least one address less than 0 or greater than the num_channels that you specified in the MainSettings.
+                                NOTE: If mono_stereo is set to 1 (stereo) in the MainSettings, then  addresses should be less than num_channels*2
+                                NOTE: If on_off_both is set to 1 (both) in the MainSettings, then addresses should be less than num_channels*2.
+                                NOTE: If mono_stereo is set to 1 and on_off_both is set to 1 in the MainSettings, then addresses should be less than num_channels*2*2.
+                &#34;&#34;&#34;
+
+                if settings.on_off_both == 1:
+                        number_of_addresses = settings.num_channels*2
+                else:
+                        number_of_addresses = settings.num_channels
+                # Check if all timestamps are greater than zero
+                a = all(item &gt;= 0  for item in spikes_file.timestamps)
+
+                if not a:
+                        print(&#34;[Functions.check_SpikesFile] &gt; TimestampOrderError: The SpikesFile file that you loaded has at least one timestamp that is less than 0.&#34;)
+
+                # Check if each timestamp is greater than its previous one
+                b = not any(i &gt; 0 and spikes_file.timestamps[i] &lt; spikes_file.timestamps[i-1] for i in range(len(spikes_file.timestamps)))
+
+                if not b:
+                        print(&#34;[Functions.check_SpikesFile] &gt; TimestampOrderError: The SpikesFile file that you loaded has at least one timestamp whose value is lesser than its previous one.&#34;)
+
+                # Check if all addresses are between zero and the total number of addresses
+                c = all(item &gt;= 0 and item &lt; number_of_addresses*(settings.mono_stereo + 1) for item in spikes_file.addresses)
+
+                if not c:
+                        print(&#34;[Functions.check_SpikesFile] &gt; AddressValueError: The SpikesFile file that you loaded has at least one event whose address is either less than 0 or greater than the number of addresses that you specified.&#34;)
+
+                if a and b and c:
+                        print(&#34;[Functions.check_SpikesFile] &gt; The loaded SpikesFile file has been checked and it&#39;s OK&#34;)
+                                
+
+        @staticmethod 
+        def adapt_SpikesFile(spikes_file, settings):
+                &#34;&#34;&#34;
+                Subtracts the smallest timestamp of the SpikesFile to all of the timestamps contained in the file (in order to start from 0)
+                It also adapts timestamps based on the tick frequency (ts_tick in the MainSettings).
+                
+                Parameters:
+                                spikes_file (SpikesFile): file to adapt.
+                                settings (MainSettings): configuration parameters for the file to adapt.
+
+                Returns:
+                                spikes_file (SpikesFile):  adapted SpikesFile.
+                &#34;&#34;&#34;
+                minimum_ts = min(spikes_file.timestamps)
+                if settings.reset_timestamp:
+                        spikes_file.timestamps = [(x - minimum_ts)*settings.ts_tick for x in spikes_file.timestamps]
+                else:
+                        spikes_file.timestamps = [x*settings.ts_tick for x in spikes_file.timestamps]
+                return spikes_file
+
+
+        @staticmethod
+        def phase_lock(spikes_file, settings):
+                &#34;&#34;&#34;
+                Performs the phase lock operation over a SpikesFile. This can only be performed to SpikeFiles with both ON and OFF addresses.
+                
+                Parameters:
+                                spikes_file (SpikesFile): file used to perform the phase lock.
+                                settings (MainSettings): configuration parameters of the input file.
+
+                Returns:
+                                spikes_file (SpikesFile):  phase-locked SpikesFile.
+
+                Raises:
+                                SettingsError: if the on_off_both parameter is not set to 2 (both) in the MainSettings.
+                &#34;&#34;&#34;
+
+                if settings.on_off_both == 1:
+                        prevSpike = [None] * (settings.num_channels) * (1 + settings.mono_stereo)
+                        phaseLockedAddrs = []
+                        phaseLockedTs = []
+                        for i in range(len(spikes_file.addresses)):
+                                if prevSpike[spikes_file.addresses[i]//2] == None:
+                                        prevSpike[spikes_file.addresses[i]//2] = spikes_file.addresses[i]%2
+                                else:
+                                        if prevSpike[spikes_file.addresses[i]//2] == 0 and spikes_file.addresses[i]%2 == 1:
+                                                phaseLockedAddrs.append(spikes_file.addresses[i]//2)
+                                                phaseLockedTs.append(spikes_file.timestamps[i])
+                                                prevSpike[spikes_file.addresses[i]//2] = spikes_file.addresses[i]%2
+                                        else:
+                                                prevSpike[spikes_file.addresses[i]//2] = spikes_file.addresses[i]%2
+                        spikes_file = SpikesFile()
+                        spikes_file.addresses = phaseLockedAddrs
+                        spikes_file.timestamps = phaseLockedTs
+                        return spikes_file
+                else:
+                        print(&#34;[Functions.phase_lock] &gt; SettingsError: this functionality cannot be applied to files that do not have ON/positive and OFF/negative addresses. Check the on_off_both setting for more information.&#34;)
+
+
+        @staticmethod
+        def stereo_to_mono(spikes_file, left_right, settings, return_save_both = 0, path = None, output_format = &#39;.aedat&#39;):
+                &#34;&#34;&#34;
+                Generates a mono AER-DATA SpikesFile from a stereo SpikesFile.
+
+                Parameters:
+                                spikes_file (SpikesFile): Input file.
+                                left_right (int): Set to 0 if you want to extract the left part of the SpikesFile, or to 1 if you want the right part.
+                                settings (MainSettings): Configuration parameters for the input file.
+                                return_save_both (int, optional): Set it to 0 to return the SpikesFile, to 1 to save the SpikesFile in the output path, and to 2 to do both.
+                                path (string, optional): Path where the output file will be saved. Format should not be specified. Not needed if return_save_both is set to 0.
+                                output_format (string, optional): Output format of the file. Currently supports &#39;.aedat&#39; and &#39;.csv&#39;.
+                                
+
+                Returns:
+                                spikes_file_mono (SpikesFile, optional): SpikesFile containing the shift. Returned only if return_save_both is either 0 or 2.
+                
+                Raises:
+                                AttributeError: if the input file is a mono SpikesFile (settings.mono_stereo is set to 0).
+                &#34;&#34;&#34;
+
+                if settings.mono_stereo:
+                        addr_ts = list(zip(spikes_file.addresses, spikes_file.timestamps))
+                        addr_ts = [x for x in addr_ts if x[0] &gt;= left_right*settings.num_channels*(settings.on_off_both + 1) and x[0] &lt; (left_right+1)*settings.num_channels*(settings.on_off_both + 1)]
+
+                        spikes_file_mono = Utils.extract_addr_and_ts(addr_ts)
+                        if left_right:
+                                spikes_file_mono.addresses = [x-left_right*settings.num_channels*(settings.on_off_both + 1) for x in spikes_file_mono.addresses]
+                        
+                        
+                        if return_save_both == 0:
+                                return spikes_file_mono
+                        elif return_save_both == 1 or return_save_both == 2:
+                                if output_format == &#39;aedat&#39; or &#39;AEDAT&#39; or &#39;AERDATA&#39; or &#39;AER-DATA&#39; or &#39;Aedat&#39; or &#39;.aedat&#39;:
+                                        Savers.save_AERDATA(spikes_file_mono, path + &#39;.aedat&#39;, settings)
+                                elif output_format == &#39;csv&#39; or &#39;CSV&#39; or &#39;.csv&#39;:
+                                        Savers.save_CSV(spikes_file_mono, path + &#39;.csv&#39;, settings)        
+                                if return_save_both == 2:
+                                        return spikes_file_mono
+                        
+                else:
+                        print(&#34;[Functions.stereo_to_mono] &gt; SettingsError: this functionality cannot be performed over a mono aedat file.&#34;)
+
+
+        @staticmethod
+        def mono_to_stereo(spikes_file, delay, settings, return_save_both = 0, path = None, output_format = &#39;.aedat&#39;):
+                &#34;&#34;&#34;
+                Generates a stereo AER-DATA SpikesFile from a mono SpikesFile with a specific delay between both.
+
+                Parameters:
+                                spikes_file (SpikesFile): Input file.
+                                delay (int): Delay introduced from left and right spikes. Can be either negative or positive.
+                                settings (MainSettings): Configuration parameters for the input file.
+                                return_save_both (int, optional): Set it to 0 to return the SpikesFile, to 1 to save the SpikesFile in the output path, and to 2 to do both.
+                                path (string, optional): Path where the output file will be saved. Format should not be specified. Not needed if return_save_both is set to 0.
+                                output_format (string, optional): Output format of the file. Currently supports &#39;.aedat&#39; and &#39;.csv&#39;.
+
+                Returns:
+                                spikes_file_new (SpikesFile, optional): SpikesFile containing the shift. Returned only if return_save_both is either 0 or 2.
+                
+                Raises:
+                                SettingsError: if the input file is a stereo SpikesFile (settings.mono_stereo is set to 1).
+                &#34;&#34;&#34;
+
+                if settings.mono_stereo == 0:
+                        spikes_file_new = copy.deepcopy(spikes_file)
+                        newAddrs = [(x + settings.num_channels*(settings.on_off_both+1)) for x in spikes_file_new.addresses]
+                        spikes_file_new.addresses.extend(newAddrs)
+                        newTs = [(x + delay) for x in spikes_file_new.timestamps]
+                        spikes_file_new.timestamps.extend(newTs)
+                        addr_ts = list(zip(spikes_file_new.addresses, spikes_file_new.timestamps))
+                        addr_ts = sorted(addr_ts, key=lambda v: (v, random.random())) #key=getKey)  #THIS DISORDERS TSS
+                        spikes_file_new = Utils.extract_addr_and_ts(addr_ts)
+
+                        if delay &lt; 0:
+                                spikes_file_new.timestamps = [x-delay for x in spikes_file_new.timestamps]
+
+                        if return_save_both == 0:
+                                return spikes_file_new
+                        elif return_save_both == 1 or return_save_both == 2:
+                                #settings_new = copy.deepcopy(settings)
+                                #settings_new.mono_stereo = 1
+                                if output_format == &#39;aedat&#39; or &#39;AEDAT&#39; or &#39;AERDATA&#39; or &#39;AER-DATA&#39; or &#39;Aedat&#39; or &#39;.aedat&#39;:
+                                        Savers.save_AERDATA(spikes_file_new, path + &#39;.aedat&#39;, settings)
+                                elif output_format == &#39;csv&#39; or &#39;CSV&#39; or &#39;.csv&#39;:
+                                        Savers.save_CSV(spikes_file_new, path + &#39;.csv&#39;, settings)        
+                                if return_save_both == 2:
+                                        return spikes_file_new
+
+                else:
+                        print(&#34;[Functions.mono_to_stereo] &gt; SettingsError: this functionality cannot be performed over a stereo aedat file.&#34;)        
+
+
+
+        @staticmethod
+        def extract_channels_activities(spikes_file, addresses, verbose = False):
+                &#34;&#34;&#34;
+                Extract information from a specific set of addresses from the SpikesFile.
+                
+                Parameters:
+                                spikes_file (SpikesFile): file to use.
+                                addresses (int[]): list of addresses to extract.
+                                verbose (boolean, optional): Set to True if you want the execution time of the function to be printed.
+
+                Returns:
+                                new_spikes_file (SpikesFile):  SpikesFile containing only the information from the addresses specified as input from spikes_file.
+                &#34;&#34;&#34;
+
+                if verbose == True: start_time = time.time()
+                spikes_per_channels_ts = []
+                spikes_per_channel_addr = []
+                for i in range(len(spikes_file.timestamps)):
+                        if spikes_file.addresses[i] in addresses:
+                                spikes_per_channels_ts.append(spikes_file.timestamps[i])
+                                spikes_per_channel_addr.append(spikes_file.addresses[i])
+                if verbose == True: print(&#39;EXTRACT CHANNELS CALCULATION&#39;, time.time() - start_time)
+                new_spikes_file = SpikesFile()
+                new_spikes_file.addresses = spikes_per_channel_addr
+                new_spikes_file.timestamps = spikes_per_channels_ts
+                return new_spikes_file</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
+<dl>
+<dt id="pyNAVIS.functions.Functions"><code class="flex name class">
+<span>class <span class="ident">Functions</span></span>
+</code></dt>
+<dd>
+<section class="desc"></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Functions:
+
+        @staticmethod
+        def check_SpikesFile(spikes_file, settings):
+                &#34;&#34;&#34;
+                Checks if the spiking information contained in the SpikesFile is correct and prints &#34;The loaded SpikesFile file has been checked and it&#39;s OK&#34; if the file passes all the checks.
+                
+                Parameters:
+                                spikes_file (SpikesFile): file to check.
+                                settings (MainSettings): configuration parameters for the file to check.
+
+                Returns:
+                                None.
+                
+                Raises:
+                                TimestampOrderError: if the SpikesFile contains at least one timestamp which value is less than 0.
+                                TimestampOrderError: if the SpikesFile contains at least one timestamp that is lesser than its previous one.
+                                AddressValueError: if the SpikesFile contains at least one address less than 0 or greater than the num_channels that you specified in the MainSettings.
+                                NOTE: If mono_stereo is set to 1 (stereo) in the MainSettings, then  addresses should be less than num_channels*2
+                                NOTE: If on_off_both is set to 1 (both) in the MainSettings, then addresses should be less than num_channels*2.
+                                NOTE: If mono_stereo is set to 1 and on_off_both is set to 1 in the MainSettings, then addresses should be less than num_channels*2*2.
+                &#34;&#34;&#34;
+
+                if settings.on_off_both == 1:
+                        number_of_addresses = settings.num_channels*2
+                else:
+                        number_of_addresses = settings.num_channels
+                # Check if all timestamps are greater than zero
+                a = all(item &gt;= 0  for item in spikes_file.timestamps)
+
+                if not a:
+                        print(&#34;[Functions.check_SpikesFile] &gt; TimestampOrderError: The SpikesFile file that you loaded has at least one timestamp that is less than 0.&#34;)
+
+                # Check if each timestamp is greater than its previous one
+                b = not any(i &gt; 0 and spikes_file.timestamps[i] &lt; spikes_file.timestamps[i-1] for i in range(len(spikes_file.timestamps)))
+
+                if not b:
+                        print(&#34;[Functions.check_SpikesFile] &gt; TimestampOrderError: The SpikesFile file that you loaded has at least one timestamp whose value is lesser than its previous one.&#34;)
+
+                # Check if all addresses are between zero and the total number of addresses
+                c = all(item &gt;= 0 and item &lt; number_of_addresses*(settings.mono_stereo + 1) for item in spikes_file.addresses)
+
+                if not c:
+                        print(&#34;[Functions.check_SpikesFile] &gt; AddressValueError: The SpikesFile file that you loaded has at least one event whose address is either less than 0 or greater than the number of addresses that you specified.&#34;)
+
+                if a and b and c:
+                        print(&#34;[Functions.check_SpikesFile] &gt; The loaded SpikesFile file has been checked and it&#39;s OK&#34;)
+                                
+
+        @staticmethod 
+        def adapt_SpikesFile(spikes_file, settings):
+                &#34;&#34;&#34;
+                Subtracts the smallest timestamp of the SpikesFile to all of the timestamps contained in the file (in order to start from 0)
+                It also adapts timestamps based on the tick frequency (ts_tick in the MainSettings).
+                
+                Parameters:
+                                spikes_file (SpikesFile): file to adapt.
+                                settings (MainSettings): configuration parameters for the file to adapt.
+
+                Returns:
+                                spikes_file (SpikesFile):  adapted SpikesFile.
+                &#34;&#34;&#34;
+                minimum_ts = min(spikes_file.timestamps)
+                if settings.reset_timestamp:
+                        spikes_file.timestamps = [(x - minimum_ts)*settings.ts_tick for x in spikes_file.timestamps]
+                else:
+                        spikes_file.timestamps = [x*settings.ts_tick for x in spikes_file.timestamps]
+                return spikes_file
+
+
+        @staticmethod
+        def phase_lock(spikes_file, settings):
+                &#34;&#34;&#34;
+                Performs the phase lock operation over a SpikesFile. This can only be performed to SpikeFiles with both ON and OFF addresses.
+                
+                Parameters:
+                                spikes_file (SpikesFile): file used to perform the phase lock.
+                                settings (MainSettings): configuration parameters of the input file.
+
+                Returns:
+                                spikes_file (SpikesFile):  phase-locked SpikesFile.
+
+                Raises:
+                                SettingsError: if the on_off_both parameter is not set to 2 (both) in the MainSettings.
+                &#34;&#34;&#34;
+
+                if settings.on_off_both == 1:
+                        prevSpike = [None] * (settings.num_channels) * (1 + settings.mono_stereo)
+                        phaseLockedAddrs = []
+                        phaseLockedTs = []
+                        for i in range(len(spikes_file.addresses)):
+                                if prevSpike[spikes_file.addresses[i]//2] == None:
+                                        prevSpike[spikes_file.addresses[i]//2] = spikes_file.addresses[i]%2
+                                else:
+                                        if prevSpike[spikes_file.addresses[i]//2] == 0 and spikes_file.addresses[i]%2 == 1:
+                                                phaseLockedAddrs.append(spikes_file.addresses[i]//2)
+                                                phaseLockedTs.append(spikes_file.timestamps[i])
+                                                prevSpike[spikes_file.addresses[i]//2] = spikes_file.addresses[i]%2
+                                        else:
+                                                prevSpike[spikes_file.addresses[i]//2] = spikes_file.addresses[i]%2
+                        spikes_file = SpikesFile()
+                        spikes_file.addresses = phaseLockedAddrs
+                        spikes_file.timestamps = phaseLockedTs
+                        return spikes_file
+                else:
+                        print(&#34;[Functions.phase_lock] &gt; SettingsError: this functionality cannot be applied to files that do not have ON/positive and OFF/negative addresses. Check the on_off_both setting for more information.&#34;)
+
+
+        @staticmethod
+        def stereo_to_mono(spikes_file, left_right, settings, return_save_both = 0, path = None, output_format = &#39;.aedat&#39;):
+                &#34;&#34;&#34;
+                Generates a mono AER-DATA SpikesFile from a stereo SpikesFile.
+
+                Parameters:
+                                spikes_file (SpikesFile): Input file.
+                                left_right (int): Set to 0 if you want to extract the left part of the SpikesFile, or to 1 if you want the right part.
+                                settings (MainSettings): Configuration parameters for the input file.
+                                return_save_both (int, optional): Set it to 0 to return the SpikesFile, to 1 to save the SpikesFile in the output path, and to 2 to do both.
+                                path (string, optional): Path where the output file will be saved. Format should not be specified. Not needed if return_save_both is set to 0.
+                                output_format (string, optional): Output format of the file. Currently supports &#39;.aedat&#39; and &#39;.csv&#39;.
+                                
+
+                Returns:
+                                spikes_file_mono (SpikesFile, optional): SpikesFile containing the shift. Returned only if return_save_both is either 0 or 2.
+                
+                Raises:
+                                AttributeError: if the input file is a mono SpikesFile (settings.mono_stereo is set to 0).
+                &#34;&#34;&#34;
+
+                if settings.mono_stereo:
+                        addr_ts = list(zip(spikes_file.addresses, spikes_file.timestamps))
+                        addr_ts = [x for x in addr_ts if x[0] &gt;= left_right*settings.num_channels*(settings.on_off_both + 1) and x[0] &lt; (left_right+1)*settings.num_channels*(settings.on_off_both + 1)]
+
+                        spikes_file_mono = Utils.extract_addr_and_ts(addr_ts)
+                        if left_right:
+                                spikes_file_mono.addresses = [x-left_right*settings.num_channels*(settings.on_off_both + 1) for x in spikes_file_mono.addresses]
+                        
+                        
+                        if return_save_both == 0:
+                                return spikes_file_mono
+                        elif return_save_both == 1 or return_save_both == 2:
+                                if output_format == &#39;aedat&#39; or &#39;AEDAT&#39; or &#39;AERDATA&#39; or &#39;AER-DATA&#39; or &#39;Aedat&#39; or &#39;.aedat&#39;:
+                                        Savers.save_AERDATA(spikes_file_mono, path + &#39;.aedat&#39;, settings)
+                                elif output_format == &#39;csv&#39; or &#39;CSV&#39; or &#39;.csv&#39;:
+                                        Savers.save_CSV(spikes_file_mono, path + &#39;.csv&#39;, settings)        
+                                if return_save_both == 2:
+                                        return spikes_file_mono
+                        
+                else:
+                        print(&#34;[Functions.stereo_to_mono] &gt; SettingsError: this functionality cannot be performed over a mono aedat file.&#34;)
+
+
+        @staticmethod
+        def mono_to_stereo(spikes_file, delay, settings, return_save_both = 0, path = None, output_format = &#39;.aedat&#39;):
+                &#34;&#34;&#34;
+                Generates a stereo AER-DATA SpikesFile from a mono SpikesFile with a specific delay between both.
+
+                Parameters:
+                                spikes_file (SpikesFile): Input file.
+                                delay (int): Delay introduced from left and right spikes. Can be either negative or positive.
+                                settings (MainSettings): Configuration parameters for the input file.
+                                return_save_both (int, optional): Set it to 0 to return the SpikesFile, to 1 to save the SpikesFile in the output path, and to 2 to do both.
+                                path (string, optional): Path where the output file will be saved. Format should not be specified. Not needed if return_save_both is set to 0.
+                                output_format (string, optional): Output format of the file. Currently supports &#39;.aedat&#39; and &#39;.csv&#39;.
+
+                Returns:
+                                spikes_file_new (SpikesFile, optional): SpikesFile containing the shift. Returned only if return_save_both is either 0 or 2.
+                
+                Raises:
+                                SettingsError: if the input file is a stereo SpikesFile (settings.mono_stereo is set to 1).
+                &#34;&#34;&#34;
+
+                if settings.mono_stereo == 0:
+                        spikes_file_new = copy.deepcopy(spikes_file)
+                        newAddrs = [(x + settings.num_channels*(settings.on_off_both+1)) for x in spikes_file_new.addresses]
+                        spikes_file_new.addresses.extend(newAddrs)
+                        newTs = [(x + delay) for x in spikes_file_new.timestamps]
+                        spikes_file_new.timestamps.extend(newTs)
+                        addr_ts = list(zip(spikes_file_new.addresses, spikes_file_new.timestamps))
+                        addr_ts = sorted(addr_ts, key=lambda v: (v, random.random())) #key=getKey)  #THIS DISORDERS TSS
+                        spikes_file_new = Utils.extract_addr_and_ts(addr_ts)
+
+                        if delay &lt; 0:
+                                spikes_file_new.timestamps = [x-delay for x in spikes_file_new.timestamps]
+
+                        if return_save_both == 0:
+                                return spikes_file_new
+                        elif return_save_both == 1 or return_save_both == 2:
+                                #settings_new = copy.deepcopy(settings)
+                                #settings_new.mono_stereo = 1
+                                if output_format == &#39;aedat&#39; or &#39;AEDAT&#39; or &#39;AERDATA&#39; or &#39;AER-DATA&#39; or &#39;Aedat&#39; or &#39;.aedat&#39;:
+                                        Savers.save_AERDATA(spikes_file_new, path + &#39;.aedat&#39;, settings)
+                                elif output_format == &#39;csv&#39; or &#39;CSV&#39; or &#39;.csv&#39;:
+                                        Savers.save_CSV(spikes_file_new, path + &#39;.csv&#39;, settings)        
+                                if return_save_both == 2:
+                                        return spikes_file_new
+
+                else:
+                        print(&#34;[Functions.mono_to_stereo] &gt; SettingsError: this functionality cannot be performed over a stereo aedat file.&#34;)        
+
+
+
+        @staticmethod
+        def extract_channels_activities(spikes_file, addresses, verbose = False):
+                &#34;&#34;&#34;
+                Extract information from a specific set of addresses from the SpikesFile.
+                
+                Parameters:
+                                spikes_file (SpikesFile): file to use.
+                                addresses (int[]): list of addresses to extract.
+                                verbose (boolean, optional): Set to True if you want the execution time of the function to be printed.
+
+                Returns:
+                                new_spikes_file (SpikesFile):  SpikesFile containing only the information from the addresses specified as input from spikes_file.
+                &#34;&#34;&#34;
+
+                if verbose == True: start_time = time.time()
+                spikes_per_channels_ts = []
+                spikes_per_channel_addr = []
+                for i in range(len(spikes_file.timestamps)):
+                        if spikes_file.addresses[i] in addresses:
+                                spikes_per_channels_ts.append(spikes_file.timestamps[i])
+                                spikes_per_channel_addr.append(spikes_file.addresses[i])
+                if verbose == True: print(&#39;EXTRACT CHANNELS CALCULATION&#39;, time.time() - start_time)
+                new_spikes_file = SpikesFile()
+                new_spikes_file.addresses = spikes_per_channel_addr
+                new_spikes_file.timestamps = spikes_per_channels_ts
+                return new_spikes_file</code></pre>
+</details>
+<h3>Static methods</h3>
+<dl>
+<dt id="pyNAVIS.functions.Functions.adapt_SpikesFile"><code class="name flex">
+<span>def <span class="ident">adapt_SpikesFile</span></span>(<span>spikes_file, settings)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Subtracts the smallest timestamp of the SpikesFile to all of the timestamps contained in the file (in order to start from 0)
+It also adapts timestamps based on the tick frequency (ts_tick in the MainSettings).</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>spikes_file</code></strong> :&ensp;<code>SpikesFile</code></dt>
+<dd>file to adapt.</dd>
+<dt><strong><code>settings</code></strong> :&ensp;<code>MainSettings</code></dt>
+<dd>configuration parameters for the file to adapt.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><strong><code>spikes_file</code></strong> :&ensp;<code>SpikesFile</code></dt>
+<dd>adapted SpikesFile.</dd>
+</dl></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@staticmethod 
+def adapt_SpikesFile(spikes_file, settings):
+        &#34;&#34;&#34;
+        Subtracts the smallest timestamp of the SpikesFile to all of the timestamps contained in the file (in order to start from 0)
+        It also adapts timestamps based on the tick frequency (ts_tick in the MainSettings).
+        
+        Parameters:
+                        spikes_file (SpikesFile): file to adapt.
+                        settings (MainSettings): configuration parameters for the file to adapt.
+
+        Returns:
+                        spikes_file (SpikesFile):  adapted SpikesFile.
+        &#34;&#34;&#34;
+        minimum_ts = min(spikes_file.timestamps)
+        if settings.reset_timestamp:
+                spikes_file.timestamps = [(x - minimum_ts)*settings.ts_tick for x in spikes_file.timestamps]
+        else:
+                spikes_file.timestamps = [x*settings.ts_tick for x in spikes_file.timestamps]
+        return spikes_file</code></pre>
+</details>
+</dd>
+<dt id="pyNAVIS.functions.Functions.check_SpikesFile"><code class="name flex">
+<span>def <span class="ident">check_SpikesFile</span></span>(<span>spikes_file, settings)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Checks if the spiking information contained in the SpikesFile is correct and prints "The loaded SpikesFile file has been checked and it's OK" if the file passes all the checks.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>spikes_file</code></strong> :&ensp;<code>SpikesFile</code></dt>
+<dd>file to check.</dd>
+<dt><strong><code>settings</code></strong> :&ensp;<code>MainSettings</code></dt>
+<dd>configuration parameters for the file to check.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>None.</p>
+<h2 id="raises">Raises</h2>
+<dl>
+<dt><strong><code>TimestampOrderError</code></strong></dt>
+<dd>if the SpikesFile contains at least one timestamp which value is less than 0.</dd>
+<dt><strong><code>TimestampOrderError</code></strong></dt>
+<dd>if the SpikesFile contains at least one timestamp that is lesser than its previous one.</dd>
+<dt><strong><code>AddressValueError</code></strong></dt>
+<dd>if the SpikesFile contains at least one address less than 0 or greater than the num_channels that you specified in the MainSettings.</dd>
+<dt><strong><code>NOTE</code></strong></dt>
+<dd>If mono_stereo is set to 1 (stereo) in the MainSettings, then
+addresses should be less than num_channels*2</dd>
+<dt><strong><code>NOTE</code></strong></dt>
+<dd>If on_off_both is set to 1 (both) in the MainSettings, then addresses should be less than num_channels*2.</dd>
+<dt><strong><code>NOTE</code></strong></dt>
+<dd>If mono_stereo is set to 1 and on_off_both is set to 1 in the MainSettings, then addresses should be less than num_channels<em>2</em>2.</dd>
+</dl></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@staticmethod
+def check_SpikesFile(spikes_file, settings):
+        &#34;&#34;&#34;
+        Checks if the spiking information contained in the SpikesFile is correct and prints &#34;The loaded SpikesFile file has been checked and it&#39;s OK&#34; if the file passes all the checks.
+        
+        Parameters:
+                        spikes_file (SpikesFile): file to check.
+                        settings (MainSettings): configuration parameters for the file to check.
+
+        Returns:
+                        None.
+        
+        Raises:
+                        TimestampOrderError: if the SpikesFile contains at least one timestamp which value is less than 0.
+                        TimestampOrderError: if the SpikesFile contains at least one timestamp that is lesser than its previous one.
+                        AddressValueError: if the SpikesFile contains at least one address less than 0 or greater than the num_channels that you specified in the MainSettings.
+                        NOTE: If mono_stereo is set to 1 (stereo) in the MainSettings, then  addresses should be less than num_channels*2
+                        NOTE: If on_off_both is set to 1 (both) in the MainSettings, then addresses should be less than num_channels*2.
+                        NOTE: If mono_stereo is set to 1 and on_off_both is set to 1 in the MainSettings, then addresses should be less than num_channels*2*2.
+        &#34;&#34;&#34;
+
+        if settings.on_off_both == 1:
+                number_of_addresses = settings.num_channels*2
+        else:
+                number_of_addresses = settings.num_channels
+        # Check if all timestamps are greater than zero
+        a = all(item &gt;= 0  for item in spikes_file.timestamps)
+
+        if not a:
+                print(&#34;[Functions.check_SpikesFile] &gt; TimestampOrderError: The SpikesFile file that you loaded has at least one timestamp that is less than 0.&#34;)
+
+        # Check if each timestamp is greater than its previous one
+        b = not any(i &gt; 0 and spikes_file.timestamps[i] &lt; spikes_file.timestamps[i-1] for i in range(len(spikes_file.timestamps)))
+
+        if not b:
+                print(&#34;[Functions.check_SpikesFile] &gt; TimestampOrderError: The SpikesFile file that you loaded has at least one timestamp whose value is lesser than its previous one.&#34;)
+
+        # Check if all addresses are between zero and the total number of addresses
+        c = all(item &gt;= 0 and item &lt; number_of_addresses*(settings.mono_stereo + 1) for item in spikes_file.addresses)
+
+        if not c:
+                print(&#34;[Functions.check_SpikesFile] &gt; AddressValueError: The SpikesFile file that you loaded has at least one event whose address is either less than 0 or greater than the number of addresses that you specified.&#34;)
+
+        if a and b and c:
+                print(&#34;[Functions.check_SpikesFile] &gt; The loaded SpikesFile file has been checked and it&#39;s OK&#34;)</code></pre>
+</details>
+</dd>
+<dt id="pyNAVIS.functions.Functions.extract_channels_activities"><code class="name flex">
+<span>def <span class="ident">extract_channels_activities</span></span>(<span>spikes_file, addresses, verbose=False)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Extract information from a specific set of addresses from the SpikesFile.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>spikes_file</code></strong> :&ensp;<code>SpikesFile</code></dt>
+<dd>file to use.</dd>
+<dt><strong><code>addresses</code></strong> :&ensp;<code>int</code>[]</dt>
+<dd>list of addresses to extract.</dd>
+<dt><strong><code>verbose</code></strong> :&ensp;<code>boolean</code>, optional</dt>
+<dd>Set to True if you want the execution time of the function to be printed.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><strong><code>new_spikes_file</code></strong> :&ensp;<code>SpikesFile</code></dt>
+<dd>SpikesFile containing only the information from the addresses specified as input from spikes_file.</dd>
+</dl></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@staticmethod
+def extract_channels_activities(spikes_file, addresses, verbose = False):
+        &#34;&#34;&#34;
+        Extract information from a specific set of addresses from the SpikesFile.
+        
+        Parameters:
+                        spikes_file (SpikesFile): file to use.
+                        addresses (int[]): list of addresses to extract.
+                        verbose (boolean, optional): Set to True if you want the execution time of the function to be printed.
+
+        Returns:
+                        new_spikes_file (SpikesFile):  SpikesFile containing only the information from the addresses specified as input from spikes_file.
+        &#34;&#34;&#34;
+
+        if verbose == True: start_time = time.time()
+        spikes_per_channels_ts = []
+        spikes_per_channel_addr = []
+        for i in range(len(spikes_file.timestamps)):
+                if spikes_file.addresses[i] in addresses:
+                        spikes_per_channels_ts.append(spikes_file.timestamps[i])
+                        spikes_per_channel_addr.append(spikes_file.addresses[i])
+        if verbose == True: print(&#39;EXTRACT CHANNELS CALCULATION&#39;, time.time() - start_time)
+        new_spikes_file = SpikesFile()
+        new_spikes_file.addresses = spikes_per_channel_addr
+        new_spikes_file.timestamps = spikes_per_channels_ts
+        return new_spikes_file</code></pre>
+</details>
+</dd>
+<dt id="pyNAVIS.functions.Functions.mono_to_stereo"><code class="name flex">
+<span>def <span class="ident">mono_to_stereo</span></span>(<span>spikes_file, delay, settings, return_save_both=0, path=None, output_format='.aedat')</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Generates a stereo AER-DATA SpikesFile from a mono SpikesFile with a specific delay between both.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>spikes_file</code></strong> :&ensp;<code>SpikesFile</code></dt>
+<dd>Input file.</dd>
+<dt><strong><code>delay</code></strong> :&ensp;<code>int</code></dt>
+<dd>Delay introduced from left and right spikes. Can be either negative or positive.</dd>
+<dt><strong><code>settings</code></strong> :&ensp;<code>MainSettings</code></dt>
+<dd>Configuration parameters for the input file.</dd>
+<dt><strong><code>return_save_both</code></strong> :&ensp;<code>int</code>, optional</dt>
+<dd>Set it to 0 to return the SpikesFile, to 1 to save the SpikesFile in the output path, and to 2 to do both.</dd>
+<dt><strong><code>path</code></strong> :&ensp;<code>string</code>, optional</dt>
+<dd>Path where the output file will be saved. Format should not be specified. Not needed if return_save_both is set to 0.</dd>
+<dt><strong><code>output_format</code></strong> :&ensp;<code>string</code>, optional</dt>
+<dd>Output format of the file. Currently supports '.aedat' and '.csv'.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><strong><code>spikes_file_new</code></strong> :&ensp;<code>SpikesFile</code>, optional</dt>
+<dd>SpikesFile containing the shift. Returned only if return_save_both is either 0 or 2.</dd>
+</dl>
+<h2 id="raises">Raises</h2>
+<dl>
+<dt><strong><code>SettingsError</code></strong></dt>
+<dd>if the input file is a stereo SpikesFile (settings.mono_stereo is set to 1).</dd>
+</dl></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@staticmethod
+def mono_to_stereo(spikes_file, delay, settings, return_save_both = 0, path = None, output_format = &#39;.aedat&#39;):
+        &#34;&#34;&#34;
+        Generates a stereo AER-DATA SpikesFile from a mono SpikesFile with a specific delay between both.
+
+        Parameters:
+                        spikes_file (SpikesFile): Input file.
+                        delay (int): Delay introduced from left and right spikes. Can be either negative or positive.
+                        settings (MainSettings): Configuration parameters for the input file.
+                        return_save_both (int, optional): Set it to 0 to return the SpikesFile, to 1 to save the SpikesFile in the output path, and to 2 to do both.
+                        path (string, optional): Path where the output file will be saved. Format should not be specified. Not needed if return_save_both is set to 0.
+                        output_format (string, optional): Output format of the file. Currently supports &#39;.aedat&#39; and &#39;.csv&#39;.
+
+        Returns:
+                        spikes_file_new (SpikesFile, optional): SpikesFile containing the shift. Returned only if return_save_both is either 0 or 2.
+        
+        Raises:
+                        SettingsError: if the input file is a stereo SpikesFile (settings.mono_stereo is set to 1).
+        &#34;&#34;&#34;
+
+        if settings.mono_stereo == 0:
+                spikes_file_new = copy.deepcopy(spikes_file)
+                newAddrs = [(x + settings.num_channels*(settings.on_off_both+1)) for x in spikes_file_new.addresses]
+                spikes_file_new.addresses.extend(newAddrs)
+                newTs = [(x + delay) for x in spikes_file_new.timestamps]
+                spikes_file_new.timestamps.extend(newTs)
+                addr_ts = list(zip(spikes_file_new.addresses, spikes_file_new.timestamps))
+                addr_ts = sorted(addr_ts, key=lambda v: (v, random.random())) #key=getKey)  #THIS DISORDERS TSS
+                spikes_file_new = Utils.extract_addr_and_ts(addr_ts)
+
+                if delay &lt; 0:
+                        spikes_file_new.timestamps = [x-delay for x in spikes_file_new.timestamps]
+
+                if return_save_both == 0:
+                        return spikes_file_new
+                elif return_save_both == 1 or return_save_both == 2:
+                        #settings_new = copy.deepcopy(settings)
+                        #settings_new.mono_stereo = 1
+                        if output_format == &#39;aedat&#39; or &#39;AEDAT&#39; or &#39;AERDATA&#39; or &#39;AER-DATA&#39; or &#39;Aedat&#39; or &#39;.aedat&#39;:
+                                Savers.save_AERDATA(spikes_file_new, path + &#39;.aedat&#39;, settings)
+                        elif output_format == &#39;csv&#39; or &#39;CSV&#39; or &#39;.csv&#39;:
+                                Savers.save_CSV(spikes_file_new, path + &#39;.csv&#39;, settings)        
+                        if return_save_both == 2:
+                                return spikes_file_new
+
+        else:
+                print(&#34;[Functions.mono_to_stereo] &gt; SettingsError: this functionality cannot be performed over a stereo aedat file.&#34;)        </code></pre>
+</details>
+</dd>
+<dt id="pyNAVIS.functions.Functions.phase_lock"><code class="name flex">
+<span>def <span class="ident">phase_lock</span></span>(<span>spikes_file, settings)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Performs the phase lock operation over a SpikesFile. This can only be performed to SpikeFiles with both ON and OFF addresses.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>spikes_file</code></strong> :&ensp;<code>SpikesFile</code></dt>
+<dd>file used to perform the phase lock.</dd>
+<dt><strong><code>settings</code></strong> :&ensp;<code>MainSettings</code></dt>
+<dd>configuration parameters of the input file.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><strong><code>spikes_file</code></strong> :&ensp;<code>SpikesFile</code></dt>
+<dd>phase-locked SpikesFile.</dd>
+</dl>
+<h2 id="raises">Raises</h2>
+<dl>
+<dt><strong><code>SettingsError</code></strong></dt>
+<dd>if the on_off_both parameter is not set to 2 (both) in the MainSettings.</dd>
+</dl></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@staticmethod
+def phase_lock(spikes_file, settings):
+        &#34;&#34;&#34;
+        Performs the phase lock operation over a SpikesFile. This can only be performed to SpikeFiles with both ON and OFF addresses.
+        
+        Parameters:
+                        spikes_file (SpikesFile): file used to perform the phase lock.
+                        settings (MainSettings): configuration parameters of the input file.
+
+        Returns:
+                        spikes_file (SpikesFile):  phase-locked SpikesFile.
+
+        Raises:
+                        SettingsError: if the on_off_both parameter is not set to 2 (both) in the MainSettings.
+        &#34;&#34;&#34;
+
+        if settings.on_off_both == 1:
+                prevSpike = [None] * (settings.num_channels) * (1 + settings.mono_stereo)
+                phaseLockedAddrs = []
+                phaseLockedTs = []
+                for i in range(len(spikes_file.addresses)):
+                        if prevSpike[spikes_file.addresses[i]//2] == None:
+                                prevSpike[spikes_file.addresses[i]//2] = spikes_file.addresses[i]%2
+                        else:
+                                if prevSpike[spikes_file.addresses[i]//2] == 0 and spikes_file.addresses[i]%2 == 1:
+                                        phaseLockedAddrs.append(spikes_file.addresses[i]//2)
+                                        phaseLockedTs.append(spikes_file.timestamps[i])
+                                        prevSpike[spikes_file.addresses[i]//2] = spikes_file.addresses[i]%2
+                                else:
+                                        prevSpike[spikes_file.addresses[i]//2] = spikes_file.addresses[i]%2
+                spikes_file = SpikesFile()
+                spikes_file.addresses = phaseLockedAddrs
+                spikes_file.timestamps = phaseLockedTs
+                return spikes_file
+        else:
+                print(&#34;[Functions.phase_lock] &gt; SettingsError: this functionality cannot be applied to files that do not have ON/positive and OFF/negative addresses. Check the on_off_both setting for more information.&#34;)</code></pre>
+</details>
+</dd>
+<dt id="pyNAVIS.functions.Functions.stereo_to_mono"><code class="name flex">
+<span>def <span class="ident">stereo_to_mono</span></span>(<span>spikes_file, left_right, settings, return_save_both=0, path=None, output_format='.aedat')</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Generates a mono AER-DATA SpikesFile from a stereo SpikesFile.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>spikes_file</code></strong> :&ensp;<code>SpikesFile</code></dt>
+<dd>Input file.</dd>
+<dt><strong><code>left_right</code></strong> :&ensp;<code>int</code></dt>
+<dd>Set to 0 if you want to extract the left part of the SpikesFile, or to 1 if you want the right part.</dd>
+<dt><strong><code>settings</code></strong> :&ensp;<code>MainSettings</code></dt>
+<dd>Configuration parameters for the input file.</dd>
+<dt><strong><code>return_save_both</code></strong> :&ensp;<code>int</code>, optional</dt>
+<dd>Set it to 0 to return the SpikesFile, to 1 to save the SpikesFile in the output path, and to 2 to do both.</dd>
+<dt><strong><code>path</code></strong> :&ensp;<code>string</code>, optional</dt>
+<dd>Path where the output file will be saved. Format should not be specified. Not needed if return_save_both is set to 0.</dd>
+<dt><strong><code>output_format</code></strong> :&ensp;<code>string</code>, optional</dt>
+<dd>Output format of the file. Currently supports '.aedat' and '.csv'.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><strong><code>spikes_file_mono</code></strong> :&ensp;<code>SpikesFile</code>, optional</dt>
+<dd>SpikesFile containing the shift. Returned only if return_save_both is either 0 or 2.</dd>
+</dl>
+<h2 id="raises">Raises</h2>
+<dl>
+<dt><strong><code>AttributeError</code></strong></dt>
+<dd>if the input file is a mono SpikesFile (settings.mono_stereo is set to 0).</dd>
+</dl></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@staticmethod
+def stereo_to_mono(spikes_file, left_right, settings, return_save_both = 0, path = None, output_format = &#39;.aedat&#39;):
+        &#34;&#34;&#34;
+        Generates a mono AER-DATA SpikesFile from a stereo SpikesFile.
+
+        Parameters:
+                        spikes_file (SpikesFile): Input file.
+                        left_right (int): Set to 0 if you want to extract the left part of the SpikesFile, or to 1 if you want the right part.
+                        settings (MainSettings): Configuration parameters for the input file.
+                        return_save_both (int, optional): Set it to 0 to return the SpikesFile, to 1 to save the SpikesFile in the output path, and to 2 to do both.
+                        path (string, optional): Path where the output file will be saved. Format should not be specified. Not needed if return_save_both is set to 0.
+                        output_format (string, optional): Output format of the file. Currently supports &#39;.aedat&#39; and &#39;.csv&#39;.
+                        
+
+        Returns:
+                        spikes_file_mono (SpikesFile, optional): SpikesFile containing the shift. Returned only if return_save_both is either 0 or 2.
+        
+        Raises:
+                        AttributeError: if the input file is a mono SpikesFile (settings.mono_stereo is set to 0).
+        &#34;&#34;&#34;
+
+        if settings.mono_stereo:
+                addr_ts = list(zip(spikes_file.addresses, spikes_file.timestamps))
+                addr_ts = [x for x in addr_ts if x[0] &gt;= left_right*settings.num_channels*(settings.on_off_both + 1) and x[0] &lt; (left_right+1)*settings.num_channels*(settings.on_off_both + 1)]
+
+                spikes_file_mono = Utils.extract_addr_and_ts(addr_ts)
+                if left_right:
+                        spikes_file_mono.addresses = [x-left_right*settings.num_channels*(settings.on_off_both + 1) for x in spikes_file_mono.addresses]
+                
+                
+                if return_save_both == 0:
+                        return spikes_file_mono
+                elif return_save_both == 1 or return_save_both == 2:
+                        if output_format == &#39;aedat&#39; or &#39;AEDAT&#39; or &#39;AERDATA&#39; or &#39;AER-DATA&#39; or &#39;Aedat&#39; or &#39;.aedat&#39;:
+                                Savers.save_AERDATA(spikes_file_mono, path + &#39;.aedat&#39;, settings)
+                        elif output_format == &#39;csv&#39; or &#39;CSV&#39; or &#39;.csv&#39;:
+                                Savers.save_CSV(spikes_file_mono, path + &#39;.csv&#39;, settings)        
+                        if return_save_both == 2:
+                                return spikes_file_mono
+                
+        else:
+                print(&#34;[Functions.stereo_to_mono] &gt; SettingsError: this functionality cannot be performed over a mono aedat file.&#34;)</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+</dl>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="pyNAVIS" href="index.html">pyNAVIS</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li>
+<h4><code><a title="pyNAVIS.functions.Functions" href="#pyNAVIS.functions.Functions">Functions</a></code></h4>
+<ul class="">
+<li><code><a title="pyNAVIS.functions.Functions.adapt_SpikesFile" href="#pyNAVIS.functions.Functions.adapt_SpikesFile">adapt_SpikesFile</a></code></li>
+<li><code><a title="pyNAVIS.functions.Functions.check_SpikesFile" href="#pyNAVIS.functions.Functions.check_SpikesFile">check_SpikesFile</a></code></li>
+<li><code><a title="pyNAVIS.functions.Functions.extract_channels_activities" href="#pyNAVIS.functions.Functions.extract_channels_activities">extract_channels_activities</a></code></li>
+<li><code><a title="pyNAVIS.functions.Functions.mono_to_stereo" href="#pyNAVIS.functions.Functions.mono_to_stereo">mono_to_stereo</a></code></li>
+<li><code><a title="pyNAVIS.functions.Functions.phase_lock" href="#pyNAVIS.functions.Functions.phase_lock">phase_lock</a></code></li>
+<li><code><a title="pyNAVIS.functions.Functions.stereo_to_mono" href="#pyNAVIS.functions.Functions.stereo_to_mono">stereo_to_mono</a></code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.7.5</a>.</p>
+</footer>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad()</script>
+</body>
+</html>

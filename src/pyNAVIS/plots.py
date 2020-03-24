@@ -32,23 +32,23 @@ from .utils import Utils
 class Plots:
     @staticmethod
     def spikegram(spikes_file, settings, dot_size = 0.2, dot_freq = 1, graph_tile = 'Spikegram', verbose = False):
-        '''
+        """
         Plots the spikegram (also known as cochleogram or raster plot) of a SpikesFile.
         This is, a graph where the X axis means time and the Y axis represents addresses (or cochlea channels), and where every spike is plotted as a dot.
 
-            Parameters:
-                    spikes_file (SpikesFile): File to plot.
-                    settings (MainSettings): Configuration parameters for the file to plot.
-                    dot_size (float): Size of the dots used in the spikegram plot.
-                    dot_freq (int): Set the frequency of spikes that will be represented in the spikegram.
-                        NOTE: A value of 10 means that for every 10 spikes, only 1 will be plotted.
-                        NOTE: This helps reducing lag when plotting heavy files.
-                    graph_tile (string, optional): Text that will appear as title for the graph.
-                    verbose (boolean, optional): Set to True if you want the execution time of the function to be printed.
+        Parameters:
+                spikes_file (SpikesFile): File to plot.
+                settings (MainSettings): Configuration parameters for the file to plot.
+                dot_size (float): Size of the dots used in the spikegram plot.
+                dot_freq (int): Set the frequency of spikes that will be represented in the spikegram.
+                    NOTE: A value of 10 means that for every 10 spikes, only 1 will be plotted.
+                    NOTE: This helps reducing lag when plotting heavy files.
+                graph_tile (string, optional): Text that will appear as title for the graph.
+                verbose (boolean, optional): Set to True if you want the execution time of the function to be printed.
 
-            Returns:
-                    None.
-        '''
+        Returns:
+                None.
+        """
 
         if verbose == True: start_time = time.time()
         #REPRESENTATION
@@ -78,20 +78,20 @@ class Plots:
 
     @staticmethod
     def sonogram(spikes_file, settings, return_data = False, graph_tile = 'Sonogram', verbose = False):
-        '''
+        """
         Plots the sonogram of a SpikesFile.
         This is, a graph where the X axis means time and the Y axis represents addresses (or cochlea channels), and where the spiking activity is shown with color.
 
-            Parameters:
-                    spikes_file (SpikesFile): file to plot.
-                    settings (MainSettings): configuration parameters for the file to plot.
-                    return_data (boolean, optional): When set to True, the sonogram matrix will be returned instead of plotted.
-                    graph_tile (string, optional): Text that will appear as title for the graph.
-                    verbose (boolean, optional): Set to True if you want the execution time of the function to be printed.
+        Parameters:
+                spikes_file (SpikesFile): file to plot.
+                settings (MainSettings): configuration parameters for the file to plot.
+                return_data (boolean, optional): When set to True, the sonogram matrix will be returned instead of plotted.
+                graph_tile (string, optional): Text that will appear as title for the graph.
+                verbose (boolean, optional): Set to True if you want the execution time of the function to be printed.
 
-            Returns:
-                    sonogram (int[,]): sonogram matrix. Only returned if return_data is set to True.
-        '''
+        Returns:
+                sonogram (int[,]): sonogram matrix. Only returned if return_data is set to True.
+        """
         if verbose == True: start_time = time.time()
 
         total_time = max(spikes_file.timestamps) - min(spikes_file.timestamps)
@@ -144,20 +144,20 @@ class Plots:
 
     @staticmethod
     def histogram(spikes_file, settings, bar_line = 1, graph_tile = 'Histogram', verbose = False):
-        '''
+        """
         Plots the histogram of a SpikesFile.
         This is, a graph where addresses (or cochlea channels) are represented in the X axis, and number of spikes in the Y axis.
 
-            Parameters:
-                    spikes_file (SpikesFile): file to plot.
-                    settings (MainSettings): configuration parameters for the file to plot.
-                    bar_line (int, optional): Select wether to plot the histogram as bar plot (0) or as a line graph (1).
-                    graph_tile (string, optional): Text that will appear as title for the graph.
-                    verbose (boolean, optional): Set to True if you want the execution time of the function to be printed.
+        Parameters:
+                spikes_file (SpikesFile): file to plot.
+                settings (MainSettings): configuration parameters for the file to plot.
+                bar_line (int, optional): Select wether to plot the histogram as bar plot (0) or as a line graph (1).
+                graph_tile (string, optional): Text that will appear as title for the graph.
+                verbose (boolean, optional): Set to True if you want the execution time of the function to be printed.
 
-            Returns:
-                    None.
-        '''
+        Returns:
+                None.
+        """
 
         start_time = time.time()
         
@@ -190,19 +190,19 @@ class Plots:
 
     @staticmethod
     def average_activity(spikes_file, settings, graph_tile = 'Average activity', verbose=False):
-        '''
+        """
         Plots the average activity plot of a SpikesFile.
         This is, a graph where time is represented in the X axis, and average number of spikes in the Y axis.
 
-            Parameters:
-                    spikes_file (SpikesFile): file to plot.
-                    settings (MainSettings): configuration parameters for the file to plot.
-                    graph_tile (string, optional): Text that will appear as title for the graph.
-                    verbose (boolean, optional): Set to True if you want the execution time of the function to be printed.
+        Parameters:
+                spikes_file (SpikesFile): file to plot.
+                settings (MainSettings): configuration parameters for the file to plot.
+                graph_tile (string, optional): Text that will appear as title for the graph.
+                verbose (boolean, optional): Set to True if you want the execution time of the function to be printed.
 
-            Returns:
-                    None.
-        '''
+        Returns:
+                None.
+        """
         aedat_addr_ts = zip(spikes_file.addresses, spikes_file.timestamps)
         total_time = int(max(spikes_file.timestamps))
         last_ts = 0
@@ -264,23 +264,23 @@ class Plots:
 
     @staticmethod
     def difference_between_LR(spikes_file, settings, return_data = False, graph_tile = 'Diff. between L and R cochlea', verbose = False):
-        '''
+        """
         Plots a plot showing the differente between the left and the right activity of a SpikesFile.
         NOTE: This function can only be called if the mono_stereo parameter in settings is set to 1.
 
-            Parameters:
-                    spikes_file (SpikesFile): file to plot.
-                    settings (MainSettings): configuration parameters for the file to plot.
-                    return_data (boolean, optional): When set to True, the sonogram matrix will be returned instead of plotted.
-                    graph_tile (string, optional): Text that will appear as title for the graph.
-                    verbose (boolean, optional): Set to True if you want the execution time of the function to be printed.
+        Parameters:
+                spikes_file (SpikesFile): file to plot.
+                settings (MainSettings): configuration parameters for the file to plot.
+                return_data (boolean, optional): When set to True, the sonogram matrix will be returned instead of plotted.
+                graph_tile (string, optional): Text that will appear as title for the graph.
+                verbose (boolean, optional): Set to True if you want the execution time of the function to be printed.
 
-            Returns:
-                    diff (int[,]): disparity matrix. Only returned if return_data is set to True.
+        Returns:
+                diff (int[,]): disparity matrix. Only returned if return_data is set to True.
 
-            Raises:
-                SettingsError: if settings.mono_stereo == 0
-        '''
+        Raises:
+            SettingsError: if settings.mono_stereo == 0
+        """
         if settings.mono_stereo == 1:    
             total_time = max(spikes_file.timestamps) - min(spikes_file.timestamps)
             diff = np.zeros((settings.num_channels*(settings.on_off_both + 1), int(math.ceil(total_time/settings.bin_size))))

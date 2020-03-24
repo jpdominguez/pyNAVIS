@@ -36,7 +36,7 @@ class Functions:
 
 	@staticmethod
 	def check_SpikesFile(spikes_file, settings):
-		'''
+		"""
 		Checks if the spiking information contained in the SpikesFile is correct and prints "The loaded SpikesFile file has been checked and it's OK" if the file passes all the checks.
 		
 		Parameters:
@@ -50,10 +50,10 @@ class Functions:
 				TimestampOrderError: if the SpikesFile contains at least one timestamp which value is less than 0.
 				TimestampOrderError: if the SpikesFile contains at least one timestamp that is lesser than its previous one.
 				AddressValueError: if the SpikesFile contains at least one address less than 0 or greater than the num_channels that you specified in the MainSettings.
-					NOTE: If mono_stereo is set to 1 (stereo) in the MainSettings, then  addresses should be less than num_channels*2
-					NOTE: If on_off_both is set to 1 (both) in the MainSettings, then addresses should be less than num_channels*2.
-					NOTE: If mono_stereo is set to 1 and on_off_both is set to 1 in the MainSettings, then addresses should be less than num_channels*2*2.
-		'''
+				NOTE: If mono_stereo is set to 1 (stereo) in the MainSettings, then  addresses should be less than num_channels*2
+				NOTE: If on_off_both is set to 1 (both) in the MainSettings, then addresses should be less than num_channels*2.
+				NOTE: If mono_stereo is set to 1 and on_off_both is set to 1 in the MainSettings, then addresses should be less than num_channels*2*2.
+		"""
 
 		if settings.on_off_both == 1:
 			number_of_addresses = settings.num_channels*2
@@ -83,7 +83,7 @@ class Functions:
 
 	@staticmethod 
 	def adapt_SpikesFile(spikes_file, settings):
-		'''
+		"""
 		Subtracts the smallest timestamp of the SpikesFile to all of the timestamps contained in the file (in order to start from 0)
 		It also adapts timestamps based on the tick frequency (ts_tick in the MainSettings).
 		
@@ -93,7 +93,7 @@ class Functions:
 
 		Returns:
 				spikes_file (SpikesFile):  adapted SpikesFile.
-		'''
+		"""
 		minimum_ts = min(spikes_file.timestamps)
 		if settings.reset_timestamp:
 			spikes_file.timestamps = [(x - minimum_ts)*settings.ts_tick for x in spikes_file.timestamps]
@@ -104,7 +104,7 @@ class Functions:
 
 	@staticmethod
 	def phase_lock(spikes_file, settings):
-		'''
+		"""
 		Performs the phase lock operation over a SpikesFile. This can only be performed to SpikeFiles with both ON and OFF addresses.
 		
 		Parameters:
@@ -116,7 +116,7 @@ class Functions:
 
 		Raises:
 				SettingsError: if the on_off_both parameter is not set to 2 (both) in the MainSettings.
-		'''
+		"""
 
 		if settings.on_off_both == 1:
 			prevSpike = [None] * (settings.num_channels) * (1 + settings.mono_stereo)
@@ -142,24 +142,24 @@ class Functions:
 
 	@staticmethod
 	def stereo_to_mono(spikes_file, left_right, settings, return_save_both = 0, path = None, output_format = '.aedat'):
-		'''
+		"""
 		Generates a mono AER-DATA SpikesFile from a stereo SpikesFile.
 
-			Parameters:
-					spikes_file (SpikesFile): Input file.
-					left_right (int): Set to 0 if you want to extract the left part of the SpikesFile, or to 1 if you want the right part.
-					settings (MainSettings): Configuration parameters for the input file.
-					return_save_both (int, optional): Set it to 0 to return the SpikesFile, to 1 to save the SpikesFile in the output path, and to 2 to do both.
-					path (string, optional): Path where the output file will be saved. Format should not be specified. Not needed if return_save_both is set to 0.
-                    output_format (string, optional): Output format of the file. Currently supports '.aedat' and '.csv'.
-                    
+		Parameters:
+				spikes_file (SpikesFile): Input file.
+				left_right (int): Set to 0 if you want to extract the left part of the SpikesFile, or to 1 if you want the right part.
+				settings (MainSettings): Configuration parameters for the input file.
+				return_save_both (int, optional): Set it to 0 to return the SpikesFile, to 1 to save the SpikesFile in the output path, and to 2 to do both.
+				path (string, optional): Path where the output file will be saved. Format should not be specified. Not needed if return_save_both is set to 0.
+				output_format (string, optional): Output format of the file. Currently supports '.aedat' and '.csv'.
+				
 
-			Returns:
-					spikes_file_mono (SpikesFile, optional): SpikesFile containing the shift. Returned only if return_save_both is either 0 or 2.
-			
-			Raises:
-					AttributeError: if the input file is a mono SpikesFile (settings.mono_stereo is set to 0).
-		'''
+		Returns:
+				spikes_file_mono (SpikesFile, optional): SpikesFile containing the shift. Returned only if return_save_both is either 0 or 2.
+		
+		Raises:
+				AttributeError: if the input file is a mono SpikesFile (settings.mono_stereo is set to 0).
+		"""
 
 		if settings.mono_stereo:
 			addr_ts = list(zip(spikes_file.addresses, spikes_file.timestamps))
@@ -186,23 +186,23 @@ class Functions:
 
 	@staticmethod
 	def mono_to_stereo(spikes_file, delay, settings, return_save_both = 0, path = None, output_format = '.aedat'):
-		'''
+		"""
 		Generates a stereo AER-DATA SpikesFile from a mono SpikesFile with a specific delay between both.
 
-			Parameters:
-					spikes_file (SpikesFile): Input file.
-					delay (int): Delay introduced from left and right spikes. Can be either negative or positive.
-					settings (MainSettings): Configuration parameters for the input file.
-					return_save_both (int, optional): Set it to 0 to return the SpikesFile, to 1 to save the SpikesFile in the output path, and to 2 to do both.
-					path (string, optional): Path where the output file will be saved. Format should not be specified. Not needed if return_save_both is set to 0.
-                    output_format (string, optional): Output format of the file. Currently supports '.aedat' and '.csv'.
+		Parameters:
+				spikes_file (SpikesFile): Input file.
+				delay (int): Delay introduced from left and right spikes. Can be either negative or positive.
+				settings (MainSettings): Configuration parameters for the input file.
+				return_save_both (int, optional): Set it to 0 to return the SpikesFile, to 1 to save the SpikesFile in the output path, and to 2 to do both.
+				path (string, optional): Path where the output file will be saved. Format should not be specified. Not needed if return_save_both is set to 0.
+				output_format (string, optional): Output format of the file. Currently supports '.aedat' and '.csv'.
 
-			Returns:
-					spikes_file_new (SpikesFile, optional): SpikesFile containing the shift. Returned only if return_save_both is either 0 or 2.
-			
-			Raises:
-					SettingsError: if the input file is a stereo SpikesFile (settings.mono_stereo is set to 1).
-		'''
+		Returns:
+				spikes_file_new (SpikesFile, optional): SpikesFile containing the shift. Returned only if return_save_both is either 0 or 2.
+		
+		Raises:
+				SettingsError: if the input file is a stereo SpikesFile (settings.mono_stereo is set to 1).
+		"""
 
 		if settings.mono_stereo == 0:
 			spikes_file_new = copy.deepcopy(spikes_file)
@@ -236,7 +236,7 @@ class Functions:
 
 	@staticmethod
 	def extract_channels_activities(spikes_file, addresses, verbose = False):
-		'''
+		"""
 		Extract information from a specific set of addresses from the SpikesFile.
 		
 		Parameters:
@@ -246,7 +246,7 @@ class Functions:
 
 		Returns:
 				new_spikes_file (SpikesFile):  SpikesFile containing only the information from the addresses specified as input from spikes_file.
-		'''
+		"""
 
 		if verbose == True: start_time = time.time()
 		spikes_per_channels_ts = []

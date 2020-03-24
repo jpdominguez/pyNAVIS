@@ -32,21 +32,21 @@ class Splitters:
 
     @staticmethod
     def manual_splitter(spikes_file, init, end, settings,  return_save_both = 0, output_format = '.aedat', path=None):
-        '''
+        """
         Extract a portion of the input SpikesFile file.
 
-            Parameters:
-                    spikes_file (SpikesFile): Input file.
-                    init (int): First timestamp from which to start extracting. 
-                    end (int): Last timestamp from which to stop extracting. 
-                    settings (MainSettings): Configuration parameters for the input file.
-                    return_save_both (int, optional): Set it to 0 to return the resultant SpikesFile, to 1 to save the SpikesFile in the output path, and to 2 to do both.
-                    outoutput_format (string, optional): Output format of the file. Currently supports '.aedat' and '.csv'.put_format.
-                    path (string, optional): Path where the output file will be saved. Format should not be specified. Not needed if return_save_both is set to 0.
+        Parameters:
+                spikes_file (SpikesFile): Input file.
+                init (int): First timestamp from which to start extracting. 
+                end (int): Last timestamp from which to stop extracting. 
+                settings (MainSettings): Configuration parameters for the input file.
+                return_save_both (int, optional): Set it to 0 to return the resultant SpikesFile, to 1 to save the SpikesFile in the output path, and to 2 to do both.
+                outoutput_format (string, optional): Output format of the file. Currently supports '.aedat' and '.csv'.put_format.
+                path (string, optional): Path where the output file will be saved. Format should not be specified. Not needed if return_save_both is set to 0.
 
-            Returns:
-                    spikes_file_new (SpikesFile, optional): SpikesFile containing the extracted portion of the input file. Returned only if return_save_both is either 0 or 2.
-        '''
+        Returns:
+                spikes_file_new (SpikesFile, optional): SpikesFile containing the extracted portion of the input file. Returned only if return_save_both is either 0 or 2.
+        """
 
         #THIS IS NOT NEEDED IF TS ARE SORTED
         aedat_addr_ts = list(zip(spikes_file.addresses, spikes_file.timestamps))

@@ -26,18 +26,18 @@ class Savers:
 
     @staticmethod
     def save_AERDATA(spikes_file, path, settings, verbose = False):
-        '''
+        """
         Saves a SpikesFile into an AER-DATA file.
 
-            Parameters:
-                    spikes_file (SpikesFile): file to save.
-                    path (string): path where the output file will be saved, including name. Extension should not be specified.
-                    settings (MainSettings): configuration parameters for the file to save.
-                    verbose (boolean, optional): Set to True if you want the execution time of the function to be printed.
+        Parameters:
+                spikes_file (SpikesFile): file to save.
+                path (string): path where the output file will be saved, including name. Extension should not be specified.
+                settings (MainSettings): configuration parameters for the file to save.
+                verbose (boolean, optional): Set to True if you want the execution time of the function to be printed.
 
-            Returns:
-                    None.
-        '''
+        Returns:
+                None.
+        """
 
         if verbose == True: start_time = time.time()
         unpack_param = '>L'
@@ -58,17 +58,17 @@ class Savers:
 
     @staticmethod
     def save_CSV(spikes_file, path, verbose = False):
-        '''
+        """
         Saves a SpikesFile into a CSV file where each spike is represented in one line following the same patter: "address, timestamp".
 
-            Parameters:
-                    spikes_file (SpikesFile): file to save.
-                    path (string): path where the output file will be saved, including name. Extension should not be specified.
-                    verbose (boolean, optional): Set to True if you want the execution time of the function to be printed.
+        Parameters:
+                spikes_file (SpikesFile): file to save.
+                path (string): path where the output file will be saved, including name. Extension should not be specified.
+                verbose (boolean, optional): Set to True if you want the execution time of the function to be printed.
 
-            Returns:
-                    None.
-        '''
+        Returns:
+                None.
+        """
 
         if verbose == True: start_time = time.time()
 
@@ -81,17 +81,17 @@ class Savers:
 
     @staticmethod
     def save_TXT(spikes_file, path, verbose = False):
-        '''
+        """
         Saves a SpikesFile into two different TXT files, where addresses and timestamps are stored, respectively.
 
-            Parameters:
-                    spikes_file (SpikesFile): file to save.
-                    path (string): path where the output file will be saved, including name. Extension should not be specified.
-                    verbose (boolean, optional): Set to True if you want the execution time of the function to be printed.
+        Parameters:
+                spikes_file (SpikesFile): file to save.
+                path (string): path where the output file will be saved, including name. Extension should not be specified.
+                verbose (boolean, optional): Set to True if you want the execution time of the function to be printed.
 
-            Returns:
-                    None.
-        '''
+        Returns:
+                None.
+        """
 
         if verbose == True: start_time = time.time()
 
@@ -107,17 +107,17 @@ class Savers:
 
     @staticmethod
     def save_TXT_relativeTS(spikes_file, path, verbose = False):
-        '''
+        """
         Saves a SpikesFile into two different TXT files, where addresses and timestamps are stored, respectively. Timestamps are relative to the previous spike.
 
-            Parameters:
-                    spikes_file (SpikesFile): file to save.
-                    path (string): path where the output file will be saved, including name. Extension should not be specified.
-                    verbose (boolean, optional): Set to True if you want the execution time of the function to be printed.
+        Parameters:
+                spikes_file (SpikesFile): file to save.
+                path (string): path where the output file will be saved, including name. Extension should not be specified.
+                verbose (boolean, optional): Set to True if you want the execution time of the function to be printed.
 
-            Returns:
-                    None.
-        '''
+        Returns:
+                None.
+        """
 
         spikes_file_ordered = order_timestamps(spikes_file)
 
