@@ -47,9 +47,9 @@ class Functions:
 				None.
 		
 		Raises:
-				ValueError: if the SpikesFile contains at least one timestamp which value is less than 0.
-				ValueError: if the SpikesFile contains at least one timestamp that is lesser than its previous one.
-				ValueError: if the SpikesFile contains at least one address less than 0 or greater than the num_channels that you specified in the MainSettings.
+				TimestampOrderError: if the SpikesFile contains at least one timestamp which value is less than 0.
+				TimestampOrderError: if the SpikesFile contains at least one timestamp that is lesser than its previous one.
+				AddressValueError: if the SpikesFile contains at least one address less than 0 or greater than the num_channels that you specified in the MainSettings.
 					NOTE: If mono_stereo is set to 1 (stereo) in the MainSettings, then  addresses should be less than num_channels*2
 					NOTE: If on_off_both is set to 1 (both) in the MainSettings, then addresses should be less than num_channels*2.
 					NOTE: If mono_stereo is set to 1 and on_off_both is set to 1 in the MainSettings, then addresses should be less than num_channels*2*2.
@@ -63,22 +63,22 @@ class Functions:
 		a = all(item >= 0  for item in spikes_file.timestamps)
 
 		if not a:
-			raise ValueError("The SpikesFile file that you loaded has at least one timestamp that is less than 0.")
+			print("[Functions.check_SpikesFile] > TimestampOrderError: The SpikesFile file that you loaded has at least one timestamp that is less than 0.")
 
 		# Check if each timestamp is greater than its previous one
 		b = not any(i > 0 and spikes_file.timestamps[i] < spikes_file.timestamps[i-1] for i in range(len(spikes_file.timestamps)))
 
 		if not b:
-			raise ValueError("The SpikesFile file that you loaded has at least one timestamp whose value is lesser than its previous one.")
+			print("[Functions.check_SpikesFile] > TimestampOrderError: The SpikesFile file that you loaded has at least one timestamp whose value is lesser than its previous one.")
 
 		# Check if all addresses are between zero and the total number of addresses
-		c = all(item >= 0 and item < number_of_addresses*(settings.mono_stereo+1) for item in spikes_file.addresses)
+		c = all(item >= 0 and item < number_of_addresses*(settings.mono_stereo + 1) for item in spikes_file.addresses)
 
 		if not c:
-			raise ValueError("The SpikesFile file that you loaded has at least one event whose address is either less than 0 or greater than the number of addresses that you specified.")
+			print("[Functions.check_SpikesFile] > AddressValueError: The SpikesFile file that you loaded has at least one event whose address is either less than 0 or greater than the number of addresses that you specified.")
 
 		if a and b and c:
-			print("The loaded SpikesFile file has been checked and it's OK")
+			print("[Functions.check_SpikesFile] > The loaded SpikesFile file has been checked and it's OK")
 				
 
 	@staticmethod 
@@ -115,7 +115,7 @@ class Functions:
 				spikes_file (SpikesFile):  phase-locked SpikesFile.
 
 		Raises:
-				AttributeError: if the on_off_both parameter is not set to 2 (both) in the MainSettings.
+				SettingsError: if the on_off_both parameter is not set to 2 (both) in the MainSettings.
 		'''
 
 		if settings.on_off_both == 1:
@@ -137,25 +137,28 @@ class Functions:
 			spikes_file.timestamps = phaseLockedTs
 			return spikes_file
 		else:
-			raise AttributeError("Phase Lock: this functionality cannot be applied to files that do not have ON/positive and OFF/negative addresses. Check the on_off_both setting for more information.")
+			print("[Functions.phase_lock] > SettingsError: this functionality cannot be applied to files that do not have ON/positive and OFF/negative addresses. Check the on_off_both setting for more information.")
 
 
 	@staticmethod
-	def stereo_to_mono(spikes_file, left_right, path, settings):
+	def stereo_to_mono(spikes_file, left_right, settings, return_save_both = 0, path = None, output_format = '.aedat'):
 		'''
 		Generates a mono AER-DATA SpikesFile from a stereo SpikesFile.
 
 			Parameters:
 					spikes_file (SpikesFile): Input file.
 					left_right (int): Set to 0 if you want to extract the left part of the SpikesFile, or to 1 if you want the right part.
-					path (string, optional): Path where the output file will be saved. Filename and format should be specified.
 					settings (MainSettings): Configuration parameters for the input file.
+					return_save_both (int, optional): Set it to 0 to return the SpikesFile, to 1 to save the SpikesFile in the output path, and to 2 to do both.
+					path (string, optional): Path where the output file will be saved. Format should not be specified. Not needed if return_save_both is set to 0.
+                    output_format (string, optional): Output format of the file. Currently supports '.aedat' and '.csv'.
+                    
 
 			Returns:
-					None.
+					spikes_file_mono (SpikesFile, optional): SpikesFile containing the shift. Returned only if return_save_both is either 0 or 2.
 			
 			Raises:
-				AttributeError: if the input file is a mono SpikesFile (settings.mono_stereo is set to 0).
+					AttributeError: if the input file is a mono SpikesFile (settings.mono_stereo is set to 0).
 		'''
 
 		if settings.mono_stereo:
@@ -165,27 +168,40 @@ class Functions:
 			spikes_file_mono = Utils.extract_addr_and_ts(addr_ts)
 			if left_right:
 				spikes_file_mono.addresses = [x-left_right*settings.num_channels*(settings.on_off_both + 1) for x in spikes_file_mono.addresses]
-			Savers.save_AERDATA(spikes_file_mono, path, settings)
+			
+			
+			if return_save_both == 0:
+				return spikes_file_mono
+			elif return_save_both == 1 or return_save_both == 2:
+				if output_format == 'aedat' or 'AEDAT' or 'AERDATA' or 'AER-DATA' or 'Aedat' or '.aedat':
+					Savers.save_AERDATA(spikes_file_mono, path + '.aedat', settings)
+				elif output_format == 'csv' or 'CSV' or '.csv':
+					Savers.save_CSV(spikes_file_mono, path + '.csv', settings)        
+				if return_save_both == 2:
+					return spikes_file_mono
+			
 		else:
-			raise AttributeError("StereoToMono: this functionality cannot be performed over a mono aedat file.")
+			print("[Functions.stereo_to_mono] > SettingsError: this functionality cannot be performed over a mono aedat file.")
 
 
 	@staticmethod
-	def mono_to_stereo(spikes_file, delay, path, settings):
+	def mono_to_stereo(spikes_file, delay, settings, return_save_both = 0, path = None, output_format = '.aedat'):
 		'''
 		Generates a stereo AER-DATA SpikesFile from a mono SpikesFile with a specific delay between both.
 
 			Parameters:
 					spikes_file (SpikesFile): Input file.
 					delay (int): Delay introduced from left and right spikes. Can be either negative or positive.
-					path (string, optional): Path where the output file will be saved. Filename and format should be specified.
 					settings (MainSettings): Configuration parameters for the input file.
+					return_save_both (int, optional): Set it to 0 to return the SpikesFile, to 1 to save the SpikesFile in the output path, and to 2 to do both.
+					path (string, optional): Path where the output file will be saved. Format should not be specified. Not needed if return_save_both is set to 0.
+                    output_format (string, optional): Output format of the file. Currently supports '.aedat' and '.csv'.
 
 			Returns:
-					None.
+					spikes_file_new (SpikesFile, optional): SpikesFile containing the shift. Returned only if return_save_both is either 0 or 2.
 			
 			Raises:
-				AttributeError: if the input file is a stereo SpikesFile (settings.mono_stereo is set to 1).
+					SettingsError: if the input file is a stereo SpikesFile (settings.mono_stereo is set to 1).
 		'''
 
 		if settings.mono_stereo == 0:
@@ -200,11 +216,21 @@ class Functions:
 
 			if delay < 0:
 				spikes_file_new.timestamps = [x-delay for x in spikes_file_new.timestamps]
-			settings_new = copy.deepcopy(settings)
-			settings_new.mono_stereo = 1
-			Savers.save_AERDATA(spikes_file_new, path, settings_new)
+
+			if return_save_both == 0:
+				return spikes_file_new
+			elif return_save_both == 1 or return_save_both == 2:
+				#settings_new = copy.deepcopy(settings)
+				#settings_new.mono_stereo = 1
+				if output_format == 'aedat' or 'AEDAT' or 'AERDATA' or 'AER-DATA' or 'Aedat' or '.aedat':
+					Savers.save_AERDATA(spikes_file_new, path + '.aedat', settings)
+				elif output_format == 'csv' or 'CSV' or '.csv':
+					Savers.save_CSV(spikes_file_new, path + '.csv', settings)        
+				if return_save_both == 2:
+					return spikes_file_new
+
 		else:
-			raise AttributeError("MonoToStereo: this functionality cannot be performed over a stereo aedat file.")        
+			print("[Functions.mono_to_stereo] > SettingsError: this functionality cannot be performed over a stereo aedat file.")        
 
 
 

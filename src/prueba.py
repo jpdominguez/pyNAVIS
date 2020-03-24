@@ -37,9 +37,6 @@ mono_stereo = 0        # 0 for a monaural NAS or 1 for a binaural NAS.          
 address_size = 2       # 2 if .aedats are recorded with USBAERmini2 or 4 if .aedats are recorded with jAER.                 #
 ts_tick = 0.2          # 0.2 if .aedats are recorded with USBAERmini2 or 1 if .aedats are recorded with jAER.               #
 bin_size = 20000       # Time bin (in microseconds) used to integrate the spiking information.                              #
-bar_line = 1           # 0 if you want the histogram to be a bar plot or 1 if you want the histogram to be a line plot.     #
-spike_dot_freq = 1     # When plotting the cochleogram, it plots one spike for every spike_dot_frPeq spikes.                #
-spike_dot_size = 1     # Size of the dots that are plotted on the spikegram                                                 #
 #############################################################################################################################
 
 path = 'C:\\Users\\juado\\Desktop'
@@ -74,7 +71,7 @@ Plots.average_activity(shift_spikes, shift_settings)
 
 """
 #NOTE: Loading a stereo file
-settings = MainSettings(num_channels=16, mono_stereo=1, on_off_both=1, address_size=address_size, ts_tick=ts_tick, bin_size=bin_size, bar_line=bar_line, spikegram_dot_freq=spike_dot_freq, spikegram_dot_size=spike_dot_size)
+settings = MainSettings(num_channels=16, mono_stereo=1, on_off_both=1, address_size=address_size, ts_tick=ts_tick, bin_size=bin_size)
 stereo_file = Loaders.loadAERDATA('D:\\Repositorios\\GitHub\\pyNAVIS\\src\\stereoPS.aedat', settings)
 stereo_file = Functions.adapt_SpikesFile(stereo_file, settings)
 #Functions.check_SpikesFile(stereo_file, settings)
@@ -86,7 +83,7 @@ Plots.spikegram(stereo_file, settings)
 """
 """
 #NOTE: Manual split over a stereo file
-manual_split_spikes = Splitters.manual_splitter(stereo_file, init=0, end=1000000, settings=settings, return_save_both=0 )
+manual_split_spikes = Splitters.manual_splitter(stereo_file, init=0, end=100000, settings=settings, return_save_both=0 )
 Plots.spikegram(manual_split_spikes, settings, graph_tile='Splitted SpikesFile', verbose=True)
 Plots.sonogram(manual_split_spikes, settings, verbose=True)
 """
@@ -94,21 +91,21 @@ Plots.sonogram(manual_split_spikes, settings, verbose=True)
 #NOTE: Test Phaselock
 stereo_file = Utils.order_timestamps(stereo_file)
 phaseLocked_spikes = Functions.phase_lock(stereo_file, settings)
-settings = MainSettings(num_channels=16, on_off_both=0, mono_stereo=1, address_size=address_size, ts_tick=ts_tick, bin_size=bin_size, bar_line=bar_line, spikegram_dot_freq=spike_dot_freq, spikegram_dot_size=spike_dot_size)
+settings = MainSettings(num_channels=16, on_off_both=0, mono_stereo=1, address_size=address_size, ts_tick=ts_tick, bin_size=bin_size)
 Plots.spikegram(phaseLocked_spikes, settings, graph_tile='phaseLock', verbose=True)
 """
 """
 #NOTE: Test stereo_to_mono
 Functions.stereo_to_mono(stereo_file, 1, 'C:\\Users\\juado\\Desktop\\stereoToMono.aedat', settings)
-settings = MainSettings(num_channels=16, mono_stereo=0, on_off_both=1, address_size=address_size, ts_tick=ts_tick, bin_size=bin_size, bar_line=bar_line, spikegram_dot_freq=spike_dot_freq, spikegram_dot_size=spike_dot_size)
+settings = MainSettings(num_channels=16, mono_stereo=0, on_off_both=1, address_size=address_size, ts_tick=ts_tick, bin_size=bin_size)
 stereo_file = Loaders.loadAERDATA('C:\\Users\\juado\\Desktop\\stereoToMono.aedat', settings)
 stereo_file = Functions.adapt_SpikesFile(stereo_file, settings)
 Plots.spikegram(stereo_file, settings)
 """
 
-
+"""
 #NOTE: Loading a mono file
-settings = MainSettings(num_channels=32, mono_stereo=0, on_off_both=1, address_size=address_size, ts_tick=ts_tick, bin_size=bin_size, bar_line=bar_line, spikegram_dot_freq=spike_dot_freq, spikegram_dot_size=spike_dot_size)
+settings = MainSettings(num_channels=32, mono_stereo=0, on_off_both=1, address_size=address_size, ts_tick=ts_tick, bin_size=bin_size)
 mono_file = Loaders.loadAERDATA('D:\\Repositorios\\GitHub\\pyNAVIS\\src\\0a2b400e_nohash_0.wav.aedat', settings)
 mono_file = Functions.adapt_SpikesFile(mono_file, settings)
 Functions.check_SpikesFile(mono_file, settings)
@@ -116,21 +113,27 @@ Plots.spikegram(mono_file, settings)
 #Plots.sonogram(mono_file, settings)
 #Plots.histogram(mono_file, settings)
 #Plots.average_activity(mono_file, settings)
-
+"""
 """
 #NOTE: Manual split over a mono file
 manual_split_spikes = Splitters.manual_splitter(mono_file, init=0, end=300000, settings=settings, return_save_both=0 )
 Plots.spikegram(manual_split_spikes, settings, graph_tile='Splitted SpikesFile', verbose=True)
 Plots.sonogram(manual_split_spikes, settings, verbose=True)
 """
-
+"""
 #NOTE: Test mono_to_stereo
-Functions.mono_to_stereo(mono_file, -100000, 'C:\\Users\\juado\\Desktop\\monoToStereo.aedat', settings)
-mono_file = settings = MainSettings(num_channels=32, mono_stereo=1, on_off_both=1, address_size=address_size, ts_tick=ts_tick, bin_size=bin_size, bar_line=bar_line, spikegram_dot_freq=spike_dot_freq, spikegram_dot_size=spike_dot_size)
-mono_file = Loaders.loadAERDATA('C:\\Users\\juado\\Desktop\\monoToStereo.aedat', settings)
-mono_file = Functions.adapt_SpikesFile(mono_file, settings)
+mono_file = Functions.mono_to_stereo(mono_file, -100000, settings, path='C:\\Users\\juado\\Desktop\\monoToStereo.aedat', return_save_both=0)
+settings = MainSettings(num_channels=32, mono_stereo=1, on_off_both=1, address_size=address_size, ts_tick=ts_tick, bin_size=bin_size, bar_line=bar_line, spikegram_dot_freq=spike_dot_freq, spikegram_dot_size=spike_dot_size)
+#mono_file = Loaders.loadAERDATA('C:\\Users\\juado\\Desktop\\monoToStereo.aedat', settings)
+#mono_file = Functions.adapt_SpikesFile(mono_file, settings)
 Plots.spikegram(mono_file, settings)
+Plots.difference_between_LR(mono_file, settings, return_data=False)
+"""
 
 
+a = Loaders.loadCSV('D:\\Repositorios\\GitHub\\pyNAVIS\\src\\test.csv')
+
+print(a.addresses)
+print(a.timestamps)
 
 plt.show()

@@ -31,14 +31,18 @@ from .utils import Utils
 
 class Plots:
     @staticmethod
-    def spikegram(spikes_file, settings, graph_tile = 'Spikegram', verbose = False):
+    def spikegram(spikes_file, settings, dot_size = 0.2, dot_freq = 1, graph_tile = 'Spikegram', verbose = False):
         '''
         Plots the spikegram (also known as cochleogram or raster plot) of a SpikesFile.
         This is, a graph where the X axis means time and the Y axis represents addresses (or cochlea channels), and where every spike is plotted as a dot.
 
             Parameters:
-                    spikes_file (SpikesFile): file to plot.
-                    settings (MainSettings): configuration parameters for the file to plot.
+                    spikes_file (SpikesFile): File to plot.
+                    settings (MainSettings): Configuration parameters for the file to plot.
+                    dot_size (float): Size of the dots used in the spikegram plot.
+                    dot_freq (int): Set the frequency of spikes that will be represented in the spikegram.
+                        NOTE: A value of 10 means that for every 10 spikes, only 1 will be plotted.
+                        NOTE: This helps reducing lag when plotting heavy files.
                     graph_tile (string, optional): Text that will appear as title for the graph.
                     verbose (boolean, optional): Set to True if you want the execution time of the function to be printed.
 
@@ -52,17 +56,17 @@ class Plots:
         spk_fig = plt.figure()
         spk_fig.canvas.set_window_title(graph_tile)
 
-        random.seed('just some random seed')
+        random.seed(0)
 
         if settings.mono_stereo == 0:
-            plt.scatter(spikes_file.timestamps[0::settings.spikegram_dot_freq], spikes_file.addresses[0::settings.spikegram_dot_freq], s=settings.spikegram_dot_size)
+            plt.scatter(spikes_file.timestamps[0::dot_freq], spikes_file.addresses[0::dot_freq], s=dot_size)
         else:
             aedat_addr_ts = list(zip(spikes_file.addresses, spikes_file.timestamps))
             addr, ts = zip(*[(evt[0], evt[1]) for evt in aedat_addr_ts if evt[0] < settings.num_channels*(settings.on_off_both + 1)])
-            plt.scatter(ts[0::settings.spikegram_dot_freq], addr[0::settings.spikegram_dot_freq], s=settings.spikegram_dot_size, label='Left cochlea')
+            plt.scatter(ts[0::dot_freq], addr[0::dot_freq], s=dot_size, label='Left cochlea')
             addr, ts = zip(*[(evt[0], evt[1]) for evt in aedat_addr_ts if evt[0] >= settings.num_channels*(settings.on_off_both + 1) and evt[0] < settings.num_channels*(settings.on_off_both + 1)*2])
-            plt.scatter(ts[0::settings.spikegram_dot_freq], addr[0::settings.spikegram_dot_freq], s=settings.spikegram_dot_size, label='Right cochlea')
-            plt.legend(fancybox=False, ncol=2, loc='upper center', markerscale=2/settings.spikegram_dot_size, frameon=True)
+            plt.scatter(ts[0::dot_freq], addr[0::dot_freq], s=dot_size, label='Right cochlea')
+            plt.legend(fancybox=False, ncol=2, loc='upper center', markerscale=2/dot_size, frameon=True)
             
         if verbose == True: print('SPIKEGRAM CALCULATION', time.time() - start_time)
 
@@ -139,7 +143,7 @@ class Plots:
             return sonogram
 
     @staticmethod
-    def histogram(spikes_file, settings, graph_tile = 'Histogram', verbose = False):
+    def histogram(spikes_file, settings, bar_line = 1, graph_tile = 'Histogram', verbose = False):
         '''
         Plots the histogram of a SpikesFile.
         This is, a graph where addresses (or cochlea channels) are represented in the X axis, and number of spikes in the Y axis.
@@ -147,6 +151,7 @@ class Plots:
             Parameters:
                     spikes_file (SpikesFile): file to plot.
                     settings (MainSettings): configuration parameters for the file to plot.
+                    bar_line (int, optional): Select wether to plot the histogram as bar plot (0) or as a line graph (1).
                     graph_tile (string, optional): Text that will appear as title for the graph.
                     verbose (boolean, optional): Set to True if you want the execution time of the function to be printed.
 
@@ -158,7 +163,7 @@ class Plots:
         
         spikes_count = np.bincount(spikes_file.addresses, minlength=settings.num_channels * (settings.on_off_both + 1) * (settings.mono_stereo + 1))
 
-        if verbose == True: print('TIEMPO HISTOGRAM:', time.time() - start_time)
+        if verbose == True: print('HISTOGRAM CALCULATION:', time.time() - start_time)
 
         plt.style.use('seaborn-whitegrid')
         hst_fig = plt.figure()
@@ -167,7 +172,7 @@ class Plots:
         plt.xlabel('Address', fontsize='large')
         plt.ylabel('No. of spikes', fontsize='large')
 
-        if settings.bar_line == 0:
+        if bar_line == 0:
             if settings.mono_stereo == 1:
                 plt.bar(np.arange(settings.num_channels * (settings.on_off_both + 1)), spikes_count[0:settings.num_channels*(settings.on_off_both + 1)])
                 plt.bar(np.arange(settings.num_channels * (settings.on_off_both + 1)), spikes_count[settings.num_channels*(settings.on_off_both + 1):settings.num_channels*2*(settings.on_off_both + 1)])
@@ -258,7 +263,7 @@ class Plots:
         avg_fig.show()
 
     @staticmethod
-    def difference_between_LR(spikes_file, settings, graph_tile = 'Diff. between L and R cochlea', verbose = False):
+    def difference_between_LR(spikes_file, settings, return_data = False, graph_tile = 'Diff. between L and R cochlea', verbose = False):
         '''
         Plots a plot showing the differente between the left and the right activity of a SpikesFile.
         NOTE: This function can only be called if the mono_stereo parameter in settings is set to 1.
@@ -266,14 +271,15 @@ class Plots:
             Parameters:
                     spikes_file (SpikesFile): file to plot.
                     settings (MainSettings): configuration parameters for the file to plot.
+                    return_data (boolean, optional): When set to True, the sonogram matrix will be returned instead of plotted.
                     graph_tile (string, optional): Text that will appear as title for the graph.
                     verbose (boolean, optional): Set to True if you want the execution time of the function to be printed.
 
             Returns:
-                    None.
+                    diff (int[,]): disparity matrix. Only returned if return_data is set to True.
 
             Raises:
-                ValueError: if settings.mono_stereo == 0
+                SettingsError: if settings.mono_stereo == 0
         '''
         if settings.mono_stereo == 1:    
             total_time = max(spikes_file.timestamps) - min(spikes_file.timestamps)
@@ -304,24 +310,27 @@ class Plots:
             
             if max(abs(np.min(diff)), np.max(diff)) != 0: diff = diff*100/max(abs(np.min(diff)), np.max(diff))
 
-            # REPRESENTATION
-            plt.style.use('default')
-            sng_fig = plt.figure()
-            sng_fig.canvas.set_window_title(graph_tile)
+            if return_data == False:
+                # REPRESENTATION
+                plt.style.use('default')
+                sng_fig = plt.figure()
+                sng_fig.canvas.set_window_title(graph_tile)
 
-            plt.imshow(diff, vmin=-100, vmax=100, aspect="auto") #, aspect="auto")
-            plt.gca().invert_yaxis()
+                plt.imshow(diff, vmin=-100, vmax=100, aspect="auto") #, aspect="auto")
+                plt.gca().invert_yaxis()
 
-            plt.xlabel('Bin ('+str(settings.bin_size) + '$\mu$s width)', fontsize='large')
-            plt.ylabel('Address', fontsize='large')
+                plt.xlabel('Bin ('+str(settings.bin_size) + '$\mu$s width)', fontsize='large')
+                plt.ylabel('Address', fontsize='large')
 
-            plt.title(graph_tile, fontsize='x-large')
+                plt.title(graph_tile, fontsize='x-large')
 
-            colorbar = plt.colorbar(ticks=[100, 50, 0, -50, -100], orientation='horizontal')
-            colorbar.set_label('Cochlea predominance', rotation=0, fontsize='large', labelpad= 10)
-            colorbar.ax.set_xticklabels(['100% L cochlea', '50%', '0% L==R', '50%', '100% R cochlea'])
-            colorbar.ax.invert_xaxis()
-            sng_fig.show()
+                colorbar = plt.colorbar(ticks=[100, 50, 0, -50, -100], orientation='horizontal')
+                colorbar.set_label('Cochlea predominance', rotation=0, fontsize='large', labelpad= 10)
+                colorbar.ax.set_xticklabels(['100% L cochlea', '50%', '0% L==R', '50%', '100% R cochlea'])
+                colorbar.ax.invert_xaxis()
+                sng_fig.show()
+            else:
+                return diff
         else:
             #print("This functionality is only available for stereo AER-DATA files.")
-            raise ValueError("This functionality is only available for stereo AER-DATA files.")
+            print("[Plots.difference_between_LR] > SettingsError: This functionality is only available for stereo files.")

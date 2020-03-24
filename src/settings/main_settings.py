@@ -36,11 +36,6 @@ class MainSettings:
             NOTE: Set it to 0 if addresses are only ON, to 1 if addresses are only OFF, or to 2 if using both ON and OFF.
         reset_timestamp (boolean): Select wether to have timedtamps starting at 0 (True) or leave it as they are (False).
             NOTE: This subtracts  the smallest timestamp in the file to each of the timestamps.
-        spikegram_dot_size (float): Size of the dots used in the spikegram plot.
-        bar_line (int): Select wether to plot the histogram and the average activity plots as bar plots or as line graphs.
-        spikegram_dot_freq (int): Set the frequency of spikes that will be represented in the spikegram.
-            NOTE: A value of 10 means that for every 10 spikes, only 1 will be plotted.
-            NOTE: This helps reducing lag when plotting heavy files.
     """
 
     mono_stereo = 0
@@ -50,11 +45,8 @@ class MainSettings:
     address_size = 2
     on_off_both = 2
     reset_timestamp = True
-    spikegram_dot_size = 0.2
-    bar_line = 1
-    spikegram_dot_freq = 1
 
-    def __init__(self, num_channels, mono_stereo, address_size = 2, ts_tick = 0.2, bin_size = 20000, on_off_both = 2, reset_timestamp = True, spikegram_dot_size = 0.2, bar_line = 1, spikegram_dot_freq = 1):
+    def __init__(self, num_channels, mono_stereo, address_size = 2, ts_tick = 0.2, bin_size = 20000, on_off_both = 2, reset_timestamp = True):
         self.num_channels = num_channels
         self.mono_stereo = mono_stereo
         self.address_size = address_size
@@ -62,6 +54,3 @@ class MainSettings:
         self.bin_size = bin_size
         self.on_off_both = on_off_both
         self.reset_timestamp = reset_timestamp
-        self.spikegram_dot_size = spikegram_dot_size
-        self.bar_line = bar_line
-        self.spikegram_dot_freq = spikegram_dot_freq

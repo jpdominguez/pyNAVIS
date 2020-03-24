@@ -22,6 +22,7 @@
 
 import math
 import struct
+import csv
 
 
 class SpikesFile:
@@ -31,7 +32,7 @@ class SpikesFile:
     Attributes:
         timestamps (int[]): timestamps of the file.
         addresses (int[]): addresses of the file.
-        NOTE: timestamps and addresses are matches, which means that timestamps[0] is the timestamp for the spike with address addresses[0].
+        NOTE: timestamps and addresses are matched, which means that timestamps[0] is the timestamp for the spike with address addresses[0].
     """
     timestamps = []
     addresses = []
@@ -49,6 +50,9 @@ class Loaders:
 
             Returns:
                     spikes_file (SpikesFile): SpikesFile containing all the addresses and timestamps of the file.
+            Raises:
+                    SettingsError: if settings.address_size is different than 2 and 4.
+
         '''
         unpack_param = ">H"
         
@@ -57,7 +61,7 @@ class Loaders:
         elif settings.address_size == 4:
             unpack_param = ">L"
         else:
-            print("Only address sizes implemented are 2 and 4 bytes")
+            print("[Loaders.loadAERDATA] > SettingsError: Only address sizes implemented are 2 and 4 bytes")
 
         with open(path, 'rb') as f:
             ## Check header ##
@@ -95,5 +99,33 @@ class Loaders:
                 pass
         spikes_file = SpikesFile()
         spikes_file.addresses = events
+        spikes_file.timestamps = timestamps
+        return spikes_file
+
+
+    @staticmethod
+    def loadCSV(path):
+        '''
+        Loads an Comma-Separated Values (.csv) file.
+        
+            Parameters:
+                    path (string): full path of the CSV file to be loaded, including name and extension.
+
+            Returns:
+                    spikes_file (SpikesFile): SpikesFile containing all the addresses and timestamps of the file.
+
+        '''
+        addresses = []
+        timestamps = []
+        
+
+        with open(path) as csv_file:
+            csv_reader = csv.reader(csv_file, delimiter=',')
+            for row in csv_reader:
+                addresses.append(row[0])
+                timestamps.append(row[1])
+
+        spikes_file = SpikesFile()
+        spikes_file.addresses = addresses
         spikes_file.timestamps = timestamps
         return spikes_file

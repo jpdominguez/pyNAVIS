@@ -31,7 +31,7 @@ class Savers:
 
             Parameters:
                     spikes_file (SpikesFile): file to save.
-                    path (string): path where the output file will be saved, including name and extension.
+                    path (string): path where the output file will be saved, including name. Extension should not be specified.
                     settings (MainSettings): configuration parameters for the file to save.
                     verbose (boolean, optional): Set to True if you want the execution time of the function to be printed.
 
@@ -46,7 +46,7 @@ class Savers:
         elif settings.address_size == 4:
             unpack_param = ">L"
 
-        with open(path, 'wb') as f:
+        with open(path + '.aedat', 'wb') as f:
             for i in range(len(spikes_file.addresses)):
                 addr = struct.pack(unpack_param, int(spikes_file.addresses[i]))
                 ts = struct.pack('>L', int(spikes_file.timestamps[i]//settings.ts_tick))
@@ -63,7 +63,7 @@ class Savers:
 
             Parameters:
                     spikes_file (SpikesFile): file to save.
-                    path (string): path where the output file will be saved, including name and extension.
+                    path (string): path where the output file will be saved, including name. Extension should not be specified.
                     verbose (boolean, optional): Set to True if you want the execution time of the function to be printed.
 
             Returns:
@@ -86,7 +86,7 @@ class Savers:
 
             Parameters:
                     spikes_file (SpikesFile): file to save.
-                    path (string): path where the output file will be saved, including name and extension.
+                    path (string): path where the output file will be saved, including name. Extension should not be specified.
                     verbose (boolean, optional): Set to True if you want the execution time of the function to be printed.
 
             Returns:
@@ -109,27 +109,28 @@ class Savers:
     def save_TXT_relativeTS(spikes_file, path, verbose = False):
         '''
         Saves a SpikesFile into two different TXT files, where addresses and timestamps are stored, respectively. Timestamps are relative to the previous spike.
-        NOTE: The timestamps contained in the SpikesFile should be ordered first. The checkSpikesFile function can check if they are already ordered or not.
 
             Parameters:
                     spikes_file (SpikesFile): file to save.
-                    path (string): path where the output file will be saved, including name and extension.
+                    path (string): path where the output file will be saved, including name. Extension should not be specified.
                     verbose (boolean, optional): Set to True if you want the execution time of the function to be printed.
 
             Returns:
                     None.
         '''
 
+        spikes_file_ordered = order_timestamps(spikes_file)
+
         if verbose == True: start_time = time.time()
 
         with open(path+'_addrs.txt', 'w') as f:
-            for addr in spikes_file.addresses:
+            for addr in spikes_file_ordered.addresses:
                 f.write(str(addr) + '\n')
         with open(path+'_tss.txt', 'w') as f:
-            for i in range(len(spikes_file.timestamps)):
+            for i in range(len(spikes_file_ordered.timestamps)):
                 if i == 0:
                     f.write(str(0) + '\n')
                 else:
-                    f.write(str(int(spikes_file.timestamps[i]-spikes_file.timestamps[i-1])) + '\n')    
+                    f.write(str(int(spikes_file_ordered.timestamps[i]-spikes_file_ordered.timestamps[i-1])) + '\n')    
         if verbose == True:
             print("TXT file saved correctly. Took:", time.time() - start_time, "seconds")
