@@ -25,7 +25,7 @@ import numpy as np
 
 from .loaders import SpikesFile
 from .savers import Savers
-from settings.main_settings import MainSettings
+from .main_settings import MainSettings
 
 class Generators:
     

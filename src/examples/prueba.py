@@ -20,14 +20,12 @@
 #################################################################################
 
 ## IMPORTS ##################################################################################################################
-from classes.functions import Functions                                                                           #
-from classes.generators import Generators                                                                         #
-from classes.splitters import Splitters                                                                           #
-from classes.dataset_gen import DatasetGenerators                                                                 #
-from classes.loaders import SpikesFile, Loaders                                                                   #
-from classes.plots import Plots                                                                                   #
-from classes.utils import Utils                                                                                   #
-from settings.main_settings import MainSettings                                                                     #
+
+#from src import *
+
+
+from pyNAVIS import *
+
 import matplotlib.pyplot as plt
 #############################################################################################################################
 
@@ -42,15 +40,15 @@ bin_size = 20000       # Time bin (in microseconds) used to integrate the spikin
 path = 'C:\\Users\\juado\\Desktop'
 
 # TEST GENERATORS
-"""
+
 #NOTE: Sweep
 sweep_spikes = Generators.sweep(freq=5, cycles=5, num_ch=64, length=1000000, path='C:\\Users\\juado\\Desktop\\sweep', return_save_both=0)
-sweep_settings = MainSettings(num_channels=64, mono_stereo=0, on_off_both=0, address_size=address_size, ts_tick=ts_tick, bin_size=bin_size, bar_line=bar_line, spikegram_dot_freq=spike_dot_freq, spikegram_dot_size=spike_dot_size)
+sweep_settings = MainSettings(num_channels=64, mono_stereo=0, on_off_both=0, address_size=address_size, ts_tick=ts_tick, bin_size=bin_size)
 Plots.spikegram(sweep_spikes, sweep_settings)
-Plots.sonogram(sweep_spikes, sweep_settings)
-Plots.histogram(sweep_spikes, sweep_settings)
-Plots.average_activity(sweep_spikes, sweep_settings)
-
+#Plots.sonogram(sweep_spikes, sweep_settings)
+#Plots.histogram(sweep_spikes, sweep_settings)
+#Plots.average_activity(sweep_spikes, sweep_settings)
+"""
 #NOTE: Random addresses
 random_spikes = Generators.random_addrs(freq=5400, num_ch=64, length=1000000, path='C:\\Users\\juado\\Desktop\\sweep', return_save_both=0)
 random_settings = MainSettings(num_channels=64, mono_stereo=0, on_off_both=0, address_size=address_size, ts_tick=ts_tick, bin_size=bin_size, bar_line=bar_line, spikegram_dot_freq=spike_dot_freq, spikegram_dot_size=spike_dot_size)
@@ -130,10 +128,10 @@ Plots.spikegram(mono_file, settings)
 Plots.difference_between_LR(mono_file, settings, return_data=False)
 """
 
-
+"""
 a = Loaders.loadCSV('D:\\Repositorios\\GitHub\\pyNAVIS\\src\\test.csv')
 
 print(a.addresses)
 print(a.timestamps)
-
+"""
 plt.show()
