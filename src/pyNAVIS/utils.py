@@ -39,7 +39,7 @@ class Utils:
 				aedat_addr_ts (list): A list of [address, timestamp] tuples.
 
 		Returns:
-				spikes_file (SpikesFile): A SpikesFile object with the addresses and timestamps obtained from zipped_addr_ts
+				SpikesFile: A SpikesFile object with the addresses and timestamps obtained from zipped_addr_ts
 		"""
 
 		spikes_file = SpikesFile()
@@ -57,7 +57,7 @@ class Utils:
 				function_params (list): List of the parameters that want to be used in the executing_function.
 
 		Returns:
-				total_time (float): Time that the function takes to execute.
+				float: Time that the function takes to execute.
 		"""
 
 		start_time = time.time()
@@ -75,7 +75,7 @@ class Utils:
 				item (tuple): [address, timestamp] tuple.
 
 		Returns:
-				item[1] (int): Timestamp.
+				int: Timestamp.
 		"""
 
 		return item[1]
@@ -89,7 +89,7 @@ class Utils:
 				spikes_file (SpikesFile): Input SpikesFile to order.
 
 		Returns:
-				spikes_file_ordered (SpikesFile): Ordered SpikesFile.
+				SpikesFile: Ordered SpikesFile.
 		"""
 	
 		aedat_addr_ts = zip(spikes_file.addresses, spikes_file.timestamps)
@@ -103,7 +103,7 @@ class Utils:
 		Prints the number of spikes and the number of microseconds of audio that the SpikesFile contains.
 		
 		Parameters:
-				spikes_file (SpikesFile): file to get the information from.
+				spikes_file (SpikesFile): File to get the information from.
 
 		Returns:
 				None.

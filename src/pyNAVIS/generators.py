@@ -44,7 +44,7 @@ class Generators:
                 return_save_both (int, optional): Set it to 0 to return the SpikesFile, to 1 to save the SpikesFile in the output path, and to 2 to do both.
 
         Returns:
-                spikes_file (SpikesFile, optional): SpikesFile containing the sweep. Returned only if return_save_both is either 0 or 2.
+                SpikesFile: SpikesFile containing the sweep. Returned only if return_save_both is either 0 or 2.
         """
 
         spikes_file = SpikesFile()
@@ -91,7 +91,7 @@ class Generators:
                 return_save_both (int, optional): Set it to 0 to return the SpikesFile, to 1 to save the SpikesFile in the output path, and to 2 to do both.
 
         Returns:
-                spikes_file (SpikesFile, optional): SpikesFile containing the shift. Returned only if return_save_both is either 0 or 2.
+                SpikesFile: SpikesFile containing the shift. Returned only if return_save_both is either 0 or 2.
         """
 
         spikes_file = SpikesFile()
@@ -134,7 +134,7 @@ class Generators:
                 return_save_both (int, optional): Set it to 0 to return the SpikesFile, to 1 to save the SpikesFile in the output path, and to 2 to do both.
 
         Returns:
-                spikes_file (SpikesFile, optional): SpikesFile containing the spikes. Returned only if return_save_both is either 0 or 2.
+                SpikesFile: SpikesFile containing the spikes. Returned only if return_save_both is either 0 or 2.
         """
 
         spikes_file = SpikesFile()

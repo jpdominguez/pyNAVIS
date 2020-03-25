@@ -30,9 +30,9 @@ class Savers:
         Saves a SpikesFile into an AER-DATA file.
 
         Parameters:
-                spikes_file (SpikesFile): file to save.
-                path (string): path where the output file will be saved, including name. Extension should not be specified.
-                settings (MainSettings): configuration parameters for the file to save.
+                spikes_file (SpikesFile): File to save.
+                path (string): Path where the output file will be saved, including name. Extension should not be specified.
+                settings (MainSettings): Configuration parameters for the file to save.
                 verbose (boolean, optional): Set to True if you want the execution time of the function to be printed.
 
         Returns:
@@ -62,8 +62,8 @@ class Savers:
         Saves a SpikesFile into a CSV file where each spike is represented in one line following the same patter: "address, timestamp".
 
         Parameters:
-                spikes_file (SpikesFile): file to save.
-                path (string): path where the output file will be saved, including name. Extension should not be specified.
+                spikes_file (SpikesFile): Dile to save.
+                path (string): Path where the output file will be saved, including name. Extension should not be specified.
                 verbose (boolean, optional): Set to True if you want the execution time of the function to be printed.
 
         Returns:
@@ -85,8 +85,8 @@ class Savers:
         Saves a SpikesFile into two different TXT files, where addresses and timestamps are stored, respectively.
 
         Parameters:
-                spikes_file (SpikesFile): file to save.
-                path (string): path where the output file will be saved, including name. Extension should not be specified.
+                spikes_file (SpikesFile): Dile to save.
+                path (string): Path where the output file will be saved, including name. Extension should not be specified.
                 verbose (boolean, optional): Set to True if you want the execution time of the function to be printed.
 
         Returns:
@@ -111,8 +111,8 @@ class Savers:
         Saves a SpikesFile into two different TXT files, where addresses and timestamps are stored, respectively. Timestamps are relative to the previous spike.
 
         Parameters:
-                spikes_file (SpikesFile): file to save.
-                path (string): path where the output file will be saved, including name. Extension should not be specified.
+                spikes_file (SpikesFile): Dile to save.
+                path (string): Path where the output file will be saved, including name. Extension should not be specified.
                 verbose (boolean, optional): Set to True if you want the execution time of the function to be printed.
 
         Returns:

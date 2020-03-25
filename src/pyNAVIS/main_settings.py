@@ -38,14 +38,6 @@ class MainSettings:
             NOTE: This subtracts  the smallest timestamp in the file to each of the timestamps.
     """
 
-    mono_stereo = 0
-    bin_size = 20000
-    ts_tick = 0.2
-    num_channels = 32
-    address_size = 2
-    on_off_both = 2
-    reset_timestamp = True
-
     def __init__(self, num_channels, mono_stereo, address_size = 2, ts_tick = 0.2, bin_size = 20000, on_off_both = 2, reset_timestamp = True):
         self.num_channels = num_channels
         self.mono_stereo = mono_stereo

@@ -45,7 +45,7 @@ class Splitters:
                 path (string, optional): Path where the output file will be saved. Format should not be specified. Not needed if return_save_both is set to 0.
 
         Returns:
-                spikes_file_new (SpikesFile, optional): SpikesFile containing the extracted portion of the input file. Returned only if return_save_both is either 0 or 2.
+                SpikesFile: SpikesFile containing the extracted portion of the input file. Returned only if return_save_both is either 0 or 2.
         """
 
         #THIS IS NOT NEEDED IF TS ARE SORTED

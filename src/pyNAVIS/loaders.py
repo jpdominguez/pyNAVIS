@@ -27,17 +27,23 @@ import csv
 
 class SpikesFile:
     """
-    Class with all the addresses and timestamps of a file.
+    Class that contains all the addresses and timestamps of a file.
 
     Attributes:
-        timestamps (int[]): timestamps of the file.
-        addresses (int[]): addresses of the file.
-        NOTE: timestamps and addresses are matched, which means that timestamps[0] is the timestamp for the spike with address addresses[0].
+            timestamps (int[]): Timestamps of the file.
+            addresses (int[]): Addresses of the file.
+    Note:
+            Timestamps and addresses are matched, which means that timestamps[0] is the timestamp for the spike with address addresses[0].
     """
-    timestamps = []
-    addresses = []
+
+    def __init__(self, addresses = [], timestamps = []):
+        self.addresses = addresses
+        self.timestamps = timestamps
 
 class Loaders:
+    """
+    Functionalities for loading spiking information from different formats.
+    """
 
     @staticmethod
     def loadAERDATA(path, settings):
@@ -45,13 +51,13 @@ class Loaders:
         Loads an AER-DATA (.aedat) file.
         
         Parameters:
-                path (string): full path of the AER-DATA file to be loaded, including name and extension.
-                settings (MainSettings): configuration parameters for the file to load.
+                path (string): Full path of the AER-DATA file to be loaded, including name and extension.
+                settings (MainSettings): Configuration parameters for the file to load.
 
         Returns:
-                spikes_file (SpikesFile): SpikesFile containing all the addresses and timestamps of the file.
+                SpikesFile: SpikesFile containing all the addresses and timestamps of the file.
         Raises:
-                SettingsError: if settings.address_size is different than 2 and 4.
+                SettingsError: If settings.address_size is different than 2 and 4.
 
         """
         unpack_param = ">H"
@@ -106,13 +112,13 @@ class Loaders:
     @staticmethod
     def loadCSV(path):
         """
-        Loads an Comma-Separated Values (.csv) file.
+        Loads a Comma-Separated Values (.csv) file.
         
         Parameters:
-                path (string): full path of the CSV file to be loaded, including name and extension.
+                path (string): Full path of the CSV file to be loaded, including name and extension.
 
         Returns:
-                spikes_file (SpikesFile): SpikesFile containing all the addresses and timestamps of the file.
+                SpikesFile: SpikesFile containing all the addresses and timestamps of the file.
 
         """
         addresses = []

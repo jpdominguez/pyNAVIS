@@ -40,19 +40,22 @@ class Functions:
 		Checks if the spiking information contained in the SpikesFile is correct and prints "The loaded SpikesFile file has been checked and it's OK" if the file passes all the checks.
 		
 		Parameters:
-				spikes_file (SpikesFile): file to check.
-				settings (MainSettings): configuration parameters for the file to check.
+				spikes_file (SpikesFile): File to check.
+				settings (MainSettings): Configuration parameters for the file to check.
 
 		Returns:
 				None.
 		
 		Raises:
-				TimestampOrderError: if the SpikesFile contains at least one timestamp which value is less than 0.
-				TimestampOrderError: if the SpikesFile contains at least one timestamp that is lesser than its previous one.
-				AddressValueError: if the SpikesFile contains at least one address less than 0 or greater than the num_channels that you specified in the MainSettings.
-				NOTE: If mono_stereo is set to 1 (stereo) in the MainSettings, then  addresses should be less than num_channels*2
-				NOTE: If on_off_both is set to 1 (both) in the MainSettings, then addresses should be less than num_channels*2.
-				NOTE: If mono_stereo is set to 1 and on_off_both is set to 1 in the MainSettings, then addresses should be less than num_channels*2*2.
+				TimestampOrderError: If the SpikesFile contains at least one timestamp which value is less than 0.
+				TimestampOrderError: If the SpikesFile contains at least one timestamp that is lesser than its previous one.
+				AddressValueError: If the SpikesFile contains at least one address less than 0 or greater than the num_channels that you specified in the MainSettings.
+		Notes:   
+				If mono_stereo is set to 1 (stereo) in the MainSettings, then  addresses should be less than num_channels*2.
+
+				If on_off_both is set to 1 (both) in the MainSettings, then addresses should be less than num_channels*2.
+				
+				If mono_stereo is set to 1 and on_off_both is set to 1 in the MainSettings, then addresses should be less than num_channels*2*2.
 		"""
 
 		if settings.on_off_both == 1:
@@ -88,11 +91,11 @@ class Functions:
 		It also adapts timestamps based on the tick frequency (ts_tick in the MainSettings).
 		
 		Parameters:
-				spikes_file (SpikesFile): file to adapt.
-				settings (MainSettings): configuration parameters for the file to adapt.
+				spikes_file (SpikesFile): File to adapt.
+				settings (MainSettings): Configuration parameters for the file to adapt.
 
 		Returns:
-				spikes_file (SpikesFile):  adapted SpikesFile.
+				SpikesFile:  Adapted SpikesFile.
 		"""
 		minimum_ts = min(spikes_file.timestamps)
 		if settings.reset_timestamp:
@@ -108,14 +111,14 @@ class Functions:
 		Performs the phase lock operation over a SpikesFile. This can only be performed to SpikeFiles with both ON and OFF addresses.
 		
 		Parameters:
-				spikes_file (SpikesFile): file used to perform the phase lock.
-				settings (MainSettings): configuration parameters of the input file.
+				spikes_file (SpikesFile): File used to perform the phase lock.
+				settings (MainSettings): Configuration parameters of the input file.
 
 		Returns:
-				spikes_file (SpikesFile):  phase-locked SpikesFile.
+				SpikesFile:  Phase-locked SpikesFile.
 
 		Raises:
-				SettingsError: if the on_off_both parameter is not set to 2 (both) in the MainSettings.
+				SettingsError: If the on_off_both parameter is not set to 2 (both) in the MainSettings.
 		"""
 
 		if settings.on_off_both == 1:
@@ -155,10 +158,10 @@ class Functions:
 				
 
 		Returns:
-				spikes_file_mono (SpikesFile, optional): SpikesFile containing the shift. Returned only if return_save_both is either 0 or 2.
+				SpikesFile: SpikesFile containing the shift. Returned only if return_save_both is either 0 or 2.
 		
 		Raises:
-				AttributeError: if the input file is a mono SpikesFile (settings.mono_stereo is set to 0).
+				AttributeError: If the input file is a mono SpikesFile (settings.mono_stereo is set to 0).
 		"""
 
 		if settings.mono_stereo:
@@ -198,10 +201,10 @@ class Functions:
 				output_format (string, optional): Output format of the file. Currently supports '.aedat' and '.csv'.
 
 		Returns:
-				spikes_file_new (SpikesFile, optional): SpikesFile containing the shift. Returned only if return_save_both is either 0 or 2.
+				SpikesFile: SpikesFile containing the shift. Returned only if return_save_both is either 0 or 2.
 		
 		Raises:
-				SettingsError: if the input file is a stereo SpikesFile (settings.mono_stereo is set to 1).
+				SettingsError: If the input file is a stereo SpikesFile (settings.mono_stereo is set to 1).
 		"""
 
 		if settings.mono_stereo == 0:
@@ -240,12 +243,12 @@ class Functions:
 		Extract information from a specific set of addresses from the SpikesFile.
 		
 		Parameters:
-				spikes_file (SpikesFile): file to use.
-				addresses (int[]): list of addresses to extract.
+				spikes_file (SpikesFile): File to use.
+				addresses (int[]): List of addresses to extract.
 				verbose (boolean, optional): Set to True if you want the execution time of the function to be printed.
 
 		Returns:
-				new_spikes_file (SpikesFile):  SpikesFile containing only the information from the addresses specified as input from spikes_file.
+				SpikesFile:  SpikesFile containing only the information from the addresses specified as input from spikes_file.
 		"""
 
 		if verbose == True: start_time = time.time()
