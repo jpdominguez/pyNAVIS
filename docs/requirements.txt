@@ -1,5 +1,5 @@
-python:
-	version: 3.7
+sphinxcontrib-napoleon:
+	version:
 	install:
 		- method: pip
-		  path: sphinxcontrib-napoleon
+		  path: .
