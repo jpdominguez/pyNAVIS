@@ -1,5 +1,1 @@
-sphinxcontrib-napoleon:
-	version:
-	install:
-		- method: pip
-		  path: .
+sphinxcontrib-napoleon
