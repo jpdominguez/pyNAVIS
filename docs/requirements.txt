@@ -1,2 +1,3 @@
 sphinxcontrib-napoleon
 autodocsumm
+matplotlib
