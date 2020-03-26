@@ -1,7 +1,8 @@
 
-**************************
-pyNAVIS: a cross-platform Neuromorphic Auditory VISualizer
-**************************
+********
+pyNAVIS
+********
+
 
 .. image:: https://img.shields.io/pypi/v/pyNAVIS.svg
    :target: https://pypi.python.org/pypi/pyNAVIS
@@ -9,11 +10,18 @@ pyNAVIS: a cross-platform Neuromorphic Auditory VISualizer
 .. image:: https://img.shields.io/pypi/l/pyNAVIS.svg
    :target: https://pypi.python.org/pypi/pyNAVIS/
    :alt: License
-.. image:: https://readthedocs.org/projects/pyNAVIS/badge/
-  :target: http://pyNAVIS.readthedocs.io/en/latest/?badge=latest
-  :alt: Documentation Status
+.. image:: https://readthedocs.org/projects/pynavis/badge/?version=latest
+   :target: https://pynavis.readthedocs.io/en/latest/?badge=latest
+   :alt: Documentation Status
+
+.. image:: pyNAVIS_200.png
+    :class: align-right
+    :width: 180
+
 
 ``pyNAVIS`` is an open-source cross-platform Python module for analyzing and processing spiking information obtained from neuromorphic auditory sensors. It is primarily focused to be used with a NAS_, but can work with any other cochlea sensor.
+
+
 
 For more information, head over to the `Github repository <https://github.com/jpdominguez/pyNAVIS>`_.
 
