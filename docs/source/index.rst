@@ -11,5 +11,7 @@
    :caption: Contents:
    
    Home <self>
-   Installing/Installing
+   Installing
+   Getting started
    pyNAVIS  
+   Contributing

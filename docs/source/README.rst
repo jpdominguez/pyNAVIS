@@ -1,6 +1,6 @@
 
 **************************
-pyNAVIS
+pyNAVIS: a cross-platform Neuromorphic Auditory VISualizer
 **************************
 
 .. image:: https://img.shields.io/pypi/v/pyNAVIS.svg
@@ -26,8 +26,7 @@ Installing
 
    pip install pyNAVIS
 
-For more information read the full installing docs
-`here <https://pyNAVIS.readthedocs.io/en/latest/installing.html>`__.
+For more information, head over to the :doc:`Installing section <Installing>`.
 
 .. _PyPI: https://pypi.python.org/pypi/pyNAVIS
 
@@ -35,23 +34,34 @@ For more information read the full installing docs
 Getting started
 ===============
 
+Now that you have everything set up, you can create a new Python file and import the package:
 
+.. prompt:: python \
+
+   from pyNAVIS import *
+
+With this, you can now use all the functionalities that ``pyNAVIS`` provides. A more detailed guide with examples can be read :doc:`here <Getting started>`.
 
 
 Software package
 ================
 
-The ``sphinx_rtd_theme`` is highly customizable on both the page level and on a global level.
-To see all the possible configuration options read the configuring docs
-`here <https://sphinx-rtd-theme.readthedocs.io/en/latest/configuring.html>`__.
+The Python code has been documented using docstrings, which is very convenient for user that want to either use
+the software or develop new features and functionalities.
+
+To see all the information for the different Python modules, classes, methods and all the possible configuration 
+options, read the :doc:`pyNAVIS package section <pyNAVIS>`.
 
 
 
 Contributing
 ============
 
-If you would like to help improve ``pyNAVIS``, please read our contributing guide
-`here <https://sphinx-rtd-theme.readthedocs.io/en/latest/contributing.html>`__.
+If you would like to help improve ``pyNAVIS``, please read our :doc:`contributing guide <Contributing>`.
 
-About
-=====
+License
+=======
+
+This project is licensed under the GPL License - see the `LICENSE.md file <https://github.com/jpdominguez/pyNAVIS/blob/master/LICENSE>`__ for details.
+
+For further information and help, please contact me at jpdominguez@atc.us.es.
