@@ -1,3 +1,4 @@
 sphinxcontrib-napoleon
 autodocsumm
 matplotlib
+sphinx-prompt
