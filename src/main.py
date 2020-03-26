@@ -1,18 +1,28 @@
-import matplotlib.pyplot as plt
+import os
+
+from examples import gen_random, gen_shift, gen_sweep, load_stereo_AERDATA, manual_split, stereo_to_mono
 from pyNAVIS import *
 
-from examples import ex1
+dirname = os.path.dirname(__file__)
+
+
+#gen_sweep.run()
+
+#gen_random.run()
+
+#gen_shift.run()
 
 """
-#NOTE: Sweep
-sweep_spikes = Generators.sweep(freq=5, cycles=5, num_ch=64, length=1000000, path='', return_save_both=0)
-sweep_settings = MainSettings(num_channels=64, mono_stereo=0, on_off_both=0, address_size=2, ts_tick=0.2, bin_size=1)
-Plots.spikegram(sweep_spikes, sweep_settings)
-#Plots.sonogram(sweep_spikes, sweep_settings)
-#Plots.histogram(sweep_spikes, sweep_settings)
-#Plots.average_activity(sweep_spikes, sweep_settings)
+settings = MainSettings(num_channels=16, mono_stereo=1, on_off_both=1, address_size=2, ts_tick=0.2, bin_size=10000)
+load_stereo_AERDATA.run(os.path.join(dirname, 'examples/test_files/stereoPS.aedat'), settings)
 """
 
-ex1.run()
 
-plt.show()
+"""
+settings = MainSettings(num_channels=16, mono_stereo=1, on_off_both=1, address_size=2, ts_tick=0.2, bin_size=10000)
+manual_split.run(os.path.join(dirname, 'examples/test_files/stereoPS.aedat'), settings)
+"""
+
+settings = MainSettings(num_channels=16, mono_stereo=1, on_off_both=1, address_size=2, ts_tick=0.2, bin_size=10000)
+stereo_to_mono.run(os.path.join(dirname, 'examples/test_files/stereoPS.aedat'), settings, left_right = 0)
+

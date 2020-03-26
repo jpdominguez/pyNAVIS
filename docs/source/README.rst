@@ -30,7 +30,9 @@ For more information, head over to the `Github repository <https://github.com/jp
 Installing
 ==========
 
-``pyNAVIS`` is distributed on PyPI_ and can be installed with pip::
+``pyNAVIS`` is distributed on PyPI_ and can be installed with pip:
+
+.. prompt:: bash $
 
    pip install pyNAVIS
 
