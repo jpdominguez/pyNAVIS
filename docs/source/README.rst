@@ -14,9 +14,7 @@ pyNAVIS
    :target: https://pynavis.readthedocs.io/en/latest/?badge=latest
    :alt: Documentation Status
 
-.. image:: pyNAVIS_200.png
-    :class: align-right
-    :width: 180
+
 
 
 ``pyNAVIS`` is an open-source cross-platform Python module for analyzing and processing spiking information obtained from neuromorphic auditory sensors. It is primarily focused to be used with a NAS_, but can work with any other cochlea sensor.
