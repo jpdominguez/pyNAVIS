@@ -13,7 +13,8 @@ Some of these examples are explained in this section, so that users don't have t
 
     Load files and plot their information <Load file>
     Convert from mono to stereo files and vice versa <mono_stereo>
-    Generate artificial files <generators>
+    Generate new files with spiking information <generators>
+    Manually split spiking information <split>
     Phaselock
     Generate image datasets from spiking information <dataset_generation>
 

@@ -108,7 +108,7 @@ class Functions:
 	@staticmethod
 	def phase_lock(spikes_file, settings):
 		"""
-		Performs the phase lock operation over a SpikesFile. This can only be performed to SpikeFiles with both ON and OFF addresses.
+		Performs the phase lock operation over a SpikesFile. This can only be performed to SpikeFiles with both ON and OFF addresses. The phaselock operation puts a spike in the output only when the spike train from a specific channel changes from ON (positive part of the signal) to OFF (negative part of the signal). This heavily reduces the number of spikes at the output.
 		
 		Parameters:
 				spikes_file (SpikesFile): File used to perform the phase lock.

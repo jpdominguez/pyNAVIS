@@ -95,3 +95,6 @@ To plot the spikegram (also known as cochleogram or raster plot), sonogram, hist
 
 .. note::
     The difference between left and right cochlea can only be performed in stereo (mono_stereo=1) files.
+
+Some examples of the different plots can be seen in the following image:
+
