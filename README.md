@@ -20,7 +20,11 @@
 pyNAVIS is an open-source cross-platform Python module for analyzing and processing spiking information obtained from neuromorphic auditory sensors. It is primarily focused to be used with a NAS, but can work with any other cochlea sensor.</p>
 </p>
 
-##Installing
+
+
+
+
+<h3>Installing</h3>
 
 <p align="justify">
 pyNAVIS is distributed on PyPI_ and can be installed with pip:
@@ -34,7 +38,11 @@ pyNAVIS is distributed on PyPI_ and can be installed with pip:
 For more information, head over to the <a href="https://pynavis.readthedocs.io/en/latest/">ReadTheDocs Documentation</a>.
 </p>
 
-##Getting started
+
+
+
+
+<h3>Getting started</h3>
 
 <p align="justify">
 Now that you have everything set up, you can create a new Python file and import the package:
@@ -46,7 +54,12 @@ Now that you have everything set up, you can create a new Python file and import
 With this, you can now use all the functionalities that pyNAVIS provides. A more detailed guide with examples can be read <a href="https://pynavis.readthedocs.io/en/latest/Getting%20started.html">here</a>.
 
 
-##Software package
+
+
+
+
+
+<h3>Software package</h3>
 
 <p align="justify">
 The Python code has been documented using docstrings, which is very convenient for user that want to either use the software or develop new features and functionalities.
@@ -57,7 +70,9 @@ To see all the information for the different Python modules, classes, methods an
 
 
 
-##Contributing
+
+
+<h3>Contributing</h3>
 
 <p align="justify">
 New functionalities or improvements to the existing project are welcome. To contribute to this project please follow these guidelines:
@@ -79,7 +94,10 @@ Thank you for contributing to pyNAVIS!
 
 
 
-##License
+
+
+
+<h3>License</h3>
 <p align="justify">
 This project is licensed under the GPL License - see the <a href="https://github.com/jpdominguez/pyNAVIS/blob/master/LICENSE">LICENSE.md file</a> for details.
 </p>
