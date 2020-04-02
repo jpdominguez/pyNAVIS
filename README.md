@@ -1,55 +1,64 @@
 ## pyNAVIS: an open-source cross-platform Neuromorphic Auditory VISualizer
 
-<p align="justify">
-<img align="right" height="180" width="180"  src="https://github.com/jpdominguez/pyNAVIS/blob/master/images/wiki-images/pynavis_logo.png">
-This software presents diverse utilities to develop the first post-processing layer using the neuromorphic auditory sensors (NAS) information. The NAS used implements a cascade filters architecture in FPGA, imitating the behavior of the basilar membrane and inner hair cells, working with the sound information decomposed into its frequency components as spike streams. The neuromorphic hardware interface Address-Event-Representation (AER) is used to propagate auditory information out of the NAS, emulating the auditory vestibular nerve. Using the packetized information (aedat files) generated with jAER software plus an AER to USB computer interface, NAVIS implements a set of graphs that allows to represent the auditory information as cochleograms, histograms, sonograms, etc. It can also split the auditory information into different sets depending on the activity level of the spike streams. The main contribution of this software tool is its capability to apply complex audio post-processing treatments and representations, which is a novelty for spike-based systems in the neuromorphic community. This software will help neuromorphic engineers to build sets for the training of spiking neural networks (SNN).</p>
 
-<h2>Table of contents</h2>
-<p align="justify">
-<ul>
-<li><a href="#GettingStarted">1. Getting started</a></li>
-<li><a href="#Usage">2. Usage</a></li>
-<li><a href="#Contributing">3. Contributing</a></li>
-<li><a href="#Credits">4. Credits</a></li>
-<li><a href="#License">5. License</a></li>
-</ul>
-</p>
-
-<h2 name="GettingStarted">1. Getting started</h2>
-<p align="justify">
-The following step-by-step guide will show you how to download, install and start using pyNAVIS.
-</p>
-
-<h3>1.1. Prerequisites</h3>
-<p align="justify">
-NAVIS requires Python 3.5 or greater to be executed, along with a set of packages that can be installed from the requirements.txt file.
-</p>
-
-<h3>1.2. Installation</h3>
-<p align="justify">
-To use pyNAVIS, first you need to download the latest release. This can be done by clicking on the <a href="https://github.com/jpdominguez/pyNAVIS/releases">"releases" button</a> on the home page or just by cloning/downloading the repository.
-</p>
-
-<p align="justify">
-Then, select the latest release (it has a green button next to it containing the text "Latest release") and click on the download link named "pyNAVIS_vX.zip", where X is the version number.
-</p>
-
-
-<p align="justify">
-After the file has been downloaded, decompress it. 
-  
-If you get an error when trying to execute pyNAVIS, please check that no file has been deleted or moved to a different folder and that you have already installed all the requirements and dependencies (Check 1.2. Installation). If the problem persist, please <a href="mailto:jpdominguez@atc.us.es">contact me</a>.
+<p>
+<a href="http://www.gnu.org/licenses/gpl-3.0">
+<img src="https://img.shields.io/badge/License-GPL%20v3-blue.svg"/>
+</a>
+<a href="https://pypi.python.org/pypi/pyNAVIS">
+<img src="https://img.shields.io/pypi/v/pyNAVIS.svg"/>
+</a>
+<a href="https://pynavis.readthedocs.io/en/latest">
+<img src="https://readthedocs.org/projects/pynavis/badge/?version=latest"/>
+</a>
 </p>
 
 
 
+<p>
+<img align="right" height="180" width="180"  src="https://github.com/jpdominguez/pyNAVIS/blob/master/images/wiki-images/pynavis_logo.png"/>
+pyNAVIS is an open-source cross-platform Python module for analyzing and processing spiking information obtained from neuromorphic auditory sensors. It is primarily focused to be used with a NAS, but can work with any other cochlea sensor.</p>
+</p>
 
-<h2 name="Usage">2. Usage</h2>
+##Installing
+
+<p align="justify">
+pyNAVIS is distributed on PyPI_ and can be installed with pip:
+</p>
+
+```
+   pip install pyNAVIS
+```
+
+<p align="justify">
+For more information, head over to the <a href="https://pynavis.readthedocs.io/en/latest/">ReadTheDocs Documentation</a>.
+</p>
+
+##Getting started
+
+<p align="justify">
+Now that you have everything set up, you can create a new Python file and import the package:
+</p>
+```
+   from pyNAVIS import *
+```
+
+With this, you can now use all the functionalities that pyNAVIS provides. A more detailed guide with examples can be read <a href="https://pynavis.readthedocs.io/en/latest/Getting%20started.html">here</a>.
+
+
+##Software package
+
+<p align="justify">
+The Python code has been documented using docstrings, which is very convenient for user that want to either use the software or develop new features and functionalities.
+
+To see all the information for the different Python modules, classes, methods and all the possible configuration options, read the <a href="https://pynavis.readthedocs.io/en/latest/pyNAVIS.html">pyNAVIS package section</a>.
+
+</p>
 
 
 
+##Contributing
 
-<h2 name="Contributing">3. Contributing</h2>
 <p align="justify">
 New functionalities or improvements to the existing project are welcome. To contribute to this project please follow these guidelines:
 <ol align="justify">
@@ -68,28 +77,14 @@ If it is a new feature request (e.g., a new functionality), post an issue to dis
 Thank you for contributing to pyNAVIS!
 </p>
 
-<h2 name="Credits">4. Credits</h2>
+
+
+##License
 <p align="justify">
-The author of the pyNAVIS' original idea is Juan P. Dominguez-Morales.
-</p>
-<p align="justify">
-The authors would like to thank and give credit to:
-<ul align="justify">
-<li>Dominguez-Morales, J. P., Jimenez-Fernandez, A., Dominguez-Morales, M., & Jimenez-Moreno, G. (2017). Navis: neuromorphic auditory visualizer tool. Neurocomputing, 237, 418-422.</li>
-<li>Jiménez-Fernández, A., Cerezuela-Escudero, E., Miró-Amarante, L., Domínguez-Morales, M. J., de Asís Gómez-Rodríguez, F., Linares-Barranco, A., & Jiménez-Moreno, G. (2016). "A binaural neuromorphic auditory sensor for FPGA: a spike signal processing approach". IEEE Transactions on Neural Networks and Learning Systems.Year: 2016, Volume: PP, Issue: 99. Pages: 1 - 15, DOI: 10.1109/TNNLS.2016.2583223.</li>
-<li>Delbrück, T., “jAER Open Source Project,” 2007. [Online]. Available: http://sourceforge.net/p/jaer/wiki/Home/.</li>
-<li>R. Berner et al., “A 5 Meps $100 USB2.0 Address-Event Monitor-Sequencer Interface,” 2007 IEEE ISCAS, 2007.</li>
-</ul>
+This project is licensed under the GPL License - see the <a href="https://github.com/jpdominguez/pyNAVIS/blob/master/LICENSE">LICENSE.md file</a> for details.
 </p>
 
-<h2 name="License">5. License</h2>
-
-<p align="justify">
-This project is licensed under the GPL License - see the <a href="https://raw.githubusercontent.com/jpdominguez/NAVIS-Tool/master/LICENSE">LICENSE.md</a> file for details.
-</p>
 <p align="justify">
 Copyright © 2018 Juan P. Dominguez-Morales<br>  
 <a href="mailto:jpdominguez@atc.us.es">jpdominguez@atc.us.es</a>
 </p>
-
-[![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](http://www.gnu.org/licenses/gpl-3.0)

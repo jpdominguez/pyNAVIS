@@ -45,7 +45,10 @@ Then, you can use that variable to plot the spikes. Here you can see an example 
 
 This will generate the plots that can be seen in the next figure.
 
-.. image:: /_static/random_addrs.png
+.. figure:: /_static/random_addrs.png
+   :scale: 100 %   
+   :align: center
+   :alt: Random addresses plots
 
 .. _shift:
 
@@ -70,7 +73,10 @@ And plot the information with the same code that was used in previous examples.
 Here you can see the spikegram of the shift that corresponds to the example:
 
 
-.. image:: /_static/shift_Spikegram.png
+.. figure:: /_static/shift_Spikegram.png
+   :scale: 80 %   
+   :align: center
+   :alt: Shift spikegram
 
 
 
@@ -101,3 +107,6 @@ And you can also plot the information following the example presented in the ``r
 Here you can see the spikegram of the sweep that corresponds to the example:
 
 .. image:: /_static/sweep_Spikegram.png
+   :scale: 80 %   
+   :align: center
+   :alt: Sweep spikegram
