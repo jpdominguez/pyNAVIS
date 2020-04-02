@@ -128,8 +128,8 @@ class Loaders:
         with open(path) as csv_file:
             csv_reader = csv.reader(csv_file, delimiter=',')
             for row in csv_reader:
-                addresses.append(row[0])
-                timestamps.append(row[1])
+                addresses.append(int(row[0]))
+                timestamps.append(int(row[1]))
 
         spikes_file = SpikesFile()
         spikes_file.addresses = addresses
