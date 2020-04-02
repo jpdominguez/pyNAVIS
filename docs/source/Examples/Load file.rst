@@ -98,3 +98,7 @@ To plot the spikegram (also known as cochleogram or raster plot), sonogram, hist
 
 Some examples of the different plots can be seen in the following image:
 
+.. image:: /_static/stereo_file_plots.png
+   :scale: 100 %   
+   :align: center
+   :alt: Plots
