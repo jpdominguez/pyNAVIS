@@ -2,6 +2,7 @@
 
 
 <p>
+<img align="right" height="180" width="180"  src="https://github.com/jpdominguez/pyNAVIS/blob/master/images/wiki-images/pynavis_logo.png"/>
 <a href="http://www.gnu.org/licenses/gpl-3.0">
 <img src="https://img.shields.io/badge/License-GPL%20v3-blue.svg"/>
 </a>
@@ -16,7 +17,7 @@
 
 
 <p align="justify">
-<img align="right" height="180" width="180"  src="https://github.com/jpdominguez/pyNAVIS/blob/master/images/wiki-images/pynavis_logo.png"/>
+
 pyNAVIS is an open-source cross-platform Python module for analyzing and processing spiking information obtained from neuromorphic auditory sensors. It is primarily focused to be used with a NAS, but can work with any other cochlea sensor.</p>
 </p>
 
@@ -30,7 +31,7 @@ pyNAVIS is an open-source cross-platform Python module for analyzing and process
 pyNAVIS is distributed on PyPI_ and can be installed with pip:
 
 
-<pre><code>
+<pre width=1><code>
    pip install pyNAVIS
 </code></pre>
 
@@ -51,7 +52,7 @@ For more information, head over to the <a href="https://pynavis.readthedocs.io/e
 Now that you have everything set up, you can create a new Python file and import the package:
 
 
-<pre><code>
+<pre width=1><code>
    from pyNAVIS import *
 </code></pre>
 
