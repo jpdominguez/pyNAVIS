@@ -31,9 +31,9 @@ pyNAVIS is an open-source cross-platform Python module for analyzing and process
 pyNAVIS is distributed on PyPI_ and can be installed with pip:
 
 
-<pre width=1><code>
+<code>
    pip install pyNAVIS
-</code></pre>
+</code>
 
 
 
@@ -52,7 +52,7 @@ For more information, head over to the <a href="https://pynavis.readthedocs.io/e
 Now that you have everything set up, you can create a new Python file and import the package:
 
 
-<pre width=1><code>
+<pre><code>
    from pyNAVIS import *
 </code></pre>
 
