@@ -2,7 +2,7 @@
 
 
 <p>
-<img align="right" height="180" width="180"  src="https://github.com/jpdominguez/pyNAVIS/blob/master/images/wiki-images/pynavis_logo.png"/>
+<img align="right" height="180" width="180"  src="https://github.com/jpdominguez/pyNAVIS/blob/master/images/wiki-images/pynavis_logo.png?raw=true"/>
 <a href="http://www.gnu.org/licenses/gpl-3.0">
 <img src="https://img.shields.io/badge/License-GPL%20v3-blue.svg"/>
 </a>
