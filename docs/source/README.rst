@@ -54,7 +54,7 @@ With this, you can now use all the functionalities that ``pyNAVIS`` provides. A 
 Software package
 ================
 
-The Python code has been documented using docstrings, which is very convenient for user that want to either use
+The Python code has been documented using docstrings, which is very convenient for users that want to either use
 the software or develop new features and functionalities.
 
 To see all the information for the different Python modules, classes, methods and all the possible configuration 
