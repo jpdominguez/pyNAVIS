@@ -50,8 +50,9 @@ For more information, head over to the <a href="https://pynavis.readthedocs.io/e
 <p align="justify">
 Now that you have everything set up, you can create a new Python file and import the package:
 
-
->from pyNAVIS import *
+```
+from pyNAVIS import *
+```
 
 With this, you can now use all the functionalities that pyNAVIS provides. A more detailed guide with examples can be read <a href="https://pynavis.readthedocs.io/en/latest/Getting%20started.html">here</a>.
 
