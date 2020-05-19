@@ -57,13 +57,15 @@ class Savers:
 
 
     @staticmethod
-    def save_CSV(spikes_file, path, verbose = False):
+    def save_CSV(spikes_file, path, split = False, separator = ', ', verbose = False):
         """
         Saves a SpikesFile into a CSV file where each spike is represented in one line following the same patter: "address, timestamp".
 
         Parameters:
                 spikes_file (SpikesFile): Dile to save.
                 path (string): Path where the output file will be saved, including name. Extension should not be specified.
+                split (boolean, optional): True for generating two files (addresses and timestamps), and False for generating one with all the information.
+                separator (string, optional): which character to use as separator between addresses and timestamps when split = False
                 verbose (boolean, optional): Set to True if you want the execution time of the function to be printed.
 
         Returns:
@@ -71,22 +73,31 @@ class Savers:
         """
 
         if verbose == True: start_time = time.time()
-
-        with open(path + '.csv', 'w') as f:
-            for i in range(len(spikes_file.addresses)):
-                f.write(str(spikes_file.addresses[i]) + ', ' + str(int(spikes_file.timestamps[i])) + "\n")    
+        if split == False:
+            with open(path + '.csv', 'w') as f:
+                for i in range(len(spikes_file.addresses)):
+                    f.write(str(spikes_file.addresses[i]) + separator + str(int(spikes_file.timestamps[i])) + "\n")
+        else:
+            with open(path + '_addrs.csv', 'w') as f:
+                for addr in spikes_file.addresses:
+                    f.write(str(addr) + "\n")
+            with open(path + '_tss.csv', 'w') as f:
+                for ts in spikes_file.timestamps:
+                    f.write(str(int(ts)) + '\n') 
         if verbose == True:
             print("CSV file saved correctly. Took:", time.time() - start_time, "seconds")
 
 
     @staticmethod
-    def save_TXT(spikes_file, path, verbose = False):
+    def save_TXT(spikes_file, path, split = True, separator = ', ', verbose = False):
         """
         Saves a SpikesFile into two different TXT files, where addresses and timestamps are stored, respectively.
 
         Parameters:
                 spikes_file (SpikesFile): Dile to save.
                 path (string): Path where the output file will be saved, including name. Extension should not be specified.
+                split (boolean, optional): True for generating two files (addresses and timestamps), and False for generating one with all the information.
+                separator (string, optional): which character to use as separator between addresses and timestamps when split = False
                 verbose (boolean, optional): Set to True if you want the execution time of the function to be printed.
 
         Returns:
@@ -94,25 +105,31 @@ class Savers:
         """
 
         if verbose == True: start_time = time.time()
-
-        with open(path+'_addrs.txt', 'w') as f:
-            for addr in spikes_file.addresses:
-                f.write(str(addr) + '\n')
-        with open(path+'_tss.txt', 'w') as f:
-            for ts in spikes_file.timestamps:
-                f.write(str(int(ts)) + '\n')    
+        if split == True:
+            with open(path + '_addrs.txt', 'w') as f:
+                for addr in spikes_file.addresses:
+                    f.write(str(addr) + '\n')
+            with open(path + '_tss.txt', 'w') as f:
+                for ts in spikes_file.timestamps:
+                    f.write(str(int(ts)) + '\n')    
+        else:
+            with open(path + '.txt', 'w') as f:
+                for i in range(len(spikes_file.addresses)):
+                    f.write(str(spikes_file.addresses[i]) + separator + str(int(spikes_file.timestamps[i])) + '\n')
         if verbose == True:
             print("TXT file saved correctly. Took:", time.time() - start_time, "seconds")
 
 
     @staticmethod
-    def save_TXT_relativeTS(spikes_file, path, verbose = False):
+    def save_TXT_relativeTS(spikes_file, path, split = True, separator = ', ', verbose = False):
         """
         Saves a SpikesFile into two different TXT files, where addresses and timestamps are stored, respectively. Timestamps are relative to the previous spike.
 
         Parameters:
                 spikes_file (SpikesFile): Dile to save.
                 path (string): Path where the output file will be saved, including name. Extension should not be specified.
+                split (boolean, optional): True for generating two files (addresses and timestamps), and False for generating one with all the information.
+                separator (string, optional): which character to use as separator between addresses and timestamps when split = False
                 verbose (boolean, optional): Set to True if you want the execution time of the function to be printed.
 
         Returns:
@@ -123,14 +140,22 @@ class Savers:
 
         if verbose == True: start_time = time.time()
 
-        with open(path+'_addrs.txt', 'w') as f:
-            for addr in spikes_file_ordered.addresses:
-                f.write(str(addr) + '\n')
-        with open(path+'_tss.txt', 'w') as f:
-            for i in range(len(spikes_file_ordered.timestamps)):
-                if i == 0:
-                    f.write(str(0) + '\n')
-                else:
-                    f.write(str(int(spikes_file_ordered.timestamps[i]-spikes_file_ordered.timestamps[i-1])) + '\n')    
+        if split == True:
+            with open(path + '_addrs.txt', 'w') as f:
+                for addr in spikes_file_ordered.addresses:
+                    f.write(str(addr) + '\n')
+            with open(path + '_tss.txt', 'w') as f:
+                for i in range(len(spikes_file_ordered.timestamps)):
+                    if i == 0:
+                        f.write(str(0) + '\n')
+                    else:
+                        f.write(str(int(spikes_file_ordered.timestamps[i]-spikes_file_ordered.timestamps[i-1])) + '\n')
+        else:
+            with open(path + '_relativeTS.txt', 'w') as f:
+                for i in range(len(spikes_file.addresses)):
+                    if i == 0:
+                        f.write(str(spikes_file.addresses[i]) + separator + str(0) + '\n')
+                    else:
+                        f.write(spikes_file.addresses[i] + separator + str(int(spikes_file_ordered.timestamps[i]-spikes_file_ordered.timestamps[i-1])) + '\n')
         if verbose == True:
             print("TXT file saved correctly. Took:", time.time() - start_time, "seconds")
