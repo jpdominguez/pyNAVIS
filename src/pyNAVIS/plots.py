@@ -22,6 +22,7 @@
 import math
 import random
 from bisect import bisect_left, bisect_right
+from matplotlib.colors import LinearSegmentedColormap
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -130,7 +131,7 @@ class Plots:
             sng_fig = plt.figure()
             sng_fig.canvas.set_window_title(graph_tile)
 
-            plt.imshow(sonogram, aspect="auto") #, aspect="auto")
+            plt.imshow(sonogram, aspect="auto", cmap='hot') #, aspect="auto")
             plt.gca().invert_yaxis()
 
             plt.xlabel('Bin ('+str(settings.bin_size) + '$\mu$s width)', fontsize='large')
@@ -138,12 +139,34 @@ class Plots:
 
             plt.title(graph_tile, fontsize='x-large')
 
+            """
+            plt.annotate('Right cochlea | Left cochlea',
+            xy=(1.00, 0.5), xytext=(5, 0),
+            xycoords=('axes fraction', 'figure fraction'),
+            textcoords='offset points',
+            size=11, ha='center', va='center', rotation=270)
+            """
+
+            if settings.mono_stereo == 1:
+                plt.annotate('Right cochlea',
+                xy=(1.00, 0.75), xytext=(5, 0),
+                xycoords=('axes fraction', 'axes fraction'),
+                textcoords='offset points',
+                size=11, ha='center', va='center', rotation=270)
+
+                plt.annotate('Left cochlea',
+                xy=(1.00, 0.25), xytext=(5, 0),
+                xycoords=('axes fraction', 'axes fraction'),
+                textcoords='offset points',
+                size=11, ha='center', va='center', rotation=270)
+
             colorbar = plt.colorbar()
-            colorbar.set_label('No. of spikes', rotation=270, fontsize='large', labelpad= 10) #, rotation=270)
+            colorbar.set_label('No. of spikes', rotation=270, fontsize='large', labelpad= 10)
 
             sng_fig.show()
         else:
             return sonogram
+
 
     @staticmethod
     def histogram(spikes_file, settings, bar_line = 1, graph_tile = 'Histogram', verbose = False):
@@ -231,9 +254,9 @@ class Plots:
                 events_list = spikes_file.addresses[a:b]
                 
                 for j in events_list:
-                    if j < settings.num_channels*2:
+                    if j < settings.num_channels*(1 + settings.on_off_both):
                         evtL = evtL + 1
-                    elif j >= settings.num_channels*2 and j < settings.num_channels*2*2:
+                    elif j >= settings.num_channels*(1 + settings.on_off_both) and j < settings.num_channels*(1 + settings.on_off_both)*2:
                         evtR = evtR + 1
 
                 average_activity_L[int(i/settings.bin_size)] = evtL
@@ -322,8 +345,14 @@ class Plots:
                 plt.style.use('default')
                 sng_fig = plt.figure()
                 sng_fig.canvas.set_window_title(graph_tile)
+                
+                #cmap = 'RdBu'
+                colors = [(1, 0.49803921568627450980392156862745, 0.05490196078431372549019607843137), (1, 1, 1), (0.12156862745098039215686274509804, 0.46666666666666666666666666666667, 0.70588235294117647058823529411765)]  # R -> G -> B
+                n_bins = [3, 6, 10, 100]  # Discretizes the interpolation into bins
+                cmap_name = 'my_list'
+                cm = LinearSegmentedColormap.from_list(cmap_name, colors, N=100)
 
-                plt.imshow(diff, vmin=-100, vmax=100, aspect="auto") #, aspect="auto")
+                plt.imshow(diff, vmin=-100, vmax=100, aspect="auto", cmap=cm) #, aspect="auto")
                 plt.gca().invert_yaxis()
 
                 plt.xlabel('Bin ('+str(settings.bin_size) + '$\mu$s width)', fontsize='large')
@@ -333,7 +362,7 @@ class Plots:
 
                 colorbar = plt.colorbar(ticks=[100, 50, 0, -50, -100], orientation='horizontal')
                 colorbar.set_label('Cochlea predominance', rotation=0, fontsize='large', labelpad= 10)
-                colorbar.ax.set_xticklabels(['100% L cochlea', '50%', '0% L==R', '50%', '100% R cochlea'])
+                colorbar.ax.set_xticklabels(['100% L\nCochlea', '50%', '0%\nL==R', '50%', '100% R\nCochlea'])
                 colorbar.ax.invert_xaxis()
                 sng_fig.show()
             else:
