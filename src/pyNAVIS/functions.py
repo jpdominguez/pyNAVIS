@@ -106,19 +106,20 @@ class Functions:
 
 
 	@staticmethod
-	def phase_lock(spikes_file, settings):
+	def phase_lock(spikes_file, settings, posNeg_both = 0):
 		"""
 		Performs the phase lock operation over a SpikesFile. This can only be performed to SpikeFiles with both ON and OFF addresses. The phaselock operation puts a spike in the output only when the spike train from a specific channel changes from ON (positive part of the signal) to OFF (negative part of the signal). This heavily reduces the number of spikes at the output.
 		
 		Parameters:
 				spikes_file (SpikesFile): File used to perform the phase lock.
 				settings (MainSettings): Configuration parameters of the input file.
+				posNeg_both (int, optional): If set to 0, a spike is generated only when spike trains change from ON to OFF addresses. If set to 1, a spike is generated every time spike trains change from ON to OFF addresses or vice versa.
 
 		Returns:
 				SpikesFile:  Phase-locked SpikesFile.
 
 		Raises:
-				SettingsError: If the on_off_both parameter is not set to 2 (both) in the MainSettings.
+				SettingsError: If the on_off_both parameter is not set to 1 (both) in the MainSettings.
 		"""
 
 		if settings.on_off_both == 1:
@@ -129,7 +130,7 @@ class Functions:
 				if prevSpike[spikes_file.addresses[i]//2] == None:
 					prevSpike[spikes_file.addresses[i]//2] = spikes_file.addresses[i]%2
 				else:
-					if prevSpike[spikes_file.addresses[i]//2] == 0 and spikes_file.addresses[i]%2 == 1:
+					if (prevSpike[spikes_file.addresses[i]//2] == 0 and spikes_file.addresses[i]%2 == 1) or ((prevSpike[spikes_file.addresses[i]//2] == 1 and spikes_file.addresses[i]%2 == 0) and posNeg_both):
 						phaseLockedAddrs.append(spikes_file.addresses[i]//2)
 						phaseLockedTs.append(spikes_file.timestamps[i])
 						prevSpike[spikes_file.addresses[i]//2] = spikes_file.addresses[i]%2
@@ -238,13 +239,14 @@ class Functions:
 
 
 	@staticmethod
-	def extract_channels_activities(spikes_file, addresses, verbose = False):
+	def extract_channels_activities(spikes_file, addresses, reset_addresses = True, verbose = False):
 		"""
 		Extract information from a specific set of addresses from the SpikesFile.
 		
 		Parameters:
 				spikes_file (SpikesFile): File to use.
 				addresses (int[]): List of addresses to extract.
+				reset_addresses (boolean, optional): If set to true, addresses IDs will start from 0. If not, they will keep their original IDs.
 				verbose (boolean, optional): Set to True if you want the execution time of the function to be printed.
 
 		Returns:
@@ -261,5 +263,7 @@ class Functions:
 		if verbose == True: print('EXTRACT CHANNELS CALCULATION', time.time() - start_time)
 		new_spikes_file = SpikesFile()
 		new_spikes_file.addresses = spikes_per_channel_addr
+		if reset_addresses == True:
+			new_spikes_file.addresses = [addr - addresses[0] for addr in new_spikes_file.addresses]
 		new_spikes_file.timestamps = spikes_per_channels_ts
 		return new_spikes_file
