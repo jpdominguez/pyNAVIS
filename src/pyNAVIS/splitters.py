@@ -44,7 +44,7 @@ class Splitters:
                 end (int): Last timestamp from which to stop extracting. 
                 settings (MainSettings): Configuration parameters for the input file.
                 return_save_both (int, optional): Set it to 0 to return the resultant SpikesFile, to 1 to save the SpikesFile in the output path, and to 2 to do both.
-                outoutput_format (string, optional): Output format of the file. Currently supports '.aedat' and '.csv'.put_format.
+                output_format (string, optional): Output format of the file. Currently supports '.aedat' and '.csv'.put_format.
                 path (string, optional): Path where the output file will be saved. Format should not be specified. Not needed if return_save_both is set to 0.
 
         Returns:
@@ -130,21 +130,21 @@ class Splitters:
 
 
     @staticmethod
-    def segmenter_RT(spikes_file, settings, noise_threshold, bin_width, return_save_both = 0, output_format = '.aedat', path=None):
+    def segmenter_RT(spikes_file, noise_threshold, bin_width, return_save_both = 0, output_format = '.aedat', path=None, verbose = False):
         """
-        Extract a portion of the input SpikesFile file.
+        Removes background noise.
 
         Parameters:
                 spikes_file (SpikesFile): Input file.
-                init (int): First timestamp from which to start extracting. 
-                end (int): Last timestamp from which to stop extracting. 
-                settings (MainSettings): Configuration parameters for the input file.
+                noise_threshold (int): First timestamp from which to start extracting. 
+                bin_width (int): Last timestamp from which to stop extracting.
                 return_save_both (int, optional): Set it to 0 to return the resultant SpikesFile, to 1 to save the SpikesFile in the output path, and to 2 to do both.
                 outoutput_format (string, optional): Output format of the file. Currently supports '.aedat' and '.csv'.put_format.
                 path (string, optional): Path where the output file will be saved. Format should not be specified. Not needed if return_save_both is set to 0.
+                verbose (boolean, optional): Set to True if you want the execution time of the function to be printed.
 
         Returns:
-                SpikesFile: SpikesFile containing the extracted portion of the input file. Returned only if return_save_both is either 0 or 2.
+                SpikesFile: SpikesFile containing the processed input file. Returned only if return_save_both is either 0 or 2.
         """
 
         curr_ts = 0
