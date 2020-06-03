@@ -22,11 +22,14 @@
 
 import copy
 import random
+import numpy as np
+import time
 from bisect import bisect_left, bisect_right
 
 from .functions import Functions
 from .savers import Savers
 from .utils import Utils
+from .loaders import SpikesFile
 
 class Splitters:
 
@@ -123,3 +126,51 @@ class Splitters:
             #save_AERDATA(splitted_aedat[i][0], splitted_aedat[i][1], str(i) +".aedat", settings)
         print cont
     """
+
+
+
+    @staticmethod
+    def segmenter_RT(spikes_file, settings, noise_threshold, bin_width, return_save_both = 0, output_format = '.aedat', path=None):
+        """
+        Extract a portion of the input SpikesFile file.
+
+        Parameters:
+                spikes_file (SpikesFile): Input file.
+                init (int): First timestamp from which to start extracting. 
+                end (int): Last timestamp from which to stop extracting. 
+                settings (MainSettings): Configuration parameters for the input file.
+                return_save_both (int, optional): Set it to 0 to return the resultant SpikesFile, to 1 to save the SpikesFile in the output path, and to 2 to do both.
+                outoutput_format (string, optional): Output format of the file. Currently supports '.aedat' and '.csv'.put_format.
+                path (string, optional): Path where the output file will be saved. Format should not be specified. Not needed if return_save_both is set to 0.
+
+        Returns:
+                SpikesFile: SpikesFile containing the extracted portion of the input file. Returned only if return_save_both is either 0 or 2.
+        """
+
+        curr_ts = 0
+
+        spikes_processed = 0
+
+        buffer_ts = np.zeros(int(noise_threshold))
+
+        spikes_filtered = SpikesFile() 
+
+
+        start_time = time.time()
+
+        for i in range(len(spikes_file.timestamps)):
+            curr_ts = spikes_file.timestamps[i]
+            curr_addr = spikes_file.addresses[i]
+
+            buffer_ts = np.roll(buffer_ts, -1)
+            buffer_ts[-1] = curr_ts
+
+            spikes_processed +=1            
+
+            if ((curr_ts - buffer_ts[0]) <= bin_width * 1000) and (spikes_processed >= noise_threshold):
+                spikes_filtered.addresses.append(curr_addr)
+                spikes_filtered.timestamps.append(curr_ts) 
+
+        print('CALCULATION', time.time() - start_time)
+
+        return spikes_filtered
