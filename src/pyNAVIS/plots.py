@@ -32,7 +32,7 @@ from .utils import Utils
 
 class Plots:
     @staticmethod
-    def spikegram(spikes_file, settings, dot_size = 0.2, dot_freq = 1, graph_tile = 'Spikegram', verbose = False):
+    def spikegram(spikes_file, settings, dot_size = 0.2, dot_freq = 1, graph_tile = 'Spikegram', start_at_zero = True, verbose = False):
         """
         Plots the spikegram (also known as cochleogram or raster plot) of a SpikesFile.
         
@@ -44,6 +44,7 @@ class Plots:
                 dot_size (float): Size of the dots used in the spikegram plot.
                 dot_freq (int): Set the frequency of spikes that will be represented in the spikegram.
                 graph_tile (string, optional): Text that will appear as title for the graph.
+                start_at_zero (boolean, optional): If set to True, the X axis will start at 0, instead of starting at the minimum timestamp.
                 verbose (boolean, optional): Set to True if you want the execution time of the function to be printed.
 
         Returns:
@@ -77,10 +78,13 @@ class Plots:
         plt.xlabel('Timestamp ($\mu$s)', fontsize='large')
         plt.ylabel('Address', fontsize='large')
 
+        if start_at_zero:
+            plt.xlim([0, np.max(spikes_file.timestamps)])
+
         spk_fig.show()
 
     @staticmethod
-    def sonogram(spikes_file, settings, return_data = False, graph_tile = 'Sonogram', verbose = False):
+    def sonogram(spikes_file, settings, return_data = False, graph_tile = 'Sonogram', start_at_zero = True, verbose = False):
         """
         Plots the sonogram of a SpikesFile.
         
@@ -91,6 +95,7 @@ class Plots:
                 settings (MainSettings): Configuration parameters for the file to plot.
                 return_data (boolean, optional): When set to True, the sonogram matrix will be returned instead of plotted.
                 graph_tile (string, optional): Text that will appear as title for the graph.
+                start_at_zero (boolean, optional): If set to True, the X axis will start at 0, instead of starting at the minimum timestamp.
                 verbose (boolean, optional): Set to True if you want the execution time of the function to be printed.
 
         Returns:
@@ -98,11 +103,15 @@ class Plots:
         """
         if verbose == True: start_time = time.time()
 
-        total_time = max(spikes_file.timestamps) - min(spikes_file.timestamps)
+        if start_at_zero:
+            total_time = max(spikes_file.timestamps)
+            last_time = 0
+        else:
+            total_time = max(spikes_file.timestamps) - min(spikes_file.timestamps)
+            last_time = min(spikes_file.timestamps)
+        
 
         sonogram = np.zeros((settings.num_channels*(settings.on_off_both + 1)*(settings.mono_stereo+1), int(math.ceil(total_time/settings.bin_size))))
-
-        last_time = min(spikes_file.timestamps)
 
         its = int(math.ceil(total_time/settings.bin_size))
         
