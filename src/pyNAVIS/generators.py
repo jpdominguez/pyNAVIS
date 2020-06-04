@@ -47,7 +47,7 @@ class Generators:
                 SpikesFile: SpikesFile containing the sweep. Returned only if return_save_both is either 0 or 2.
         """
 
-        spikes_file = SpikesFile()
+        spikes_file = SpikesFile([], [])
         time_per_cycle = float(length) // cycles
         spikes_per_cycle = freq * (num_ch * 2 - 1)
         time_between_spikes = float(time_per_cycle) // spikes_per_cycle
@@ -91,7 +91,7 @@ class Generators:
                 SpikesFile: SpikesFile containing the shift. Returned only if return_save_both is either 0 or 2.
         """
 
-        spikes_file = SpikesFile()
+        spikes_file = SpikesFile([], [])
         total_spikes_no = freq * num_ch
         addrs = [0] * int(total_spikes_no)
         timestamps = [0] * int(total_spikes_no)
@@ -131,7 +131,7 @@ class Generators:
                 SpikesFile: SpikesFile containing the spikes. Returned only if return_save_both is either 0 or 2.
         """
 
-        spikes_file = SpikesFile()
+        spikes_file = SpikesFile([], [])
         addrs = [0] * int(freq*length/1000000)
         timestamps = [0] * int(freq*length/1000000)
         random.seed(0)

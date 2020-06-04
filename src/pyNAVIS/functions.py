@@ -136,7 +136,7 @@ class Functions:
 						prevSpike[spikes_file.addresses[i]//2] = spikes_file.addresses[i]%2
 					else:
 						prevSpike[spikes_file.addresses[i]//2] = spikes_file.addresses[i]%2
-			spikes_file = SpikesFile()
+			spikes_file = SpikesFile([], [])
 			spikes_file.addresses = phaseLockedAddrs
 			spikes_file.timestamps = phaseLockedTs
 			return spikes_file
@@ -255,7 +255,7 @@ class Functions:
 				spikes_per_channels_ts.append(spikes_file.timestamps[i])
 				spikes_per_channel_addr.append(spikes_file.addresses[i])
 		if verbose == True: print('EXTRACT CHANNELS CALCULATION', time.time() - start_time)
-		new_spikes_file = SpikesFile()
+		new_spikes_file = SpikesFile([], [])
 		new_spikes_file.addresses = spikes_per_channel_addr
 		if reset_addresses == True:
 			new_spikes_file.addresses = [addr - addresses[0] for addr in new_spikes_file.addresses]

@@ -103,7 +103,7 @@ class Loaders:
                     i += 1
             except Exception as inst:
                 pass
-        spikes_file = SpikesFile()
+        spikes_file = SpikesFile([], [])
         spikes_file.addresses = events
         spikes_file.timestamps = timestamps
         return spikes_file
@@ -131,7 +131,7 @@ class Loaders:
                 addresses.append(int(row[0]))
                 timestamps.append(int(row[1]))
 
-        spikes_file = SpikesFile()
+        spikes_file = SpikesFile([], [])
         spikes_file.addresses = addresses
         spikes_file.timestamps = timestamps
         return spikes_file

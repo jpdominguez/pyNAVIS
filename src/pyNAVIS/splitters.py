@@ -151,13 +151,13 @@ class Splitters:
         current_ts = 0  # Timestamp of the current spike that it's being processed.
         spikes_processed = 0    # Number of spikes processed. Used to avoid saving spikes before the FIFO has filled completely.
         buffer_ts = np.zeros(int(noise_threshold))  # FIFO.
-        spikes_filtered = SpikesFile()  # SpikesFile where the output will be saved.
+        spikes_filtered = SpikesFile([], [])  # SpikesFile where the output will be saved.
 
         if verbose == True: start_time = time.time()
 
         for i in range(len(spikes_file.timestamps)):
             current_ts = spikes_file.timestamps[i]
-            curr_addr = spikes_file.addresses[i]
+            current_addr = spikes_file.addresses[i]
 
             buffer_ts = np.roll(buffer_ts, -1)  # Shifting the information of the FIFO.
             buffer_ts[-1] = current_ts
@@ -165,7 +165,7 @@ class Splitters:
             spikes_processed +=1
 
             if ((current_ts - buffer_ts[0]) <= bin_width * 1000) and (spikes_processed >= noise_threshold):
-                spikes_filtered.addresses.append(curr_addr)
+                spikes_filtered.addresses.append(current_addr)
                 spikes_filtered.timestamps.append(current_ts) 
 
         if verbose == True: print('SEGMENTER_RT CALCULATION', time.time() - start_time)
