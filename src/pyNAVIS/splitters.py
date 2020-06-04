@@ -120,7 +120,7 @@ class Splitters:
             if len(splitted_aedat[i]) > 1:
                 cont += 1
                 print len(splitted_aedat[i])
-            #save_AERDATA(splitted_aedat[i][0], splitted_aedat[i][1], str(i) +".aedat", settings)
+            #save_AEDAT(splitted_aedat[i][0], splitted_aedat[i][1], str(i) +".aedat", settings)
         print cont
     """
 
@@ -141,7 +141,7 @@ class Splitters:
                 return_save_both (int, optional): Set it to 0 to return the resultant SpikesFile, to 1 to save the SpikesFile in the output path, and to 2 to do both.
                 output_format (string, optional): Output format of the file. Currently supports '.aedat', '.csv', ".txt" and ".txt_rel". See the Savers class for more information.
                 path (string, optional): Path where the output file will be saved. Format should not be specified. Not needed if return_save_both is set to 0.
-                settings (MainSettings, optional): Configuration parameters for the output file. Only needed when saving the output as an AER-DATA file.
+                settings (MainSettings, optional): Configuration parameters for the output file. Only needed when saving the output as an AEDAT file.
                 verbose (boolean, optional): Set to True if you want the execution time of the function to be printed.
 
         Returns:

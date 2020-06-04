@@ -377,5 +377,5 @@ class Plots:
             else:
                 return diff
         else:
-            #print("This functionality is only available for stereo AER-DATA files.")
+            #print("This functionality is only available for stereo AEDAT files.")
             print("[Plots.difference_between_LR] > SettingsError: This functionality is only available for stereo files.")

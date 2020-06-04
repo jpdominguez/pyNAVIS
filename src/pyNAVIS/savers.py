@@ -25,9 +25,9 @@ import time
 class Savers:
 
     @staticmethod
-    def save_AERDATA(spikes_file, path, settings, verbose = False):
+    def save_AEDAT(spikes_file, path, settings, verbose = False):
         """
-        Saves a SpikesFile into an AER-DATA file.
+        Saves a SpikesFile into an AEDAT file.
 
         Parameters:
                 spikes_file (SpikesFile): File to save.
@@ -53,7 +53,7 @@ class Savers:
                 f.write(addr)
                 f.write(ts)
             if verbose == True:
-                print("AERDATA file saved correctly.Took:", time.time() - start_time, 'seconds')
+                print("AEDAT file saved correctly.Took:", time.time() - start_time, 'seconds')
 
 
     @staticmethod
@@ -170,20 +170,20 @@ class Savers:
                 spikes_file (SpikesFile): File to save.                
                 path (string): Path where the output file will be saved. Format should not be specified.
                 output_format (string): Output format of the file. Currently supports '.aedat', '.csv', ".txt" and ".txt_rel". See the Savers class for more information.
-                settings (MainSettings, optional): Configuration parameters for the output file. Only needed when saving the output as an AER-DATA file.
+                settings (MainSettings, optional): Configuration parameters for the output file. Only needed when saving the output as an AEDAT file.
 
         Returns:
                 None.
 
         Raises:
-                SettingsError: if settings are not specified and output_format refers to AER-DATA.
+                SettingsError: if settings are not specified and output_format refers to AEDAT.
         """
 
-        if output_format in ['aedat', 'AEDAT', 'AERDATA', 'AER-DATA', 'Aedat', '.aedat']:
+        if output_format in ['aedat', 'AEDAT', 'AEDAT', 'AEDAT', 'Aedat', '.aedat']:
             if settings != None:
-                Savers.save_AERDATA(spikes_file, path, settings)
+                Savers.save_AEDAT(spikes_file, path, settings)
             else:
-                print('[Savers.save_as_any] > SettingsError: Settings need to be specified when saving the file as an AER-DATA filea.')                
+                print('[Savers.save_as_any] > SettingsError: Settings need to be specified when saving the file as an AEDAT filea.')                
         elif output_format in ['csv', 'CSV', '.csv']:
             Savers.save_CSV(spikes_file, path)
         elif output_format in ['txt', 'TXT', '.txt']:

@@ -11,7 +11,7 @@ To convert from a mono SpikesFile to a stereo SpikesFile, first load the mono fi
 
     from pyNAVIS import *
     settings = MainSettings(num_channels=16, mono_stereo=0, on_off_both=1, address_size=2, ts_tick=0.2, bin_size=10000)
-    mono_file = Loaders.loadAERDATA('path/to/file/name.aedat', settings)
+    mono_file = Loaders.loadAEDAT('path/to/file/name.aedat', settings)
 
 .. warning::
     Pay attention to the **mono_stereo** paramter, which was set to 0, meaning that the file that is loaded is mono.
@@ -37,7 +37,7 @@ To plot the output file, you can use the graphs presented in :doc:`previous exam
 
     from pyNAVIS import *
     settings = MainSettings(num_channels=16, mono_stereo=0, on_off_both=1, address_size=2, ts_tick=0.2, bin_size=10000)
-    mono_file = Loaders.loadAERDATA('path/to/file/name.aedat', settings)
+    mono_file = Loaders.loadAEDAT('path/to/file/name.aedat', settings)
     stereo_file = Functions.mono_to_stereo(mono_file, delay=0, settings=settings, return_save_both=0)
     settings.mono_stereo = 1
     Plots.spikegram(stereo_file, settings)
@@ -56,7 +56,7 @@ The same procedure, but using the ``stereo_to_mono()``, can be applied to conver
 
     from pyNAVIS import *
     settings = MainSettings(num_channels=16, mono_stereo=1, on_off_both=1, address_size=2, ts_tick=0.2, bin_size=10000)
-    stereo_file = Loaders.loadAERDATA('path/to/file/name.aedat', settings)
+    stereo_file = Loaders.loadAEDAT('path/to/file/name.aedat', settings)
     mono_file = Functions.stereo_to_mono(stereo_file, left_right=0, settings=settings, return_save_both=0)
     settings.mono_stereo = 0
     Plots.spikegram(mono_file, settings)

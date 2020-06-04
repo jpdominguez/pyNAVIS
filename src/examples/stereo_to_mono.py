@@ -4,7 +4,7 @@ from pyNAVIS import *
 
 def run(path, settings, left_right = 0):
 
-    spikes_file = Loaders.loadAERDATA(path, settings)
+    spikes_file = Loaders.loadAEDAT(path, settings)
     spikes_file = Functions.adapt_SpikesFile(spikes_file, settings)
     Functions.check_SpikesFile(spikes_file, settings)
     Plots.spikegram(spikes_file, settings, verbose=True)

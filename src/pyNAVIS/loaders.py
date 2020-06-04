@@ -46,12 +46,12 @@ class Loaders:
     """
 
     @staticmethod
-    def loadAERDATA(path, settings):
+    def loadAEDAT(path, settings):
         """
-        Loads an AER-DATA (.aedat) file.
+        Loads an AEDAT (.aedat) file.
         
         Parameters:
-                path (string): Full path of the AER-DATA file to be loaded, including name and extension.
+                path (string): Full path of the AEDAT file to be loaded, including name and extension.
                 settings (MainSettings): Configuration parameters for the file to load.
 
         Returns:
@@ -67,7 +67,7 @@ class Loaders:
         elif settings.address_size == 4:
             unpack_param = ">L"
         else:
-            print("[Loaders.loadAERDATA] > SettingsError: Only address sizes implemented are 2 and 4 bytes")
+            print("[Loaders.loadAEDAT] > SettingsError: Only address sizes implemented are 2 and 4 bytes")
 
         with open(path, 'rb') as f:
             ## Check header ##

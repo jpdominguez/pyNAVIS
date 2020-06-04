@@ -3,7 +3,7 @@ from pyNAVIS import *
 
 
 def run(path, settings):    
-    stereo_file = Loaders.loadAERDATA(path, settings)
+    stereo_file = Loaders.loadAEDAT(path, settings)
     stereo_file = Functions.adapt_SpikesFile(stereo_file, settings)
     Functions.check_SpikesFile(stereo_file, settings)
     

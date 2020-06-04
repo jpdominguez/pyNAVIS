@@ -33,10 +33,10 @@ class DatasetGenerators:
     @staticmethod
     def generate_sonogram_dataset(path_input_folder, path_output_folder, settings, allow_subdirectories = False, verbose = False):
         """
-        Automatically generates and saves sonograms from a set of AER-DATA files.
+        Automatically generates and saves sonograms from a set of AEDAT files.
         
         Parameters:
-                path_input_folder (string): Path of the folder where AER-DATA files are.
+                path_input_folder (string): Path of the folder where AEDAT files are.
                 path_output_folder (string): Path of the folder where sonogram images will be saved.
                 settings (MainSettings): Configuration parameters of the files in the path_input_folder.
                 allow_subdirectories (boolean, optional): Allow the function to navigate deeper in the path_input_folder folder structure to look for input files.
@@ -61,7 +61,7 @@ class DatasetGenerators:
                 break
 
         for file in files:
-            spikes_file = Loaders.loadAERDATA(file, settings)
+            spikes_file = Loaders.loadAEDAT(file, settings)
             sonogram_data = Plots.sonogram(spikes_file.addresses, spikes_file.timestamps, settings, return_data = True)
             matplotlib.image.imsave(os.path.join(path_output_folder, os.path.basename(file)) + '.png', sonogram_data)
             
@@ -74,11 +74,11 @@ class DatasetGenerators:
 
     def generate_phaselock_dataset(path_input_folder, path_output_folder, settings, allow_subdirectories = False, verbose = False):
         """
-        Automatically generates and saves phaselocked AER-DATA files from a set of AER-DATA files.
+        Automatically generates and saves phaselocked AEDAT files from a set of AEDAT files.
         
         Parameters:
-                path_input_folder (string): Path of the folder where AER-DATA files are.
-                path_output_folder (string): Path of the folder where phaselocked AER-DATA files will be saved.
+                path_input_folder (string): Path of the folder where AEDAT files are.
+                path_output_folder (string): Path of the folder where phaselocked AEDAT files will be saved.
                 settings (MainSettings): Configuration parameters of the files in the path_input_folder.
                 allow_subdirectories (boolean, optional): Allow the function to navigate deeper in the path_input_folder folder structure to look for input files.
                 verbose (boolean, optional): Set to True if you want the execution time of the function to be printed.
@@ -102,11 +102,11 @@ class DatasetGenerators:
                 break
 
         for file in files:
-            spikes_file = Loaders.loadAERDATA(file, settings)
+            spikes_file = Loaders.loadAEDAT(file, settings)
             #sonogram_data = Plots.sonogram(spikes_file.addresses, spikes_file.timestamps, settings, return_data = True)
             #matplotlib.image.imsave(os.path.join(path_output_folder, os.path.basename(file)) + '.png', sonogram_data)
             phaselocked_spikes = Functions.phase_lock(spikes_file, settings)
-            Savers.save_AERDATA(phaselocked_spikes, os.path.join(path_output_folder, os.path.basename(file)), settings)
+            Savers.save_AEDAT(phaselocked_spikes, os.path.join(path_output_folder, os.path.basename(file)), settings)
             
             if verbose == True:
                 progress += 1

@@ -36,7 +36,7 @@ class MainSettings:
             Set ts_tick to 1 for .aedat files recorded with jAER, or to 0.2 for files recorded with USBAERmini2.
 
             Set address_size to 2 for .eadat files recorded with USBAERmini2, or to 4 for files recorded with jAER.
-            This parameter is only relevant for loading AER-DATA (.aedat) files.
+            This parameter is only relevant for loading AEDAT (.aedat) files.
 
             Set on_off_both to 0 if addresses are only ON, to 1 if addresses are only OFF, or to 2 if using both ON and OFF.
 

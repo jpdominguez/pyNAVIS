@@ -1,6 +1,6 @@
 import os
 
-from examples import gen_random, gen_shift, gen_sweep, load_stereo_AERDATA, manual_split, stereo_to_mono, mono_to_stereo, phaselock
+from examples import gen_random, gen_shift, gen_sweep, load_stereo_AEDAT, manual_split, stereo_to_mono, mono_to_stereo, phaselock
 from pyNAVIS import *
 
 dirname = os.path.dirname(__file__)
@@ -25,26 +25,26 @@ gen_shift.run()
 # Load mono file example 1
 """
 settings = MainSettings(num_channels=64, mono_stereo=0, on_off_both=1, address_size=2, ts_tick=0.2, bin_size=10000)
-load_stereo_AERDATA.run(os.path.join(dirname, 'examples/test_files/130Hz_mono_64ch_ONOFF_addr2b_ts02.aedat'), settings)
+load_stereo_AEDAT.run(os.path.join(dirname, 'examples/test_files/130Hz_mono_64ch_ONOFF_addr2b_ts02.aedat'), settings)
 """
 
 # Load mono file example 2
 """
 settings = MainSettings(num_channels=32, mono_stereo=0, on_off_both=1, address_size=2, ts_tick=0.2, bin_size=10000)
-load_stereo_AERDATA.run(os.path.join(dirname, 'examples/test_files/sound_mono_32ch_ONOFF_addr2b_ts02.aedat'), settings)
+load_stereo_AEDAT.run(os.path.join(dirname, 'examples/test_files/sound_mono_32ch_ONOFF_addr2b_ts02.aedat'), settings)
 """
 
 
 # Load stereo file example 1
 """
 settings = MainSettings(num_channels=64, mono_stereo=1, on_off_both=1, address_size=4, ts_tick=1, bin_size=20000)
-load_stereo_AERDATA.run(os.path.join(dirname, 'examples/test_files/enun_stereo_64ch_ONOFF_addr4b_ts1.aedat'), settings)
+load_stereo_AEDAT.run(os.path.join(dirname, 'examples/test_files/enun_stereo_64ch_ONOFF_addr4b_ts1.aedat'), settings)
 """
 
 # Load stereo file example 2
 """
 settings = MainSettings(num_channels=64, mono_stereo=1, on_off_both=1, address_size=2, ts_tick=0.2, bin_size=20000)
-load_stereo_AERDATA.run(os.path.join(dirname, 'examples/test_files/523Hz_stereo_64ch_ONOFF_addr2b_ts02.aedat'), settings)
+load_stereo_AEDAT.run(os.path.join(dirname, 'examples/test_files/523Hz_stereo_64ch_ONOFF_addr2b_ts02.aedat'), settings)
 """
 
 # Manual split example > extracts the first 100ms from the file

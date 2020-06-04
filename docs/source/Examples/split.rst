@@ -19,7 +19,7 @@ Here you can find an example where a file is loaded and then a portion of it is 
     end_timestamp  = 100000     # microseconds
 
     settings = MainSettings(num_channels=16, mono_stereo=1, on_off_both=1, address_size=2, ts_tick=0.2, bin_size=10000)
-    spikes_info = Loaders.loadAERDATA('path/to/file/name.aedat', settings)
+    spikes_info = Loaders.loadAEDAT('path/to/file/name.aedat', settings)
     spikes_file_adapted = Functions.adapt_SpikesFile(spikes_info, settings)
 
     manual_split_spikes = Splitters.manual_splitter(spikes_file_adapted, init=init_timestamp, end=end_timestamp, settings=settings, return_save_both=0)
@@ -45,7 +45,7 @@ See the following example:
     addresses_set = [0, 1, 2, 3]   # List of addresses to extract from the file. Can also be set with range(4).
 
     settings = MainSettings(num_channels=16, mono_stereo=1, on_off_both=1, address_size=2, ts_tick=0.2, bin_size=10000)
-    spikes_info = Loaders.loadAERDATA('path/to/file/name.aedat', settings)
+    spikes_info = Loaders.loadAEDAT('path/to/file/name.aedat', settings)
     spikes_file_adapted = Functions.adapt_SpikesFile(spikes_info, settings)
 
     addresses_info = Functions.extract_channels_activities(spikes_file_adapted, addresses=addresses_set)

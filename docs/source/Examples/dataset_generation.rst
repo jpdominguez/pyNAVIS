@@ -18,4 +18,4 @@ With this functionality you can generate a set of sonogram images from a folder 
     DatasetGenerators.generate_sonogram_dataset(input_folder, output_folder, settings, allow_subdirectories=allow_subdirectories)
 
 .. note::
-    Currently, this functionality only supports AER-DATA (.aedat) files.
+    Currently, this functionality only supports AEDAT (.aedat) files.

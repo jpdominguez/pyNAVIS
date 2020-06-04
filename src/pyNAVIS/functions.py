@@ -147,7 +147,7 @@ class Functions:
 	@staticmethod
 	def stereo_to_mono(spikes_file, left_right, settings, return_save_both = 0, path = None, output_format = '.aedat'):
 		"""
-		Generates a mono AER-DATA SpikesFile from a stereo SpikesFile.
+		Generates a mono AEDAT SpikesFile from a stereo SpikesFile.
 
 		Parameters:
 				spikes_file (SpikesFile): Input file.
@@ -188,7 +188,7 @@ class Functions:
 	@staticmethod
 	def mono_to_stereo(spikes_file, delay, settings, return_save_both = 0, path = None, output_format = '.aedat'):
 		"""
-		Generates a stereo AER-DATA SpikesFile from a mono SpikesFile with a specific delay between both.
+		Generates a stereo AEDAT SpikesFile from a mono SpikesFile with a specific delay between both.
 
 		Parameters:
 				spikes_file (SpikesFile): Input file.
