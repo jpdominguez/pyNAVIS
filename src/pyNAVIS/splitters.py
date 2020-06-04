@@ -44,7 +44,7 @@ class Splitters:
                 end (int): Last timestamp from which to stop extracting. 
                 settings (MainSettings): Configuration parameters for the input file.
                 return_save_both (int, optional): Set it to 0 to return the resultant SpikesFile, to 1 to save the SpikesFile in the output path, and to 2 to do both.
-                output_format (string, optional): Output format of the file. Currently supports '.aedat' and '.csv'.put_format.
+                output_format (string, optional): Output format of the file. Currently supports '.aedat', '.csv', ".txt" and ".txt_rel". See the Savers class for more information.
                 path (string, optional): Path where the output file will be saved. Format should not be specified. Not needed if return_save_both is set to 0.
 
         Returns:
@@ -66,10 +66,7 @@ class Splitters:
         if return_save_both == 0:
             return spikes_file_new
         elif return_save_both == 1 or return_save_both == 2:
-            if output_format == 'aedat' or 'AEDAT' or 'AERDATA' or 'AER-DATA' or 'Aedat' or '.aedat':
-                Savers.save_AERDATA(spikes_file_new, path + '.aedat', settings)
-            elif output_format == 'csv' or 'CSV' or '.csv':
-                Savers.save_CSV(spikes_file_new, path + '.csv', settings)        
+            Savers.save_as_any(spikes_file_new, path=path, output_format=output_format, settings=settings) 
             if return_save_both == 2:
                 return spikes_file_new
 
@@ -130,47 +127,52 @@ class Splitters:
 
 
     @staticmethod
-    def segmenter_RT(spikes_file, noise_threshold, bin_width, return_save_both = 0, output_format = '.aedat', path=None, verbose = False):
+    def segmenter_RT(spikes_file, noise_threshold, bin_width, return_save_both = 0, output_format = '.aedat', path=None, settings = None, verbose = False):
         """
         Removes background noise.
 
+        A FIFO of size noise_threshold will be filling up with every spike. If the timestamp difference between the \
+             first and the last spike in the FIFO is lower or equal than bin_width, then the most recent spike is saved.
+
         Parameters:
                 spikes_file (SpikesFile): Input file.
-                noise_threshold (int): First timestamp from which to start extracting. 
-                bin_width (int): Last timestamp from which to stop extracting.
+                noise_threshold (int): Size of the FIFO. 
+                bin_width (int): Time difference (in ms).
                 return_save_both (int, optional): Set it to 0 to return the resultant SpikesFile, to 1 to save the SpikesFile in the output path, and to 2 to do both.
-                outoutput_format (string, optional): Output format of the file. Currently supports '.aedat' and '.csv'.put_format.
+                output_format (string, optional): Output format of the file. Currently supports '.aedat', '.csv', ".txt" and ".txt_rel". See the Savers class for more information.
                 path (string, optional): Path where the output file will be saved. Format should not be specified. Not needed if return_save_both is set to 0.
+                settings (MainSettings, optional): Configuration parameters for the output file. Only needed when saving the output as an AER-DATA file.
                 verbose (boolean, optional): Set to True if you want the execution time of the function to be printed.
 
         Returns:
                 SpikesFile: SpikesFile containing the processed input file. Returned only if return_save_both is either 0 or 2.
         """
 
-        curr_ts = 0
+        current_ts = 0  # Timestamp of the current spike that it's being processed.
+        spikes_processed = 0    # Number of spikes processed. Used to avoid saving spikes before the FIFO has filled completely.
+        buffer_ts = np.zeros(int(noise_threshold))  # FIFO.
+        spikes_filtered = SpikesFile()  # SpikesFile where the output will be saved.
 
-        spikes_processed = 0
-
-        buffer_ts = np.zeros(int(noise_threshold))
-
-        spikes_filtered = SpikesFile() 
-
-
-        start_time = time.time()
+        if verbose == True: start_time = time.time()
 
         for i in range(len(spikes_file.timestamps)):
-            curr_ts = spikes_file.timestamps[i]
+            current_ts = spikes_file.timestamps[i]
             curr_addr = spikes_file.addresses[i]
 
-            buffer_ts = np.roll(buffer_ts, -1)
-            buffer_ts[-1] = curr_ts
+            buffer_ts = np.roll(buffer_ts, -1)  # Shifting the information of the FIFO.
+            buffer_ts[-1] = current_ts
 
-            spikes_processed +=1            
+            spikes_processed +=1
 
-            if ((curr_ts - buffer_ts[0]) <= bin_width * 1000) and (spikes_processed >= noise_threshold):
+            if ((current_ts - buffer_ts[0]) <= bin_width * 1000) and (spikes_processed >= noise_threshold):
                 spikes_filtered.addresses.append(curr_addr)
-                spikes_filtered.timestamps.append(curr_ts) 
+                spikes_filtered.timestamps.append(current_ts) 
 
-        print('CALCULATION', time.time() - start_time)
+        if verbose == True: print('SEGMENTER_RT CALCULATION', time.time() - start_time)
 
-        return spikes_filtered
+        if return_save_both == 0:
+            return spikes_filtered
+        elif return_save_both == 1 or return_save_both == 2:
+            Savers.save_as_any(spikes_filtered, path=path, output_format=output_format) 
+            if return_save_both == 2:
+                return spikes_filtered

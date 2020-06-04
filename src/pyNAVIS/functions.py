@@ -155,7 +155,7 @@ class Functions:
 				settings (MainSettings): Configuration parameters for the input file.
 				return_save_both (int, optional): Set it to 0 to return the SpikesFile, to 1 to save the SpikesFile in the output path, and to 2 to do both.
 				path (string, optional): Path where the output file will be saved. Format should not be specified. Not needed if return_save_both is set to 0.
-				output_format (string, optional): Output format of the file. Currently supports '.aedat' and '.csv'.
+				output_format (string, optional): Output format of the file. Currently supports '.aedat', '.csv', ".txt" and ".txt_rel". See the Savers class for more information.
 				
 
 		Returns:
@@ -177,10 +177,7 @@ class Functions:
 			if return_save_both == 0:
 				return spikes_file_mono
 			elif return_save_both == 1 or return_save_both == 2:
-				if output_format == 'aedat' or 'AEDAT' or 'AERDATA' or 'AER-DATA' or 'Aedat' or '.aedat':
-					Savers.save_AERDATA(spikes_file_mono, path + '.aedat', settings)
-				elif output_format == 'csv' or 'CSV' or '.csv':
-					Savers.save_CSV(spikes_file_mono, path + '.csv', settings)        
+				Savers.save_as_any(spikes_file_mono, path=path, output_format=output_format, settings=settings) 
 				if return_save_both == 2:
 					return spikes_file_mono
 			
@@ -199,7 +196,7 @@ class Functions:
 				settings (MainSettings): Configuration parameters for the input file.
 				return_save_both (int, optional): Set it to 0 to return the SpikesFile, to 1 to save the SpikesFile in the output path, and to 2 to do both.
 				path (string, optional): Path where the output file will be saved. Format should not be specified. Not needed if return_save_both is set to 0.
-				output_format (string, optional): Output format of the file. Currently supports '.aedat' and '.csv'.
+				output_format (string, optional): Output format of the file. Currently supports '.aedat', '.csv', ".txt" and ".txt_rel". See the Savers class for more information.
 
 		Returns:
 				SpikesFile: SpikesFile containing the shift. Returned only if return_save_both is either 0 or 2.
@@ -226,10 +223,7 @@ class Functions:
 			elif return_save_both == 1 or return_save_both == 2:
 				#settings_new = copy.deepcopy(settings)
 				#settings_new.mono_stereo = 1
-				if output_format == 'aedat' or 'AEDAT' or 'AERDATA' or 'AER-DATA' or 'Aedat' or '.aedat':
-					Savers.save_AERDATA(spikes_file_new, path + '.aedat', settings)
-				elif output_format == 'csv' or 'CSV' or '.csv':
-					Savers.save_CSV(spikes_file_new, path + '.csv', settings)        
+				Savers.save_as_any(spikes_file_new, path=path, output_format=output_format, settings=settings) 
 				if return_save_both == 2:
 					return spikes_file_new
 

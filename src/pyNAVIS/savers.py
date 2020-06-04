@@ -62,7 +62,7 @@ class Savers:
         Saves a SpikesFile into a CSV file where each spike is represented in one line following the same patter: "address, timestamp".
 
         Parameters:
-                spikes_file (SpikesFile): Dile to save.
+                spikes_file (SpikesFile): File to save.
                 path (string): Path where the output file will be saved, including name. Extension should not be specified.
                 split (boolean, optional): True for generating two files (addresses and timestamps), and False for generating one with all the information.
                 separator (string, optional): which character to use as separator between addresses and timestamps when split = False
@@ -94,7 +94,7 @@ class Savers:
         Saves a SpikesFile into two different TXT files, where addresses and timestamps are stored, respectively.
 
         Parameters:
-                spikes_file (SpikesFile): Dile to save.
+                spikes_file (SpikesFile): File to save.
                 path (string): Path where the output file will be saved, including name. Extension should not be specified.
                 split (boolean, optional): True for generating two files (addresses and timestamps), and False for generating one with all the information.
                 separator (string, optional): which character to use as separator between addresses and timestamps when split = False
@@ -126,7 +126,7 @@ class Savers:
         Saves a SpikesFile into two different TXT files, where addresses and timestamps are stored, respectively. Timestamps are relative to the previous spike.
 
         Parameters:
-                spikes_file (SpikesFile): Dile to save.
+                spikes_file (SpikesFile): File to save.
                 path (string): Path where the output file will be saved, including name. Extension should not be specified.
                 split (boolean, optional): True for generating two files (addresses and timestamps), and False for generating one with all the information.
                 separator (string, optional): which character to use as separator between addresses and timestamps when split = False
@@ -159,3 +159,34 @@ class Savers:
                         f.write(spikes_file.addresses[i] + separator + str(int(spikes_file_ordered.timestamps[i]-spikes_file_ordered.timestamps[i-1])) + '\n')
         if verbose == True:
             print("TXT file saved correctly. Took:", time.time() - start_time, "seconds")
+
+
+    @staticmethod
+    def save_as_any(spikes_file, path, output_format, settings=None):
+        """
+        Saves a SpikesFile into any of the implemented Savers, depending on the output format selected.
+
+        Parameters:
+                spikes_file (SpikesFile): File to save.                
+                path (string): Path where the output file will be saved. Format should not be specified.
+                output_format (string): Output format of the file. Currently supports '.aedat', '.csv', ".txt" and ".txt_rel". See the Savers class for more information.
+                settings (MainSettings, optional): Configuration parameters for the output file. Only needed when saving the output as an AER-DATA file.
+
+        Returns:
+                None.
+
+        Raises:
+                SettingsError: if settings are not specified and output_format refers to AER-DATA.
+        """
+
+        if output_format in ['aedat', 'AEDAT', 'AERDATA', 'AER-DATA', 'Aedat', '.aedat']:
+            if settings != None:
+                Savers.save_AERDATA(spikes_file, path, settings)
+            else:
+                print('[Savers.save_as_any] > SettingsError: Settings need to be specified when saving the file as an AER-DATA filea.')                
+        elif output_format in ['csv', 'CSV', '.csv']:
+            Savers.save_CSV(spikes_file, path)
+        elif output_format in ['txt', 'TXT', '.txt']:
+            Savers.save_TXT(spikes_file, path)
+        elif output_format in ['txt_rel', 'TXT_rel', '.txt_rel']:
+            Savers.save_TXT_relativeTS(spikes_file, path)
