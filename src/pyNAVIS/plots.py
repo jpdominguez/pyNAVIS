@@ -82,6 +82,7 @@ class Plots:
         if start_at_zero:
             plt.xlim([0, np.max(spikes_file.timestamps)])
 
+        plt.tight_layout()
         spk_fig.show()
 
     @staticmethod
@@ -223,6 +224,7 @@ class Plots:
             else:
                 plt.plot(np.arange(settings.num_channels * (settings.on_off_both + 1) * (settings.mono_stereo + 1)), spikes_count)
 
+        plt.tight_layout()
         hst_fig.show()
 
     @staticmethod
@@ -298,6 +300,8 @@ class Plots:
         if(settings.mono_stereo == 1):
             plt.plot(np.arange(math.ceil(total_time/settings.bin_size)+1), average_activity_R, label='Right cochlea')
             plt.legend(loc='best',  ncol=2, frameon=True)
+
+        plt.tight_layout()
         avg_fig.show()
 
     @staticmethod
