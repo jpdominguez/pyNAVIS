@@ -77,6 +77,7 @@ class Plots:
         plt.title(graph_tile, fontsize='x-large')
         plt.xlabel('Timestamp ($\mu$s)', fontsize='large')
         plt.ylabel('Address', fontsize='large')
+        plt.ylim([0, settings.num_channels*(settings.on_off_both + 1)*(settings.mono_stereo + 1)])
 
         if start_at_zero:
             plt.xlim([0, np.max(spikes_file.timestamps)])

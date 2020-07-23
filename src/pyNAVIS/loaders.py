@@ -73,7 +73,7 @@ class Loaders:
             ## Check header ##
             p = 0
             lt = f.readline()
-            while lt and lt[0] == "#":
+            while lt and lt[0] == ord("#"):
                 p += len(lt)
                 lt = f.readline()
             f.seek(p)
