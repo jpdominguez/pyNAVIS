@@ -38,12 +38,12 @@ class MainSettings:
             Set address_size to 2 for .eadat files recorded with USBAERmini2, or to 4 for files recorded with jAER.
             This parameter is only relevant for loading AEDAT (.aedat) files.
 
-            Set on_off_both to 0 if addresses are only ON, to 1 if addresses are only OFF, or to 2 if using both ON and OFF.
+            Set on_off_both to 0 if addresses are only ON or OFF, or to 1 if using both ON and OFF.
 
             reset_timestamp subtracts the smallest timestamp in the file to each of the timestamps.
     """
 
-    def __init__(self, num_channels, mono_stereo, address_size = 2, ts_tick = 0.2, bin_size = 20000, on_off_both = 2, reset_timestamp = True):
+    def __init__(self, num_channels, mono_stereo, address_size = 2, ts_tick = 0.2, bin_size = 20000, on_off_both = 1, reset_timestamp = True):
         self.num_channels = num_channels
         self.mono_stereo = mono_stereo
         self.address_size = address_size
