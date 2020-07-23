@@ -102,7 +102,6 @@ venv.bak/
 
 # mypy
 .mypy_cache/
-*.aedat
 *.wav
 /docs/source/_build/*
 .vscode/*
