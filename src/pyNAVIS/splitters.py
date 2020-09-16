@@ -34,7 +34,7 @@ from .loaders import SpikesFile
 class Splitters:
 
     @staticmethod
-    def manual_splitter(spikes_file, init, end, settings,  return_save_both = 0, output_format = '.aedat', path=None):
+    def manual_splitter(spikes_file, init, end, settings, return_save_both = 0, output_format = '.aedat', path=None):
         """
         Extract a portion of the input SpikesFile file.
 
@@ -62,6 +62,10 @@ class Splitters:
 
         spikes_file_new.addresses = spikes_file_new.addresses[a:b]
         spikes_file_new.timestamps = spikes_file_new.timestamps[a:b]
+
+        if settings.reset_timestamp == True:
+            minimum_ts = min(spikes_file_new.timestamps)
+            spikes_file_new.timestamps = [(x - minimum_ts) for x in spikes_file_new.timestamps]
 
         if return_save_both == 0:
             return spikes_file_new
