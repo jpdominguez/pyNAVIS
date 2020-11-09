@@ -135,3 +135,44 @@ class Loaders:
         spikes_file.addresses = addresses
         spikes_file.timestamps = timestamps
         return spikes_file
+
+
+    @staticmethod
+    def loadZynqGrabberData(path, settings):
+        """
+        Loads a text (.txt) file with EAR events collected by the zynqGrabber.
+        
+        Parameters:
+                path (string): Full path of the CSV file to be loaded, including name and extension.
+                settings (MainSettings): Configuration parameters for the file to load.
+
+        Returns:
+                SpikesFile: SpikesFile containing all the addresses and timestamps of the file.
+        """
+        
+        addresses = []
+        timestamps = []
+        
+        txt_file = open(path, 'r') 
+        txt_lines = txt_file.readlines() 
+        
+        count = 0
+        for line in txt_lines:
+            event = line.strip().split(',')
+            decoded_events_timestamps      = float(event[0])
+            decoded_events_auditory_models = int(event[1])           # 0 if the event comes from the NAS
+            decoded_events_channels        = int(event[2])           # 0 left, 1 right
+            decoded_events_xso_types       = int(event[3])
+            decoded_events_neuron_ids      = int(event[4])
+            decoded_events_freq_ch_addrs   = int(event[5])
+            decoded_events_polarities      = int(event[6])           #0 pos, 1 neg
+
+            if decoded_events_auditory_models == 0: 
+
+                timestamps.append(int(decoded_events_timestamps))
+                addresses.append(int(decoded_events_freq_ch_addrs*(1+settings.on_off_both) + decoded_events_polarities +  settings.num_channels*decoded_events_channels*(1+settings.on_off_both)))
+
+        spikes_file = SpikesFile([], [])
+        spikes_file.addresses = addresses
+        spikes_file.timestamps = timestamps
+        return spikes_file

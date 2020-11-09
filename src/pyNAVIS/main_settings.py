@@ -33,7 +33,7 @@ class MainSettings:
         reset_timestamp (boolean): Select wether to have timedtamps starting at 0 (True) or leave it as they are (False).
     
     Notes:
-            Set ts_tick to 1 for .aedat files recorded with jAER, or to 0.2 for files recorded with USBAERmini2.
+            Set ts_tick to 1 for .aedat files recorded with jAER, to 0.2 for files recorded with USBAERmini2, and to 80e-3 for files recorded with zynqGrabber.
 
             Set address_size to 2 for .eadat files recorded with USBAERmini2, or to 4 for files recorded with jAER.
             This parameter is only relevant for loading AEDAT (.aedat) files.
@@ -43,7 +43,7 @@ class MainSettings:
             reset_timestamp subtracts the smallest timestamp in the file to each of the timestamps.
     """
 
-    def __init__(self, num_channels, mono_stereo, address_size = 2, ts_tick = 0.2, bin_size = 20000, on_off_both = 1, reset_timestamp = True):
+    def __init__(self, num_channels, mono_stereo = 0, address_size = 2, ts_tick = 1, bin_size = 20000, on_off_both = 1, reset_timestamp = True):
         self.num_channels = num_channels
         self.mono_stereo = mono_stereo
         self.address_size = address_size
