@@ -34,7 +34,7 @@ from .loaders import SpikesFile
 class Splitters:
 
     @staticmethod
-    def manual_splitter(spikes_file, init, end, settings, return_save_both = 0, output_format = '.aedat', path=None):
+    def manual_splitter(spikes_file, init, end = -1, settings, return_save_both = 0, output_format = '.aedat', path=None):
         """
         Extract a portion of the input SpikesFile file.
 
@@ -56,6 +56,9 @@ class Splitters:
         aedat_addr_ts = sorted(aedat_addr_ts, key=Utils.getKey)
         spikes_file_new = copy.deepcopy(spikes_file)
         spikes_file_new = Utils.extract_addr_and_ts(aedat_addr_ts)
+
+        if end == -1:
+            end = np.max(spikes_file.timestamps)
 
         a =  bisect_left(spikes_file_new.timestamps, init)
         b =  bisect_right(spikes_file_new.timestamps, end)
