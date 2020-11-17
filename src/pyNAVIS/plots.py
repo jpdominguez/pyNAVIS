@@ -194,7 +194,7 @@ class Plots:
                 verbose (boolean, optional): Set to True if you want the execution time of the function to be printed.
 
         Returns:
-                None.
+                int[]: Histogram array.
         """
 
         start_time = time.time()
@@ -226,6 +226,7 @@ class Plots:
 
         plt.tight_layout()
         hst_fig.show()
+        return spikes_count
 
     @staticmethod
     def average_activity(spikes_file, settings, graph_tile = 'Average activity', verbose=False):

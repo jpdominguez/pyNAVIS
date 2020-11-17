@@ -34,7 +34,7 @@ from .loaders import SpikesFile
 class Splitters:
 
     @staticmethod
-    def manual_splitter(spikes_file, init, end = -1, settings, return_save_both = 0, output_format = '.aedat', path=None):
+    def manual_splitter(spikes_file, settings, init, end = -1, return_save_both = 0, output_format = '.aedat', path=None):
         """
         Extract a portion of the input SpikesFile file.
 
