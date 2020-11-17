@@ -28,7 +28,7 @@ class MainSettings:
         bin_size (int): Bin width (or window size) to use when processing the information.
         ts_tick (float): Timestamp tick. Correspondence factor between timestamp value in file and actual time.
         num_channels (int): Number of cochlea channels.
-        address_size (int): Number of bytes that each address is using.
+        address_size (int): Number of bytes that each address is using. Only needed when loading .aedat files
         on_off_both (int): Select wether the addresses contained in the file are ON, OFF or if it is using both.
         reset_timestamp (boolean): Select wether to have timedtamps starting at 0 (True) or leave it as they are (False).
     
