@@ -29,5 +29,4 @@ You can take a closer look at some of these main functionalities in the :doc:`Ex
    :maxdepth: 1
    :hidden:
 
-   
    Examples/examples

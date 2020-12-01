@@ -1,9 +1,6 @@
 
-
-
-
 .. include:: README.rst
-   
+
 
 
 .. toctree::
@@ -13,6 +10,7 @@
    
    Home <self>
    Installing
+   General information
    Getting started
    pyNAVIS  
    Contributing
