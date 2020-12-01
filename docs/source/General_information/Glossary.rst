@@ -1,8 +1,8 @@
 Glossary
 ====================
 
-- **Neuromorphic cochlea**: it a neuromorphic sensors which mimicks the way in which the inner ear works.
-- **Neuromorphic Auditory Visualizer**: also called NAS. A digital implementation (FPGA) of a neuromorphic cochlea with a cascade topology designed by Jimenez-Fernandez in 2016.
+- **Neuromorphic cochlea**: it's a neuromorphic sensor which mimicks the way in which the inner ear works.
+- **Neuromorphic Auditory Sensor**: also called NAS. A digital implementation (FPGA) of a neuromorphic cochlea with a cascade topology designed by Jimenez-Fernandez in 2016.
 - **Neuromorphic sensor**: specialized sensory processing functions implemented by either analog or digital electronic circuits that are inspired by biological systems.
 - **Action potential**: also called spike. It is the brief reversal of electric polarization of the membrane of a neuron.
 - **Channel**: a specific frequency band of the neuromorphic cochlea. Depending on the cochlea, each channel could consists of two spike streams (or addresses), encoding the positive (ON) and the negative (OFF) part of the signal.
