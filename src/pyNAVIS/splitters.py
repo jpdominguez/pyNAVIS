@@ -77,61 +77,6 @@ class Splitters:
             if return_save_both == 2:
                 return spikes_file_new
 
-    """
-    def automatic_aedat_splitter(allAddr, allTs, noiseTolerance, noiseThreshold, settings, path):
-        #THIS IS NOT NEEDED IF TS ARE SORTED
-        aedat_addr_ts = zip(allAddr, allTs)
-        aedat_addr_ts = sorted(aedat_addr_ts, key=getKey)
-        allAddr, allTs = extract_addr_and_ts(aedat_addr_ts)
-
-        total_time = max(allTs) - min(allTs)
-        last_time = min(allTs)
-        its = int(math.ceil(total_time/settings.bin_size))
-        numb_spikes_file = len(allAddr)
-
-        hasEntered = 0
-        times_entered = 0
-        current_split = []
-        splitted_aedat = []
-        split_index = 0
-
-
-        for i in range(its):
-
-            a =  bisect_left(allTs, last_time)
-            b =  bisect_right(allTs, last_time + settings.bin_size)
-            blockAddr = allAddr[a:b]
-            blockTs = allTs[a:b]
-
-            #print len(blockAddr)
-            #print noiseThreshold * numb_spikes_file
-            if len(blockAddr) < noiseThreshold * numb_spikes_file:
-                if hasEntered:
-                    hasEntered = 0
-                    current_split = []
-                    split_index += 1
-
-                    if times_entered < noiseTolerance:
-                        splitted_aedat[split_index-1] = []
-                    times_entered = 0
-            else:
-                current_split.append([blockAddr, blockTs])
-                splitted_aedat.append(current_split)
-                hasEntered = 1
-                times_entered += 1
-
-            last_time += settings.bin_size
-
-        cont  = 0
-        for i in range(len(splitted_aedat)):
-            if len(splitted_aedat[i]) > 1:
-                cont += 1
-                print len(splitted_aedat[i])
-            #save_AEDAT(splitted_aedat[i][0], splitted_aedat[i][1], str(i) +".aedat", settings)
-        print cont
-    """
-
-
 
     @staticmethod
     def segmenter_RT(spikes_file, noise_threshold, bin_width, return_save_both = 0, output_format = '.aedat', path=None, settings = None, verbose = False):
@@ -183,3 +128,35 @@ class Splitters:
             Savers.save_as_any(spikes_filtered, path=path, output_format=output_format) 
             if return_save_both == 2:
                 return spikes_filtered
+
+
+    @staticmethod
+    def automatic_splitter(spikes_file, noise_threshold, bin_width, path, settings, output_format = '.aedat'):
+        """
+        Generate a set of files from the one received as input based on the silences in between words/sounds. This function uses segmenter_RT.
+        NOTE: more tests needed to confirm that it works in any case.
+        
+        Parameters:
+                spikes_file (SpikesFile): Input file.                
+                noise_threshold (int): Size of the FIFO. 
+                bin_width (int): Time difference (in ms).
+                path (string): Path where the output files will be saved. Format should not be specified.
+                settings (MainSettings, optional): Configuration parameters for the output file. Only needed when saving the output as an AEDAT file.
+                output_format (string, optional): Output format of the file. Currently supports '.aedat', '.csv', ".txt" and ".txt_rel". See the Savers class for more information.                
+                
+        Returns:
+                None.
+        """
+        number_of_splits_generated = 0
+        index_previous_split = 0
+        new_spikes_file = SpikesFile([], [])
+        spikes_filtered =  segmenter_RT(spikes_file,noise_threshold, bin_width, return_save_both = 0)
+
+        for i in range(1, len(spikes_filtered.timestamps)):
+            if spikes_filtered.timestamps[i] - spikes_filtered.timestamps[i-1] >= bin_width:
+                new_spikes_file.addresses = spikes_filtered.addresses[index_previous_split:i]
+                new_spikes_file.timestamps = spikes_filtered.timestamps[index_previous_split:i]
+                index_previous_split = i
+                number_of_splits_generated += 1
+
+                Savers.save_as_any(new_spikes_file, os.join(path, "split") + str(number_of_splits_generated), output_format, settings)

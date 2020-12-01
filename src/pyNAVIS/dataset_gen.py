@@ -22,6 +22,7 @@
 import os
 
 import matplotlib
+import numpy as np
 
 from .functions import Functions
 from .loaders import Loaders
@@ -72,6 +73,7 @@ class DatasetGenerators:
         if verbose == True: print('Dataset generation process completed. Took ' + str(time.time()-start_time) + " seconds.")
 
 
+    @staticmethod
     def generate_phaselock_dataset(path_input_folder, path_output_folder, settings, allow_subdirectories = False, verbose = False):
         """
         Automatically generates and saves phaselocked AEDAT files from a set of AEDAT files.
@@ -107,6 +109,48 @@ class DatasetGenerators:
             #matplotlib.image.imsave(os.path.join(path_output_folder, os.path.basename(file)) + '.png', sonogram_data)
             phaselocked_spikes = Functions.phase_lock(spikes_file, settings)
             Savers.save_AEDAT(phaselocked_spikes, os.path.join(path_output_folder, os.path.basename(file)), settings)
+            
+            if verbose == True:
+                progress += 1
+                print("Progress: " + str(float(progress)*100/len(files)) + "%")
+        
+        if verbose == True: print('Dataset generation process completed. Took ' + str(time.time()-start_time) + " seconds.")
+
+
+    @staticmethod
+    def generate_histogram_dataset(path_input_folder, path_output_folder, settings, allow_subdirectories = False, verbose = False):
+        """
+        Automatically generates and saves histograms in CSV format from a set of AEDAT files.
+        
+        Parameters:
+                path_input_folder (string): Path of the folder where AEDAT files are.
+                path_output_folder (string): Path of the folder where CSV files with the histogram information will be saved.
+                settings (MainSettings): Configuration parameters of the files in the path_input_folder.
+                allow_subdirectories (boolean, optional): Allow the function to navigate deeper in the path_input_folder folder structure to look for input files.
+                verbose (boolean, optional): Set to True if you want the execution time of the function to be printed.
+
+        Returns:
+                None.
+        """
+
+        if verbose == True:
+            print("---- HISTOGRAM DATASET GENERATION ----")
+            start_time = time.time()    
+        if not os.path.exists(path_output_folder):
+            os.makedirs(path_output_folder)
+        files = []
+        progress = 0    
+        for r, d, f in os.walk(path_input_folder): # r=root, d=directories, f = files
+            for file in f:
+                if '.aedat' in file:
+                    files.append(os.path.join(r, file))
+            if allow_subdirectories == False:
+                break
+
+        for file in files:
+            spikes_file = Loaders.loadAEDAT(file, settings)            
+            histogram_data = Plots.histogram(spikes_file, settings)
+            np.savetxt(os.path.join(path_output_folder, os.path.basename(file)) + ".csv", histogram_data, delimiter=",", fmt='%d')
             
             if verbose == True:
                 progress += 1
