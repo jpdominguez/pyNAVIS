@@ -8,3 +8,4 @@ In this section some general information regarding ``pyNAVIS`` and other aspects
 
    General_information/Glossary
    General_information/NAVIS
+   General_information/Dataset_generators
