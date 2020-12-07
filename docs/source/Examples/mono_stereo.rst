@@ -14,7 +14,7 @@ To convert from a mono SpikesFile to a stereo SpikesFile, first load the mono fi
     mono_file = Loaders.loadAEDAT('path/to/file/name.aedat', settings)
 
 .. warning::
-    Pay attention to the **mono_stereo** paramter, which was set to 0, meaning that the file that is loaded is mono.
+    Pay attention to the **mono_stereo** parameter, which was set to 0, meaning that the file that is loaded is mono.
 
 Then execute the ``mono_to_stereo()`` function:
 
