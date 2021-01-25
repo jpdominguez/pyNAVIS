@@ -110,15 +110,19 @@ class Loaders:
 
 
     @staticmethod
-    def loadCSV(path):
+    def loadCSV(path, delimiter=','):
         """
         Loads a Comma-Separated Values (.csv) file.
         
         Parameters:
                 path (string): Full path of the CSV file to be loaded, including name and extension.
+                delimiter (char): Delimiter to use in the CSV file.
 
         Returns:
                 SpikesFile: SpikesFile containing all the addresses and timestamps of the file.
+
+        Note:
+                The CSV file should contain one line per event, and the information in each line should be: address, timestamp
 
         """
         addresses = []
@@ -126,7 +130,7 @@ class Loaders:
         
 
         with open(path) as csv_file:
-            csv_reader = csv.reader(csv_file, delimiter=',')
+            csv_reader = csv.reader(csv_file, delimiter=delimiter)
             for row in csv_reader:
                 addresses.append(int(row[0]))
                 timestamps.append(int(row[1]))
