@@ -137,7 +137,7 @@ class Savers:
                 None.
         """
 
-        spikes_file_ordered = order_timestamps(spikes_file)
+        spikes_file_ordered = Utils.order_timestamps(spikes_file)
 
         if verbose == True: start_time = time.time()
 

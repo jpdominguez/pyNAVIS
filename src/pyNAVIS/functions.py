@@ -265,7 +265,7 @@ class Functions:
 		if reset_addresses == True:
 			new_spikes_file.addresses = [addr - addresses[0] for addr in new_spikes_file.addresses]
 		new_spikes_file.timestamps = spikes_per_channels_ts
-		new_spikes_file = order_timestamps(new_spikes_file)
+		new_spikes_file = Utils.order_timestamps(new_spikes_file)
 		return new_spikes_file
 
 
