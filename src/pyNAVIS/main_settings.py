@@ -51,3 +51,29 @@ class MainSettings:
         self.bin_size = bin_size
         self.on_off_both = on_off_both
         self.reset_timestamp = reset_timestamp
+
+class LocalizationSettings:
+    """
+    Class that collects the configuration settings of pyNAVS when working with a NAS model that integrates the sound source localization model
+
+    Attributes:
+        mso_start_channel (int):
+        mso_end_channel (int):
+        mso_num_neurons_channel (int):
+        lso_start_channel (int):
+        lso_end_channel (int):
+        lso_num_neurons_channel (int):
+
+    Notes:
+            The first frequency channel is the channel number 0.
+
+            The frequency channel range should coincide with the parameter num_channels set in MainSettings.
+    """
+
+    def __init__(self, mso_start_channel, mso_end_channel, mso_num_neurons_channel, lso_start_channel = 0, lso_end_channel = 1, lso_num_neurons_channel = 1):
+        self.mso_start_channel = mso_start_channel
+        self.mso_end_channel = mso_end_channel
+        self.mso_num_neurons_channel = mso_num_neurons_channel
+        self.lso_start_channel = lso_start_channel
+        self.lso_end_channel = lso_end_channel
+        self.lso_num_neurons_channel = lso_num_neurons_channel
