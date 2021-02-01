@@ -6,4 +6,4 @@ from .plots import Plots
 from .savers import Savers
 from .splitters import Splitters
 from .utils import Utils
-from .main_settings import MainSettings
+from .main_settings import MainSettings, LocalizationSettings
