@@ -195,7 +195,7 @@ class Functions:
 
 		Parameters:
 				spikes_file (SpikesFile): Input file.
-				delay (int): Delay introduced from left and right spikes. Can be either negative or positive.
+				delay (int): Delay (microseconds) introduced between left and right spikes. Can be either negative or positive.
 				settings (MainSettings): Configuration parameters for the input file.
 				return_save_both (int, optional): Set it to 0 to return the SpikesFile, to 1 to save the SpikesFile in the output path, and to 2 to do both.
 				path (string, optional): Path where the output file will be saved. Format should not be specified. Not needed if return_save_both is set to 0.
@@ -206,6 +206,8 @@ class Functions:
 		
 		Raises:
 				SettingsError: If the input file is a stereo SpikesFile (settings.mono_stereo is set to 1).
+
+		Note:	A positive delay value means that spikes from the right cochlea will be generated after the ones from the left cochlea, and vice versa.
 		"""
 
 		if settings.mono_stereo == 0:
@@ -263,6 +265,7 @@ class Functions:
 		if reset_addresses == True:
 			new_spikes_file.addresses = [addr - addresses[0] for addr in new_spikes_file.addresses]
 		new_spikes_file.timestamps = spikes_per_channels_ts
+		new_spikes_file = order_timestamps(new_spikes_file)
 		return new_spikes_file
 
 
