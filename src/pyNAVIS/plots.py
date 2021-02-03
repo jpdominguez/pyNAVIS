@@ -51,7 +51,7 @@ class Plots:
                 None.
 
         Note: 
-                A value of 10 in dot_size means that for every 10 spikes, only 1 will be plotted. This helps reducing lag when plotting heavy files.
+                A value of 10 in dot_freq means that for every 10 spikes, only 1 will be plotted. This helps reducing lag when plotting heavy files.
         """
 
         if verbose == True: start_time = time.time()
