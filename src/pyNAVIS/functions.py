@@ -207,7 +207,7 @@ class Functions:
 		Raises:
 				SettingsError: If the input file is a stereo SpikesFile (settings.mono_stereo is set to 1).
 
-		Note:	A positive delay value means that spikes from the right cochlea will be generated after the ones from the left cochlea, and vice versa.
+		Note:	The timestamp of the left event is used as reference. Thus, the timestamp of the right event will be ts_right = ts_left + delay.
 		"""
 
 		if settings.mono_stereo == 0:
