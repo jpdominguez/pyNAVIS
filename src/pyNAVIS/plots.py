@@ -24,7 +24,9 @@ import random
 from bisect import bisect_left, bisect_right
 from matplotlib.colors import LinearSegmentedColormap
 
+import matplotlib
 import matplotlib.pyplot as plt
+from mpl_toolkits.mplot3d import Axes3D  # noqa: F401 unused import
 import numpy as np
 import time
 
@@ -385,3 +387,127 @@ class Plots:
         else:
             #print("This functionality is only available for stereo AEDAT files.")
             print("[Plots.difference_between_LR] > SettingsError: This functionality is only available for stereo files.")
+        
+    @staticmethod
+    def mso_heatmap(localization_file, localization_settings, graph_title = "MSO heatmap", enable_colorbar = False, verbose = False):
+        """
+        Plots the heatmap for the MSO activity extracted from a LocalizationFile.
+
+        This is, a graph where the X axis means the neuron ID, the Y axis means the frequency channel to which the MSO neuron's population are connected, and the color means the activity.
+
+        Parameters:
+                localization_file (LocalizationFile):
+                localization_settings (LocalizationSettings):
+                graph_tile (string, optional): Text that will appear as title for the graph.
+                enable_colorbar (boolean):
+                verbose (boolean, optional): Set to True if you want the execution time of the function to be printed.
+        
+        Returns:
+                None.
+
+        Note:
+
+        """
+
+        if verbose == True: start_time = time.time()
+        #REPRESENTATION
+        #plt.style.use('seaborn-whitegrid')
+        htmap_fig, htmap_ax = plt.subplots()
+        htmap_fig.canvas.set_window_title(graph_title)
+
+        # Get the number of frequency channels set in the configuratio
+        mso_number_freq_ch = localization_settings.mso_end_channel - localization_settings.mso_start_channel + 1
+
+        # Create the activity matrix
+        mso_activity = np.zeros((mso_number_freq_ch, localization_settings.mso_num_neurons_channel))
+
+        num_mso_events = len(localization_file.mso_timestamps)
+
+        for i in range (0, num_mso_events):
+            freq_channel = localization_file.mso_channels[i] - localization_settings.mso_start_channel
+            if freq_channel < 0 or freq_channel >= mso_number_freq_ch:
+                freq_channel = 0
+            neuron_id = localization_file.mso_neuron_ids[i]
+            # Accumulate the activity for each neuron for each frequency channel according to the LocalizationFIle
+            mso_activity[freq_channel][neuron_id] = mso_activity[freq_channel][neuron_id] + 1
+        
+        if verbose == True: print('ACTIVITY MATRIX CALCULATION', time.time() - start_time)
+
+        # Generate the labels lists
+        freq_channel_labels = []
+        for i in range(localization_settings.mso_start_channel, localization_settings.mso_end_channel + 1):
+            freq_channel_labels.append(str(i))
+        
+        neuron_id_labels = []
+        for i in range(0, localization_settings.mso_num_neurons_channel):
+            neuron_id_labels.append(str(i))
+        
+        htmap_im = plt.imshow(mso_activity, cmap='viridis')
+
+        if enable_colorbar == True :
+            plt.colorbar()
+
+        # We want to show all ticks...
+        htmap_ax.set_xticks(np.arange(len(neuron_id_labels)))
+        htmap_ax.set_yticks(np.arange(len(freq_channel_labels)))
+        # ... and label them with the respective list entries
+        htmap_ax.set_xticklabels(neuron_id_labels)
+        htmap_ax.set_yticklabels(freq_channel_labels)
+
+        # Rotate the tick labels and set their alignment.
+        plt.setp(htmap_ax.get_xticklabels(), rotation=45, ha="right",
+                rotation_mode="anchor")
+
+        # Loop over data dimensions and create text annotations.
+        for i in range(len(freq_channel_labels)):
+            for j in range(len(neuron_id_labels)):
+                text = htmap_ax.text(j, i, mso_activity[i, j],
+                            ha="center", va="center", color="w", fontsize='xx-small')
+        
+        # Plot a colorbar with label.
+
+        plt.tight_layout()
+        htmap_fig.show()
+
+    @staticmethod
+    def mso_spikegram(localization_file, settings, localization_settings, dot_size = 0.2, graph_tile = 'MSO spikegram', verbose = False):
+        """
+        Plots the spikegram (also known as cochleogram or raster plot) of a SpikesFile.
+        
+        This is, a graph where the X axis means time and the Y axis represents addresses (or cochlea channels), and where every spike is plotted as a dot.
+
+        Parameters:
+                localization_file (LocalizationFile): File to plot.
+                localization_settings (LocalizationSettings): Configuration parameters for the file to plot.
+                dot_size (float): Size of the dots used in the spikegram plot.
+                graph_tile (string, optional): Text that will appear as title for the graph.
+                verbose (boolean, optional): Set to True if you want the execution time of the function to be printed.
+
+        Returns:
+                None.
+
+        Note: 
+                A value of 10 in dot_size means that for every 10 spikes, only 1 will be plotted. This helps reducing lag when plotting heavy files.
+        """
+
+        if verbose == True: start_time = time.time()
+        #REPRESENTATION
+        plt.style.use('seaborn-whitegrid')
+        msospk_fig = plt.figure()
+        ax = msospk_fig.add_subplot(111, projection='3d')
+        msospk_fig.canvas.set_window_title(graph_tile)
+
+        ax.scatter(localization_file.mso_neuron_ids, localization_file.mso_timestamps, localization_file.mso_channels, s=dot_size)
+            
+        if verbose == True: print('SPIKEGRAM CALCULATION', time.time() - start_time)
+
+        plt.title(graph_tile, fontsize='x-large')
+
+        ax.set_xlabel('Neuron ID', fontsize='large')
+        ax.set_ylabel('Timestamp ($\mu$s)', fontsize='large')
+        ax.set_zlabel('Freq. channel', fontsize='large')
+
+        ax.set_zlim([0, settings.num_channels])
+
+        plt.tight_layout()
+        msospk_fig.show()
