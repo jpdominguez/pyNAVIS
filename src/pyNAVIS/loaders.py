@@ -243,8 +243,8 @@ class Loaders:
                         # Localization event
 
                         # Apply a mask to obtain the correct values
-                        neuron_id = (ev & 0x3E00) >> 8
-                        freq_channel = (ev & 0x00FE) >> 1
+                        neuron_id = (ev & 0x0F00) >> 8 #(ev & 0x3E00) >> 8
+                        freq_channel = (ev & 0x007E) >> 1 #(ev & 0x00FE) >> 1
 
                         xso_type = (ev & 0x4000) >> 14
 
