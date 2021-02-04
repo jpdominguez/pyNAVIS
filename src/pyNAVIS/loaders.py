@@ -233,7 +233,7 @@ class Loaders:
                     ts = struct.unpack('>L', buff)[0]
                     
                     # Check if the event is a NAS event of SOC event
-                    auditory_model = ev & 0x8000
+                    auditory_model = (ev & 0x8000) >> 15
 
                     if auditory_model == 0:
                         # NAS event
@@ -243,10 +243,10 @@ class Loaders:
                         # Localization event
 
                         # Apply a mask to obtain the correct values
-                        neuron_id = ev & 0x3E00
-                        freq_channel = ev & 0x1FE
+                        neuron_id = (ev & 0x3E00) >> 8
+                        freq_channel = (ev & 0x00FE) >> 1
 
-                        xso_type = ev & 0x4000
+                        xso_type = (ev & 0x4000) >> 14
 
                         if xso_type == 0:
                             # MSO event
@@ -307,19 +307,22 @@ class Loaders:
         return spikes_file
 
     @staticmethod
-    def loadCSVLocalization(path, delimiter=','):
+    def loadCSVLocalization(path, delimiter=',', from_simulation=False):
         """
         Loads a Comma-Separated Values (.csv) file.
         
         Parameters:
                 path (string): Full path of the CSV file to be loaded, including name and extension.
                 delimiter (char): Delimiter to use in the CSV file.
+                from_simulation (bolean): 
 
         Returns:
                 SpikesFile: SpikesFile containing all the addresses and timestamps of the file.
 
         Note:
                 The CSV file should contain one line per event, and the information in each line should be: address, timestamp
+
+                The CSV format should be: address, timestamp, auditory_model, xso_type, neuron_id.
 
         """
         addresses_nas = []
@@ -337,10 +340,15 @@ class Loaders:
         with open(path) as csv_file:
             csv_reader = csv.reader(csv_file, delimiter=delimiter)
             for row in csv_reader:
-                auditory_model = int(row[0])
+                auditory_model = int(row[2])
 
-                address = int(row[3])
-                timestamp = int(row[4])
+                address = int(row[0])
+                timestamp = row[1]
+
+                if from_simulation == True :
+                    timestamp = timestamp.replace(" ps", "")
+                    timestamp = int(timestamp)
+                    timestamp = timestamp * 1.0e-6
 
                 if auditory_model == 0:
                     # NAS event
@@ -348,10 +356,10 @@ class Loaders:
                     timestamps_nas.append(timestamp)
                 else:
                     # Localization event
-                    xso_type = int(row[1])
-                    neuron_id = int(row[2])
+                    xso_type = int(row[3])
+                    neuron_id = int(row[4])
 
-                    freq_channel = address >> 1
+                    freq_channel = address #>> 1
                     if xso_type == 0:
                         # MSO event
                         neuron_ids_mso.append(neuron_id)
