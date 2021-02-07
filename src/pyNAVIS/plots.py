@@ -399,7 +399,7 @@ class Plots:
                 localization_file (LocalizationFile):
                 localization_settings (LocalizationSettings):
                 graph_tile (string, optional): Text that will appear as title for the graph.
-                enable_colorbar (boolean):
+                enable_colorbar (boolean, optional):
                 verbose (boolean, optional): Set to True if you want the execution time of the function to be printed.
         
         Returns:
@@ -411,7 +411,7 @@ class Plots:
 
         if verbose == True: start_time = time.time()
         #REPRESENTATION
-        #plt.style.use('seaborn-whitegrid')
+        plt.style.use('seaborn-ticks')
         htmap_fig, htmap_ax = plt.subplots()
         htmap_fig.canvas.set_window_title(graph_title)
 
@@ -511,3 +511,74 @@ class Plots:
 
         plt.tight_layout()
         msospk_fig.show()
+
+    @staticmethod
+    def mso_localization(localization_file, settings, localization_settings, graph_title = "MSO localization estimation", start_at_zero = True, verbose = False):
+        """
+        Plots ...
+
+        This is, ...
+
+        Parameters:
+                localization_file (LocalizationFile):
+                localization_settings (LocalizationSettings):
+                graph_tile (string, optional): Text that will appear as title for the graph.
+                enable_colorbar (boolean, optional):
+                verbose (boolean, optional): Set to True if you want the execution time of the function to be printed.
+        
+        Returns:
+                None.
+
+        Note:
+
+        """
+
+        if verbose == True: start_time = time.time()
+
+        last_time = 0
+
+        if start_at_zero:
+            total_time = max(localization_file.mso_timestamps)
+            last_time = 0
+        else:
+            total_time = max(localization_file.mso_timestamps) - min(localization_file.mso_timestamps)
+            last_time = min(localization_file.mso_timestamps)
+
+        # Get the number of frequency channels set in the configuratio
+        its = int(math.ceil(total_time/settings.bin_size))
+
+        # Create the activity matrix
+        mso_activity = np.zeros((its, localization_settings.mso_num_neurons_channel))
+        mso_max_activity = np.zeros(its)
+
+        for i in range (0, its):
+            a = bisect_left(localization_file.mso_timestamps, last_time)
+            b = bisect_right(localization_file.mso_timestamps, last_time + settings.bin_size)
+
+            blockNeuronIDs = localization_file.mso_neuron_ids[a:b]
+
+            spikes = np.bincount(blockNeuronIDs, minlength=localization_settings.mso_num_neurons_channel)
+
+            last_time += settings.bin_size
+
+            mso_activity[i, :] = spikes
+
+            index_max_activity = np.argmax(mso_activity[i])
+
+            mso_max_activity[i] = index_max_activity
+
+        if verbose == True: print('ACTIVITY MATRIX CALCULATION', time.time() - start_time)
+
+        plt.style.use('seaborn-whitegrid')
+        mso_loc_fig = plt.figure()
+        mso_loc_fig.canvas.set_window_title(graph_title)
+        plt.title(graph_title, fontsize='x-large')
+        plt.xlabel('Bin ('+str(settings.bin_size) + '$\mu$s width)', fontsize='large')
+        plt.ylabel('Position', fontsize='large')
+        plt.ylim([-1, localization_settings.mso_num_neurons_channel + 1])
+
+        plt.plot(np.arange(math.ceil(total_time/settings.bin_size)), mso_max_activity, label='Position estimation')
+
+        plt.tight_layout()
+        mso_loc_fig.show()
+
