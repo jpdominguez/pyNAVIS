@@ -86,26 +86,74 @@ class Functions:
 		if a and b and c:
 			print("[Functions.check_SpikesFile] > The loaded SpikesFile file has been checked and it's OK")
 				
+	@staticmethod
+	def check_LocalizationFile(localization_file, settings, localization_settings):
+		"""
+		Checks if the spiking information contained in the LocalizationFile is correct and prints "The loaded LocalizationFile file has been checked and it's OK" if the file passes all the checks.
+		
+		Parameters:
+				localization_file (LocalizationFile): File to check.
+				settings (MainSettings): Configuration parameters for the file to check.
+				localization_settings (LocalizationSettings): Configuration parameters of the localization model for the file to check.
+
+		Returns:
+				None.
+		
+		Raises:
+				TimestampOrderError: If the LocalizationFile contains at least one timestamp which value is less than 0.
+				TimestampOrderError: If the LocalizationFile contains at least one timestamp that is lesser than its previous one.
+				ChannelValueError: If the LocalizationFile contains at least one address less than mso_start_channel or greater than mso_end_channel that you specified in the LocalizationSettings.
+				NeuronIDValueError: If the LocalizationFile contains at least one address less than 0 or greater than the mso_num_neurons_channel you specified in LocalizationSettings
+		Notes:   
+				If mso_start_channel is set to 33 and mso_end_channel is set to 36, there will be four possible channel values: [33, 36]
+		"""
+
+		# Check if all timestamps are greater than zero
+		a = all(item >= 0  for item in localization_file.mso_timestamps)
+
+		if not a:
+			print("[Functions.check_LocalizationFile] > TimestampOrderError: The LocalizationFile file that you loaded has at least one timestamp that is less than 0.")
+
+		# Check if each timestamp is greater than its previous one
+		b = not any(i > 0 and localization_file.mso_timestamps[i] < localization_file.mso_timestamps[i-1] for i in range(len(localization_file.mso_timestamps)))
+
+		if not b:
+			print("[Functions.check_LocalizationFile] > TimestampOrderError: The LocalizationFile file that you loaded has at least one timestamp whose value is lesser than its previous one.")
+
+		# Check if all channel values are between mso_start_channel and mso_end_channel
+		c = all(item >= localization_settings.mso_start_channel and item <= localization_settings.mso_end_channel for item in localization_file.mso_channels)
+
+		if not c:
+			print("[Functions.check_LocalizationFile] > ChannelValueError: The LocalizationFile file that you loaded has at least one event whose channel value is either less than mso_start_channel or greater than mso_end_channel.")
+
+		# Check if all neuron IDs are between zero and the number of mso_num_neurons_channel
+		d = all(item >= 0 and item < localization_settings.mso_num_neurons_channel for item in localization_file.mso_neuron_ids)
+
+		if not d:
+			print("[Functions.check_LocalizationFile] > NeuronIDValueError: The LocalizationFile file that you loaded has at least one event whose neuron ID value is either less than zero or greater than mso_num_neurons_channel.")
+
+		if a and b and c and d:
+			print("[Functions.check_LocalizationFile] > The loaded LocalizationFile file has been checked and it's OK")
 
 	@staticmethod 
-	def adapt_SpikesFile(spikes_file, settings):
+	def adapt_timestamps(timestamps, settings):
 		"""
-		Subtracts the smallest timestamp of the SpikesFile to all of the timestamps contained in the file (in order to start from 0)
+		Subtracts the smallest timestamp of the timestamps list to all of the timestamps contained in the list (in order to start from 0)
 		It also adapts timestamps based on the tick frequency (ts_tick in the MainSettings).
 		
 		Parameters:
-				spikes_file (SpikesFile): File to adapt.
+				timestamps (int[]): File to adapt.
 				settings (MainSettings): Configuration parameters for the file to adapt.
 
 		Returns:
-				SpikesFile:  Adapted SpikesFile.
+				adapted_timestamps:  Adapted timestamps list.
 		"""
-		minimum_ts = min(spikes_file.timestamps)
+		minimum_ts = min(timestamps)
 		if settings.reset_timestamp:
-			spikes_file.timestamps = [(x - minimum_ts)*settings.ts_tick for x in spikes_file.timestamps]
+			adapted_timestamps = [(x - minimum_ts)*settings.ts_tick for x in timestamps]
 		else:
-			spikes_file.timestamps = [x*settings.ts_tick for x in spikes_file.timestamps]
-		return spikes_file
+			adapted_timestamps = [x*settings.ts_tick for x in timestamps]
+		return adapted_timestamps
 
 
 	@staticmethod
