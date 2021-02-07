@@ -389,7 +389,7 @@ class Plots:
             print("[Plots.difference_between_LR] > SettingsError: This functionality is only available for stereo files.")
         
     @staticmethod
-    def mso_heatmap(localization_file, localization_settings, graph_title = "MSO heatmap", enable_colorbar = False, verbose = False):
+    def mso_heatmap(localization_file, localization_settings, graph_title = "MSO heatmap", enable_colorbar = True, verbose = False):
         """
         Plots the heatmap for the MSO activity extracted from a LocalizationFile.
 
@@ -445,7 +445,8 @@ class Plots:
         htmap_im = plt.imshow(mso_activity, cmap='viridis')
 
         if enable_colorbar == True :
-            plt.colorbar()
+            colorbar = plt.colorbar()
+            colorbar.set_label('No. of spikes', rotation=270, fontsize='large', labelpad= 10)
 
         # We want to show all ticks...
         htmap_ax.set_xticks(np.arange(len(neuron_id_labels)))
@@ -453,6 +454,9 @@ class Plots:
         # ... and label them with the respective list entries
         htmap_ax.set_xticklabels(neuron_id_labels)
         htmap_ax.set_yticklabels(freq_channel_labels)
+
+        htmap_ax.set_xlabel('Neuron ID', fontsize='large')
+        htmap_ax.set_ylabel('Freq. channel', fontsize='large')
 
         # Rotate the tick labels and set their alignment.
         plt.setp(htmap_ax.get_xticklabels(), rotation=45, ha="right",
@@ -464,13 +468,13 @@ class Plots:
                 text = htmap_ax.text(j, i, mso_activity[i, j],
                             ha="center", va="center", color="w", fontsize='xx-small')
         
-        # Plot a colorbar with label.
+        plt.title(graph_title, fontsize='x-large')
 
         plt.tight_layout()
         htmap_fig.show()
 
     @staticmethod
-    def mso_spikegram(localization_file, settings, localization_settings, dot_size = 0.2, graph_tile = 'MSO spikegram', verbose = False):
+    def mso_spikegram(localization_file, settings, localization_settings, dot_size = 0.2, graph_tile = 'MSO spikegram', start_at_zero = True, verbose = False):
         """
         Plots the spikegram (also known as cochleogram or raster plot) of a SpikesFile.
         
@@ -507,6 +511,8 @@ class Plots:
         ax.set_ylabel('Timestamp ($\mu$s)', fontsize='large')
         ax.set_zlabel('Freq. channel', fontsize='large')
 
+        ax.set_xlim([0, localization_settings.mso_num_neurons_channel])
+        ax.set_ylim([0, localization_file.mso_timestamps[-1]])
         ax.set_zlim([0, settings.num_channels])
 
         plt.tight_layout()
@@ -574,10 +580,36 @@ class Plots:
         mso_loc_fig.canvas.set_window_title(graph_title)
         plt.title(graph_title, fontsize='x-large')
         plt.xlabel('Bin ('+str(settings.bin_size) + '$\mu$s width)', fontsize='large')
-        plt.ylabel('Position', fontsize='large')
+        plt.ylabel('Position (in degrees)', fontsize='large')
         plt.ylim([-1, localization_settings.mso_num_neurons_channel + 1])
+        
+        yticklabels = []
+        angle_slot = 180.0 / localization_settings.mso_num_neurons_channel
+        for slot_index in range(0, localization_settings.mso_num_neurons_channel):
+            middle_angle = (slot_index * angle_slot) - 90.0 + (angle_slot / 2.0)
+            yticklabels.append(str(int(abs(middle_angle))))
+
+        plt.yticks(ticks=np.arange(localization_settings.mso_num_neurons_channel), labels=yticklabels, fontsize='small')
 
         plt.plot(np.arange(math.ceil(total_time/settings.bin_size)), mso_max_activity, label='Position estimation')
+
+        plt.annotate('Left side',
+        xy=(1.00, 0.85), xytext=(5, 0),
+        xycoords=('axes fraction', 'axes fraction'),
+        textcoords='offset points',
+        size=11, ha='center', va='center', rotation=270)
+
+        plt.annotate('Centre',
+        xy=(1.00, 0.50), xytext=(5, 0),
+        xycoords=('axes fraction', 'axes fraction'),
+        textcoords='offset points',
+        size=11, ha='center', va='center', rotation=270)
+
+        plt.annotate('Right side',
+        xy=(1.00, 0.15), xytext=(5, 0),
+        xycoords=('axes fraction', 'axes fraction'),
+        textcoords='offset points',
+        size=11, ha='center', va='center', rotation=270)
 
         plt.tight_layout()
         mso_loc_fig.show()
