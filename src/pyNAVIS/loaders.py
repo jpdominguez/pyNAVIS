@@ -340,7 +340,14 @@ class Loaders:
         with open(path) as csv_file:
             csv_reader = csv.reader(csv_file, delimiter=delimiter)
             for row in csv_reader:
-                auditory_model = int(row[2])
+
+                try:
+                    auditory_model = int(row[2])
+                except Exception:
+                    auditory_model = 0
+                    pass
+
+                
 
                 address = int(row[0])
                 timestamp = row[1]
@@ -386,7 +393,7 @@ class Loaders:
         return spikes_file, localization_file
 
     @staticmethod
-    def loadZynqGrabberData(path, settings):
+    def loadZynqGrabberData(path, settings, localization_settings):
         """
         Loads a text (.txt) file with EAR events collected by the zynqGrabber.
         
@@ -400,6 +407,14 @@ class Loaders:
         
         addresses = []
         timestamps = []
+
+        neuron_ids_mso = []
+        channels_mso =  []
+        timestamps_mso = []
+
+        neuron_ids_lso = []
+        channels_lso =  []
+        timestamps_lso = []
         
         txt_file = open(path, 'r') 
         txt_lines = txt_file.readlines() 
@@ -408,19 +423,50 @@ class Loaders:
         for line in txt_lines:
             event = line.strip().split(',')
             decoded_events_timestamps      = float(event[0])
-            decoded_events_auditory_models = int(event[1])           # 0 if the event comes from the NAS
+            decoded_events_auditory_models = int(event[1])           # 0 if the event comes from the NAS, 1 for the SOC model
             decoded_events_channels        = int(event[2])           # 0 left, 1 right
-            decoded_events_xso_types       = int(event[3])
-            decoded_events_neuron_ids      = int(event[4])
-            decoded_events_freq_ch_addrs   = int(event[5])
-            decoded_events_polarities      = int(event[6])           #0 pos, 1 neg
+            decoded_events_xso_types       = int(event[3])           # 0 for MSO, 1 for LSO
+            decoded_events_neuron_ids      = int(event[4])           # Between 0 and 15
+            decoded_events_freq_ch_addrs   = int(event[5])           # Between 0 and 32
+            decoded_events_polarities      = int(event[6])           # 0 pos, 1 neg
 
+            # It could be either NAS (auditory_models = 0) or SOC events (auditory_models = 1)
             if decoded_events_auditory_models == 0: 
-
+                # NAS event
                 timestamps.append(int(decoded_events_timestamps))
                 addresses.append(int(decoded_events_freq_ch_addrs*(1+settings.on_off_both) + decoded_events_polarities +  settings.num_channels*decoded_events_channels*(1+settings.on_off_both)))
+
+            elif decoded_events_auditory_models == 1:
+                # It could be either MSO (xso_type = 0) or LSO events (xso_type = 1)
+                if decoded_events_xso_types == 0:
+                    # MSO event
+                    timestamps_mso.append(int(decoded_events_timestamps))
+                    channels_mso.append(int(decoded_events_freq_ch_addrs))
+                    neuron_ids_mso.append(int(decoded_events_neuron_ids))
+                    
+                elif decoded_events_xso_types == 1:
+                    # LSO event
+                    timestamps_lso.append(int(decoded_events_timestamps))
+                    channels_lso.append(int(decoded_events_freq_ch_addrs))
+                    neuron_ids_lso.append(int(decoded_events_neuron_ids))
+                else:
+                    # Other case
+                    print("[Loaders.loadZynqGrabberData] > DataError: XSO type not recognized!")
+
+            else:
+                # Other case
+                print("[Loaders.loadZynqGrabberData] > DataError: Auditory model not recognized!")
 
         spikes_file = SpikesFile([], [])
         spikes_file.addresses = addresses
         spikes_file.timestamps = timestamps
-        return spikes_file
+
+        localization_file = LocalizationFile([], [], [], [], [], [])
+        localization_file.mso_neuron_ids = neuron_ids_mso
+        localization_file.mso_channels = channels_mso
+        localization_file.mso_timestamps = timestamps_mso
+        localization_file.lso_neuron_ids = neuron_ids_lso
+        localization_file.lso_channels = channels_lso
+        localization_file.lso_timestamps = timestamps_lso
+
+        return spikes_file, localization_file
