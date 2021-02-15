@@ -180,7 +180,6 @@ class Plots:
         else:
             return sonogram
 
-
     @staticmethod
     def histogram(spikes_file, settings, bar_line = 1, graph_tile = 'Histogram', verbose = False):
         """
@@ -613,4 +612,84 @@ class Plots:
 
         plt.tight_layout()
         mso_loc_fig.show()
+    
+    @staticmethod
+    def mso_histogram(localization_file, settings, localization_settings, graph_tile = 'MSO histogram', verbose = False):
+        """
+        Plots the 3D histogram of a LocalizationFile.
+        
+        This is, a graph where addresses (or cochlea channels) are represented in the X axis, and number of spikes in the Y axis.
 
+        Parameters:
+                spikes_file (SpikesFile): File to plot.
+                settings (MainSettings): Configuration parameters for the file to plot.
+                bar_line (int, optional): Select wether to plot the histogram as bar plot (0) or as a line graph (1).
+                graph_tile (string, optional): Text that will appear as title for the graph.
+                verbose (boolean, optional): Set to True if you want the execution time of the function to be printed.
+
+        Returns:
+                int[]: Histogram array.
+        """
+
+        start_time = time.time()
+        
+        # Get the number of frequency channels set in the configuratio
+        mso_number_freq_ch = localization_settings.mso_end_channel - localization_settings.mso_start_channel + 1
+
+        # Create the activity matrix
+        mso_activity = np.zeros((mso_number_freq_ch, localization_settings.mso_num_neurons_channel))
+
+        num_mso_events = len(localization_file.mso_timestamps)
+
+        for i in range (0, num_mso_events):
+            freq_channel = localization_file.mso_channels[i] - localization_settings.mso_start_channel
+            if freq_channel < 0 or freq_channel >= mso_number_freq_ch:
+                freq_channel = 0
+            neuron_id = localization_file.mso_neuron_ids[i]
+            # Accumulate the activity for each neuron for each frequency channel according to the LocalizationFIle
+            mso_activity[freq_channel][neuron_id] = mso_activity[freq_channel][neuron_id] + 1
+
+        if verbose == True: print('HISTOGRAM CALCULATION:', time.time() - start_time)
+
+        plt.style.use('seaborn-whitegrid')
+        mso_hst_fig = plt.figure()
+        ax = mso_hst_fig.add_subplot(111, projection='3d')
+
+        # fake data
+        _x = np.arange(localization_settings.mso_num_neurons_channel)
+        _y = np.arange(mso_number_freq_ch)
+        _xx, _yy = np.meshgrid(_x, _y)
+        x, y = _xx.ravel(), _yy.ravel()
+        z = mso_activity.ravel()
+
+        top = z#x + y
+        bottom = np.zeros_like(top)
+        width = depth = 1
+
+        ax.bar3d(x, y, bottom, width - 0.25, depth - 0.5, top, shade=True)
+        ax.set_title('Shaded')
+
+        ax.set_xlim3d(0,localization_settings.mso_num_neurons_channel)
+        ax.set_ylim3d(0,mso_number_freq_ch)
+        ax.set_zlim3d(0,np.amax(z))
+
+        ax.set_xlabel('Neuron ID', fontsize='large')
+        ax.set_ylabel('Freq. channel', fontsize='large')
+        ax.set_zlabel('No. of spikes', fontsize='large')
+
+        # Generate the labels lists
+        freq_channel_labels = []
+        for i in range(localization_settings.mso_start_channel, localization_settings.mso_end_channel + 1):
+            freq_channel_labels.append(str(i))
+        
+        # We want to show all ticks...
+        ax.set_yticks(np.arange(len(freq_channel_labels)))
+        # ... and label them with the respective list entries
+        ax.set_yticklabels(freq_channel_labels)
+
+
+        mso_hst_fig.canvas.set_window_title(graph_tile)
+        plt.title(graph_tile, fontsize='x-large')
+
+        #plt.tight_layout()
+        mso_hst_fig.show()
