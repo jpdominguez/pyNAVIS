@@ -322,11 +322,12 @@ class Functions:
 		Parameters:
 				spikes_file (SpikesFile or string): File or path to use.
 				settings (MainSettings): Configuration parameters for the input file.
-				output_path (string):
-				plots (string list): 
-				add_localization_report (boolead, optional):
-				localization_settings (LocalizationSettings, optional): 
-				localization_plots (string list, optional)
+				output_path (string): Destination path.
+				plots (string list): List to select the plots to be included in the PDF report.
+				add_localization_report (boolead, optional): If True, the localization plots will be included.
+				localization_file (LocalizatioFile, optional): If add_localization_report is set to True, this parameter is mandatory, and it should contain the localization information.
+				localization_settings (LocalizationSettings, optional): If add_localization_report is set to True, this parameter is mandatory, and it should contain the localization settings.
+				localization_plots (string list, optional): If add_localization_report is set to True, this parameter is mandatory, and it should contain the list of localization plots.
 				vector (boolean, optional): Set to True if you want the Spikegram plot vectorized. Note: this may make your PDF heavy.
 				verbose (boolean, optional): Set to True if you want the execution time of the function to be printed.
 
