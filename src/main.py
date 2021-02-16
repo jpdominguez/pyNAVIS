@@ -74,18 +74,18 @@ phaselock.run(os.path.join(dirname, 'examples/test_files/130Hz_mono_64ch_ONOFF_a
 # Loading .aedat with localization information (jAER)
 """
 settings = MainSettings(num_channels=64, mono_stereo=1, on_off_both=1, address_size=4, ts_tick=1, bin_size=20000)
-settings_localization = LocalizationSettings(mso_start_channel=33, mso_end_channel=36, mso_num_neurons_channel=16)
-load_stereo_localization_AEDAT.run(os.path.join(dirname, 'examples/test_files/aa.aedat'), settings, settings_localization)
+settings_localization = LocalizationSettings(mso_start_channel=33, mso_end_channel=36, mso_num_neurons_channel=32)
+load_stereo_localization_AEDAT.run(os.path.join(dirname, 'examples/test_files/500Hz_stereo_64ch_ONOFF_addr4b_ts1_mso_33_36_nid_16_loc_center.aedat'), settings, settings_localization)
 """
 
 # Loading .aedat with localization information (MATLAB)
 """
 settings = MainSettings(num_channels=64, mono_stereo=1, on_off_both=1, address_size=2, ts_tick=0.2, bin_size=10000)
-settings_localization = LocalizationSettings(mso_start_channel=33, mso_end_channel=36, mso_num_neurons_channel=16)
-load_stereo_localization_AEDAT.run(os.path.join(dirname, 'examples/test_files/nas_soc_pos5_chirp.aedat'), settings, settings_localization)
+settings_localization = LocalizationSettings(mso_start_channel=33, mso_end_channel=36, mso_num_neurons_channel=31)
+load_stereo_localization_AEDAT.run(os.path.join(dirname, 'examples/test_files/chirp_200_2000Hz_stereo_64ch_ONOFF_addr4b_ts1_mso_25_35_nid_16_loc_left.aedat'), settings, settings_localization)
 """
 
-# Loading CSV from simulation with localization information
+# Loading CSV from simulation with only localization information (SOC simulation)
 """
 settings = MainSettings(num_channels=64, mono_stereo=1, on_off_both=1, address_size=4, ts_tick=1, bin_size=20000)
 settings_localization = LocalizationSettings(mso_start_channel=33, mso_end_channel=36, mso_num_neurons_channel=16)
@@ -93,7 +93,9 @@ load_stereo_localization_CSV.run(os.path.join(dirname, 'examples/test_files/pure
 """
 
 # Loading CSV from ZynqGrabber output (iCub)
-
+# NOTE: for files recorded using iCub, both the MainSettings and LocalizationSettings are fixed.
+"""
 settings = MainSettings(num_channels=32, mono_stereo=1, on_off_both=1, ts_tick=80e-3, bin_size=100000)
 settings_localization = LocalizationSettings(mso_start_channel=13, mso_end_channel=16, mso_num_neurons_channel=16)
-load_stereo_localization_ZynqGrabber.run(os.path.join(dirname, 'examples/test_files/decoded_events.txt'), settings, settings_localization)
+load_stereo_localization_ZynqGrabber.run(os.path.join(dirname, 'examples/test_files/500Hz_head_sweep_stereo_32ch_ONOFF_zynq_decoded_events.txt'), settings, settings_localization)
+"""
