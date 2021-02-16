@@ -92,7 +92,7 @@ settings_localization = LocalizationSettings(mso_start_channel=33, mso_end_chann
 load_stereo_localization_CSV.run(os.path.join(dirname, 'examples/test_files/pure_tone_fs48000duration1000frequency500amplitude1_3_soc_out3.txt'), settings, settings_localization, include_nas=False)
 """
 
-# Loading CSV from ZynqGrabber output (iCub)
+# Loading CSV from ZynqGrabber output (iCub) and generate a PDF report
 # NOTE: for files recorded using iCub, both the MainSettings and LocalizationSettings are fixed.
 """
 settings = MainSettings(num_channels=32, mono_stereo=1, on_off_both=1, ts_tick=80e-3, bin_size=100000)
