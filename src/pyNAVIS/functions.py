@@ -31,6 +31,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 from .loaders import SpikesFile
+from .loaders import LocalizationFile
 from .savers import Savers
 from .utils import Utils
 from .plots import Plots
@@ -282,7 +283,6 @@ class Functions:
 			print("[Functions.mono_to_stereo] > SettingsError: this functionality cannot be performed over a stereo aedat file.")        
 
 
-
 	@staticmethod
 	def extract_channels_activities(spikes_file, addresses, reset_addresses = True, verbose = False):
 		"""
@@ -314,16 +314,19 @@ class Functions:
 		return new_spikes_file
 
 
-	
-
 	@staticmethod
-	def PDF_report(spikes_file, settings, output_path, plots = ["Spikegram", "Sonogram", "Histogram", "Average activity", "Difference between L/R"], vector = False, verbose = False):
+	def PDF_report(spikes_file, settings, output_path, plots = ["Spikegram", "Sonogram", "Histogram", "Average activity", "Difference between L/R"], add_localization_report = False, localization_file = None, localization_settings = None, localization_plots = ["MSO spikegram", "MSO heatmap", "MSO histogram", "MSO localization"], vector = False, verbose = False):
 		"""
 		Generates a PDF report with the spikegram, sonogram, histogram, average activity and difference between L/R plots obtained from the input SpikesFile or path containing SpikeFiles.
 		
 		Parameters:
 				spikes_file (SpikesFile or string): File or path to use.
 				settings (MainSettings): Configuration parameters for the input file.
+				output_path (string):
+				plots (string list): 
+				add_localization_report (boolead, optional):
+				localization_settings (LocalizationSettings, optional): 
+				localization_plots (string list, optional)
 				vector (boolean, optional): Set to True if you want the Spikegram plot vectorized. Note: this may make your PDF heavy.
 				verbose (boolean, optional): Set to True if you want the execution time of the function to be printed.
 
@@ -339,14 +342,22 @@ class Functions:
 			spikes_file_extension = os.path.splitext(spikes_file)
 
 			if spikes_file_extension == ".aedat":
-				spikes_file = Loaders.loadAEDAT(spikes_file, settings)
+				if add_localization_report == False:
+					spikes_file = Loaders.loadAEDAT(spikes_file, settings)
+				else:
+					spikes_file, localization_file = Loaders.loadAEDATLocalization(spikes_file, settings, localization_settings)
 			elif spikes_file_extension == ".csv":
-				spikes_file = Loaders.loadCSV(spikes_file, settings)
+				if add_localization_report == False:
+					spikes_file = Loaders.loadCSV(spikes_file, delimiter=',')
+				else:
+					spikes_file, localization_file = Loaders.loadCSVLocalization(spikes_file, delimiter=',')
 			elif spikes_file_extension == ".txt":
-				spikes_file = Loaders.loadZynqGrabberData(spikes_file, settings)
+				spikes_file, localization_file = Loaders.loadZynqGrabberData(spikes_file, settings, localization_settings)
     				
-			spikes_file = Functions.adapt_SpikesFile(spikes_file, settings)
-		
+			spikes_file.timestamps = Functions.adapt_timestamps(spikes_file.timestamps, settings)
+			if add_localization_report == True:
+				localization_file.timestamps = Functions.adapt_timestamps(localization_file.timestamps, settings)
+
 		if isinstance(spikes_file, SpikesFile):
     		
 			pdf = matplotlib.backends.backend_pdf.PdfPages(output_path)
@@ -377,6 +388,30 @@ class Functions:
 				pdf.savefig()
 				plt.draw()
 
+			if add_localization_report == True:
+				if isinstance(localization_file, LocalizationFile):
+					# MSO spikegram
+					if any("MSO spikegram" in s for s in localization_plots):
+						mso_spikegram = Plots.mso_spikegram(localization_file, settings, localization_settings)
+						pdf.savefig(mso_spikegram)
+						plt.draw()
+					# MSO heatmap
+					if any("MSO heatmap" in s for s in localization_plots):
+						mso_heatmap = Plots.mso_heatmap(localization_file, localization_settings)		
+						pdf.savefig(mso_heatmap)
+						plt.draw()
+					# MSO histogram
+					if any("MSO histogram" in s for s in localization_plots):
+						mso_histogram = Plots.mso_histogram(localization_file, settings, localization_settings)		
+						pdf.savefig(mso_histogram)
+						plt.draw()
+					# MSO localization
+					if any("MSO localization" in s for s in localization_plots):
+						mso_localization = Plots.mso_localization(localization_file, settings, localization_settings)		
+						pdf.savefig(mso_localization)
+						plt.draw()
+				else:
+					print("[Functions.PDF_report] > InputFileError: the input LocalizationFile is not valid.")
 
 			d = pdf.infodict()
 			d['Title'] = 'pyNAVIS report'
