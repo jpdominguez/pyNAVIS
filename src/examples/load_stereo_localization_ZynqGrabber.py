@@ -23,3 +23,5 @@ def run(path, settings, settings_localization):
     Plots.mso_histogram(stereo_file_soc, settings, settings_localization)
 
     plt.show()
+
+    Functions.PDF_report(stereo_file_nas, settings, path.replace('.txt', '.pdf'), plots=["Sonogram", "Histogram", "Average activity"], add_localization_report = True, localization_file = stereo_file_soc, localization_settings = settings_localization, localization_plots = ["MSO spikegram", "MSO heatmap", "MSO histogram", "MSO localization"], vector=False)
