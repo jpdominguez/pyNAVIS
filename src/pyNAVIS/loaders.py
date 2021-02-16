@@ -140,9 +140,10 @@ class Loaders:
         Parameters:
                 path (string): Full path of the AEDAT file to be loaded, including name and extension.
                 settings (MainSettings): Configuration parameters for the file to load.
-
+                localization_settings (LocalizationSettings): Configuration parameters of the localization module for the file to load.
         Returns:
                 SpikesFile: SpikesFile containing all the addresses and timestamps of the file.
+                LocalizationFile: LocalizationFile containing all the events from both the MSO and LSO models of the file.
         Raises:
                 SettingsError: If settings.address_size is different than 2 and 4.
 
@@ -156,9 +157,7 @@ class Loaders:
         else:
             print("[Loaders.loadAEDATLocalization] > SettingsError: Only address sizes implemented are 2 and 4 bytes")
         
-        #
         # Check the localization_settings values
-        #
         localization_settings_error = False
 
         # MSO start frequency channel range
@@ -239,12 +238,12 @@ class Loaders:
                         # NAS event
                         events_nas.append(ev)
                         timestamps_nas.append(ts)
-                    else:
+                    elif auditory_model == 1:
                         # Localization event
 
                         # Apply a mask to obtain the correct values
-                        neuron_id = (ev & 0x3E00) >> 9 #(ev & 0x0F00) >> 8
-                        freq_channel = (ev & 0x00FE) >> 1 #(ev & 0x007E) >> 1
+                        neuron_id = (ev & 0x3E00) >> 9
+                        freq_channel = (ev & 0x00FE) >> 1
 
                         xso_type = (ev & 0x4000) >> 14
 
@@ -253,11 +252,17 @@ class Loaders:
                             neuron_ids_mso.append(neuron_id)
                             channels_mso.append(freq_channel)
                             timestamps_mso.append(ts)
-                        else:
+                        elif xso_type == 1:
                             # LSO event
                             neuron_ids_lso.append(neuron_id)
                             channels_lso.append(freq_channel)
                             timestamps_lso.append(ts)
+                        else:
+                            # Other case
+                            print("[Loaders.loadAEDATLocalization] > DataError: XSO type not recognized!")
+                    else:
+                        # Other case
+                        print("[Loaders.loadAEDATLocalization] > DataError: Auditory model not recognized!")
 
                     i += 1
             except Exception as inst:
@@ -307,17 +312,18 @@ class Loaders:
         return spikes_file
 
     @staticmethod
-    def loadCSVLocalization(path, delimiter=',', from_simulation=False):
+    def loadCSVLocalization(path, delimiter=',', from_simulation=True):
         """
         Loads a Comma-Separated Values (.csv) file.
         
         Parameters:
                 path (string): Full path of the CSV file to be loaded, including name and extension.
                 delimiter (char): Delimiter to use in the CSV file.
-                from_simulation (bolean): 
+                from_simulation (bolean, optional): If true, it is assumed the timestamp field contains the timescale from the simulation tool.
 
         Returns:
                 SpikesFile: SpikesFile containing all the addresses and timestamps of the file.
+                LocalizationFile: LocalizationFile containing all the events from both the MSO and LSO models of the file.
 
         Note:
                 The CSV file should contain one line per event, and the information in each line should be: address, timestamp
@@ -347,12 +353,11 @@ class Loaders:
                     auditory_model = 0
                     pass
 
-                
-
                 address = int(row[0])
                 timestamp = row[1]
 
                 if from_simulation == True :
+                    # Remove string "ps" and convert the timestamps from picoseconds to microseconds
                     timestamp = timestamp.replace(" ps", "")
                     timestamp = int(timestamp)
                     timestamp = timestamp * 1.0e-6
@@ -361,7 +366,7 @@ class Loaders:
                     # NAS event
                     addresses_nas.append(address)
                     timestamps_nas.append(timestamp)
-                else:
+                elif auditory_model == 1:
                     # Localization event
                     xso_type = int(row[3])
                     neuron_id = int(row[4])
@@ -372,11 +377,17 @@ class Loaders:
                         neuron_ids_mso.append(neuron_id)
                         channels_mso.append(freq_channel)
                         timestamps_mso.append(timestamp)
-                    else:
+                    elif xso_type == 1:
                         # LSO event
                         neuron_ids_lso.append(neuron_id)
                         channels_lso.append(freq_channel)
                         timestamps_lso.append(timestamp)
+                    else:
+                        # Other case
+                        print("[Loaders.loadCSVLocalization] > DataError: XSO type not recognized!")
+                else:
+                    # Other case
+                    print("[Loaders.loadCSVLocalization] > DataError: Auditory model not recognized!")
 
         spikes_file = SpikesFile([], [])
         spikes_file.addresses = addresses_nas
@@ -400,9 +411,11 @@ class Loaders:
         Parameters:
                 path (string): Full path of the CSV file to be loaded, including name and extension.
                 settings (MainSettings): Configuration parameters for the file to load.
+                localization_settings (LocalizationSettings): Configuration parameters of the localization module for the file to load.
 
         Returns:
-                SpikesFile: SpikesFile containing all the addresses and timestamps of the file.
+                spikes_file: SpikesFile containing all the addresses and timestamps of the file.
+                localization_file: LocalizationFile containing all the events from both the MSO and LSO models of the file.
         """
         
         addresses = []
