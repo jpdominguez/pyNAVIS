@@ -312,14 +312,13 @@ class Loaders:
         return spikes_file
 
     @staticmethod
-    def loadCSVLocalization(path, delimiter=',', from_simulation=True):
+    def loadCSVLocalization(path, delimiter=','):
         """
         Loads a Comma-Separated Values (.csv) file.
         
         Parameters:
                 path (string): Full path of the CSV file to be loaded, including name and extension.
                 delimiter (char): Delimiter to use in the CSV file.
-                from_simulation (bolean, optional): If true, it is assumed the timestamp field contains the timescale from the simulation tool.
 
         Returns:
                 SpikesFile: SpikesFile containing all the addresses and timestamps of the file.
@@ -356,7 +355,9 @@ class Loaders:
                 address = int(row[0])
                 timestamp = row[1]
 
-                if from_simulation == True :
+                # Check if the timestamp contains any time reference (from simulation)
+                timeref = "ps"
+                if timeref in timestamp:
                     # Remove string "ps" and convert the timestamps from picoseconds to microseconds
                     timestamp = timestamp.replace(" ps", "")
                     timestamp = int(timestamp)
@@ -365,7 +366,7 @@ class Loaders:
                 if auditory_model == 0:
                     # NAS event
                     addresses_nas.append(address)
-                    timestamps_nas.append(timestamp)
+                    timestamps_nas.append(int(timestamp))
                 elif auditory_model == 1:
                     # Localization event
                     xso_type = int(row[3])

@@ -3,7 +3,7 @@ from pyNAVIS import *
 
 
 def run(path, settings, settings_localization, include_nas = True):    
-    stereo_file_nas, stereo_file_soc = Loaders.loadCSVLocalization(path, delimiter=',', from_simulation=True)
+    stereo_file_nas, stereo_file_soc = Loaders.loadCSVLocalization(path, delimiter=',')
 
     if include_nas == True:
         stereo_file_nas.timestamps = Functions.adapt_timestamps(stereo_file_nas.timestamps, settings)
