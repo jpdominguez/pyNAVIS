@@ -143,7 +143,7 @@ class Functions:
 		It also adapts timestamps based on the tick frequency (ts_tick in the MainSettings).
 		
 		Parameters:
-				timestamps (int[]): File to adapt.
+				timestamps (int[]): Timestamps of the file to adapt.
 				settings (MainSettings): Configuration parameters for the file to adapt.
 
 		Returns:
@@ -323,11 +323,11 @@ class Functions:
 				spikes_file (SpikesFile or string): File or path to use.
 				settings (MainSettings): Configuration parameters for the input file.
 				output_path (string): Destination path.
-				plots (string list): List to select the plots to be included in the PDF report.
-				add_localization_report (boolead, optional): If True, the localization plots will be included.
-				localization_file (LocalizatioFile, optional): If add_localization_report is set to True, this parameter is mandatory, and it should contain the localization information.
+				plots (string[]): List to select the plots to be included in the PDF report.
+				add_localization_report (boolean, optional): If True, the localization plots will be included in the PDF report.
+				localization_file (LocalizationFile, optional): If add_localization_report is set to True, this parameter is mandatory, and it should contain the localization information.
 				localization_settings (LocalizationSettings, optional): If add_localization_report is set to True, this parameter is mandatory, and it should contain the localization settings.
-				localization_plots (string list, optional): If add_localization_report is set to True, this parameter is mandatory, and it should contain the list of localization plots.
+				localization_plots (string[], optional): If add_localization_report is set to True, this parameter is mandatory, and it should contain the list of localization plots.
 				vector (boolean, optional): Set to True if you want the Spikegram plot vectorized. Note: this may make your PDF heavy.
 				verbose (boolean, optional): Set to True if you want the execution time of the function to be printed.
 
@@ -345,16 +345,24 @@ class Functions:
 			if spikes_file_extension == ".aedat":
 				if add_localization_report == False:
 					spikes_file = Loaders.loadAEDAT(spikes_file, settings)
-				else:
+				elif add_localization_report != False and localization_file != None and localization_settings != None:
 					spikes_file, localization_file = Loaders.loadAEDATLocalization(spikes_file, settings, localization_settings)
+				else:
+					print("[Functions.PDF_report] > ParametersError: the input parameters are not correct.")
+					return None
 			elif spikes_file_extension == ".csv":
 				if add_localization_report == False:
 					spikes_file = Loaders.loadCSV(spikes_file, delimiter=',')
-				else:
+				elif add_localization_report != False and localization_file != None and localization_settings != None:
 					spikes_file, localization_file = Loaders.loadCSVLocalization(spikes_file, delimiter=',')
+				else:
+					print("[Functions.PDF_report] > ParametersError: the input parameters are not correct.")
+					return None
 			elif spikes_file_extension == ".txt":
 				spikes_file, localization_file = Loaders.loadZynqGrabberData(spikes_file, settings, localization_settings)
-    				
+			else
+				print("[Functions.PDF_report] > InputFileExtensionError: the extension of the input file is not valid.")
+				return None
 			spikes_file.timestamps = Functions.adapt_timestamps(spikes_file.timestamps, settings)
 			if add_localization_report == True:
 				localization_file.timestamps = Functions.adapt_timestamps(localization_file.timestamps, settings)
