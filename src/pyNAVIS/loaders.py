@@ -42,7 +42,7 @@ class SpikesFile:
 
 class LocalizationFile:
     """
-    Class that contains all the events ant timestamps from the sound source localization model of a file
+    Class that contains all the events ant timestamps from the sound source localization model of a file.
 
     Attributes:
             mso_neurons_ids (int[]): Neuron's IDs of the MSO population of the file.
@@ -135,7 +135,7 @@ class Loaders:
     @staticmethod
     def loadAEDATLocalization(path, settings, localization_settings):
         """
-        Loads an AEDAT (.aedat) file.
+        Loads an AEDAT (.aedat) file which contains events from both the NAS model and the SOC model (sound source localization).
         
         Parameters:
                 path (string): Full path of the AEDAT file to be loaded, including name and extension.
@@ -259,7 +259,7 @@ class Loaders:
                             timestamps_lso.append(ts)
                         else:
                             # Other case
-                            print("[Loaders.loadAEDATLocalization] > DataError: XSO type not recognized!")
+                            print("[Loaders.loadAEDATLocalization] > DataError: MSO/LSO type not recognized!")
                     else:
                         # Other case
                         print("[Loaders.loadAEDATLocalization] > DataError: Auditory model not recognized!")
@@ -314,7 +314,7 @@ class Loaders:
     @staticmethod
     def loadCSVLocalization(path, delimiter=','):
         """
-        Loads a Comma-Separated Values (.csv) file.
+        Loads a Comma-Separated Values (.csv) file which contains events from both the NAS model and the SOC model (sound source localization).
         
         Parameters:
                 path (string): Full path of the CSV file to be loaded, including name and extension.
@@ -385,7 +385,7 @@ class Loaders:
                         timestamps_lso.append(timestamp)
                     else:
                         # Other case
-                        print("[Loaders.loadCSVLocalization] > DataError: XSO type not recognized!")
+                        print("[Loaders.loadCSVLocalization] > DataError: MSO/LSO type not recognized!")
                 else:
                     # Other case
                     print("[Loaders.loadCSVLocalization] > DataError: Auditory model not recognized!")
@@ -465,7 +465,7 @@ class Loaders:
                     neuron_ids_lso.append(int(decoded_events_neuron_ids))
                 else:
                     # Other case
-                    print("[Loaders.loadZynqGrabberData] > DataError: XSO type not recognized!")
+                    print("[Loaders.loadZynqGrabberData] > DataError: MSO/LSO type not recognized!")
 
             else:
                 # Other case
