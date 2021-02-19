@@ -26,7 +26,7 @@ from matplotlib.colors import LinearSegmentedColormap
 
 import matplotlib
 import matplotlib.pyplot as plt
-from mpl_toolkits.mplot3d import Axes3D  # noqa: F401 unused import
+from mpl_toolkits.mplot3d import Axes3D
 import numpy as np
 import time
 
@@ -34,7 +34,7 @@ from .utils import Utils
 
 class Plots:
     @staticmethod
-    def spikegram(spikes_file, settings, dot_size = 0.2, dot_freq = 1, graph_tile = 'Spikegram', start_at_zero = True, verbose = False):
+    def spikegram(spikes_file, settings, dot_size = 0.2, dot_freq = 1, graph_title = 'Spikegram', start_at_zero = True, verbose = False):
         """
         Plots the spikegram (also known as cochleogram or raster plot) of a SpikesFile.
         
@@ -45,7 +45,7 @@ class Plots:
                 settings (MainSettings): Configuration parameters for the file to plot.
                 dot_size (float): Size of the dots used in the spikegram plot.
                 dot_freq (int): Set the frequency of spikes that will be represented in the spikegram.
-                graph_tile (string, optional): Text that will appear as title for the graph.
+                graph_title (string, optional): Text that will appear as title for the graph.
                 start_at_zero (boolean, optional): If set to True, the X axis will start at 0, instead of starting at the minimum timestamp.
                 verbose (boolean, optional): Set to True if you want the execution time of the function to be printed.
 
@@ -60,7 +60,7 @@ class Plots:
         #REPRESENTATION
         plt.style.use('seaborn-whitegrid')
         spk_fig = plt.figure()
-        spk_fig.canvas.set_window_title(graph_tile)
+        spk_fig.canvas.set_window_title(graph_title)
 
         random.seed(0)
 
@@ -76,7 +76,7 @@ class Plots:
             
         if verbose == True: print('SPIKEGRAM CALCULATION', time.time() - start_time)
 
-        plt.title(graph_tile, fontsize='x-large')
+        plt.title(graph_title, fontsize='x-large')
         plt.xlabel('Timestamp ($\mu$s)', fontsize='large')
         plt.ylabel('Address', fontsize='large')
         plt.ylim([0, settings.num_channels*(settings.on_off_both + 1)*(settings.mono_stereo + 1)])
@@ -88,7 +88,7 @@ class Plots:
         spk_fig.show()
 
     @staticmethod
-    def sonogram(spikes_file, settings, return_data = False, graph_tile = 'Sonogram', start_at_zero = True, verbose = False):
+    def sonogram(spikes_file, settings, return_data = False, graph_title = 'Sonogram', start_at_zero = True, verbose = False):
         """
         Plots the sonogram of a SpikesFile.
         
@@ -98,7 +98,7 @@ class Plots:
                 spikes_file (SpikesFile): File to plot.
                 settings (MainSettings): Configuration parameters for the file to plot.
                 return_data (boolean, optional): When set to True, the sonogram matrix will be returned instead of plotted.
-                graph_tile (string, optional): Text that will appear as title for the graph.
+                graph_title (string, optional): Text that will appear as title for the graph.
                 start_at_zero (boolean, optional): If set to True, the X axis will start at 0, instead of starting at the minimum timestamp.
                 verbose (boolean, optional): Set to True if you want the execution time of the function to be printed.
 
@@ -142,7 +142,7 @@ class Plots:
             # REPRESENTATION
             plt.style.use('default')
             sng_fig = plt.figure()
-            sng_fig.canvas.set_window_title(graph_tile)
+            sng_fig.canvas.set_window_title(graph_title)
 
             plt.imshow(sonogram, aspect="auto", cmap='hot') #, aspect="auto")
             plt.gca().invert_yaxis()
@@ -150,7 +150,7 @@ class Plots:
             plt.xlabel('Bin ('+str(settings.bin_size) + '$\mu$s width)', fontsize='large')
             plt.ylabel('Address', fontsize='large')
 
-            plt.title(graph_tile, fontsize='x-large')
+            plt.title(graph_title, fontsize='x-large')
 
             """
             plt.annotate('Right cochlea | Left cochlea',
@@ -181,7 +181,7 @@ class Plots:
             return sonogram
 
     @staticmethod
-    def histogram(spikes_file, settings, bar_line = 1, graph_tile = 'Histogram', verbose = False):
+    def histogram(spikes_file, settings, bar_line = 1, graph_title = 'Histogram', verbose = False):
         """
         Plots the histogram of a SpikesFile.
         
@@ -191,7 +191,7 @@ class Plots:
                 spikes_file (SpikesFile): File to plot.
                 settings (MainSettings): Configuration parameters for the file to plot.
                 bar_line (int, optional): Select wether to plot the histogram as bar plot (0) or as a line graph (1).
-                graph_tile (string, optional): Text that will appear as title for the graph.
+                graph_title (string, optional): Text that will appear as title for the graph.
                 verbose (boolean, optional): Set to True if you want the execution time of the function to be printed.
 
         Returns:
@@ -206,8 +206,8 @@ class Plots:
 
         plt.style.use('seaborn-whitegrid')
         hst_fig = plt.figure()
-        hst_fig.canvas.set_window_title(graph_tile)
-        plt.title(graph_tile, fontsize='x-large')
+        hst_fig.canvas.set_window_title(graph_title)
+        plt.title(graph_title, fontsize='x-large')
         plt.xlabel('Address', fontsize='large')
         plt.ylabel('No. of spikes', fontsize='large')
 
@@ -230,7 +230,7 @@ class Plots:
         return spikes_count
 
     @staticmethod
-    def average_activity(spikes_file, settings, graph_tile = 'Average activity', verbose=False):
+    def average_activity(spikes_file, settings, graph_title = 'Average activity', verbose=False):
         """
         Plots the average activity plot of a SpikesFile.
         
@@ -239,7 +239,7 @@ class Plots:
         Parameters:
                 spikes_file (SpikesFile): File to plot.
                 settings (MainSettings): Configuration parameters for the file to plot.
-                graph_tile (string, optional): Text that will appear as title for the graph.
+                graph_title (string, optional): Text that will appear as title for the graph.
                 verbose (boolean, optional): Set to True if you want the execution time of the function to be printed.
 
         Returns:
@@ -293,8 +293,8 @@ class Plots:
 
         plt.style.use('seaborn-whitegrid')
         avg_fig = plt.figure()
-        avg_fig.canvas.set_window_title(graph_tile)
-        plt.title(graph_tile, fontsize='x-large')
+        avg_fig.canvas.set_window_title(graph_title)
+        plt.title(graph_title, fontsize='x-large')
         plt.xlabel('Bin ('+str(settings.bin_size) + '$\mu$s width)', fontsize='large')
         plt.ylabel('No. of spikes', fontsize='large')
 
@@ -307,7 +307,7 @@ class Plots:
         avg_fig.show()
 
     @staticmethod
-    def difference_between_LR(spikes_file, settings, return_data = False, graph_tile = 'Diff. between L and R cochlea', verbose = False):
+    def difference_between_LR(spikes_file, settings, return_data = False, graph_title = 'Diff. between L and R cochlea', verbose = False):
         """
         Plots a plot showing the differente between the left and the right activity of a SpikesFile.
 
@@ -315,7 +315,7 @@ class Plots:
                 spikes_file (SpikesFile): File to plot.
                 settings (MainSettings): Configuration parameters for the file to plot.
                 return_data (boolean, optional): When set to True, the sonogram matrix will be returned instead of plotted.
-                graph_tile (string, optional): Text that will appear as title for the graph.
+                graph_title (string, optional): Text that will appear as title for the graph.
                 verbose (boolean, optional): Set to True if you want the execution time of the function to be printed.
 
         Returns:
@@ -360,7 +360,7 @@ class Plots:
                 # REPRESENTATION
                 plt.style.use('default')
                 sng_fig = plt.figure()
-                sng_fig.canvas.set_window_title(graph_tile)
+                sng_fig.canvas.set_window_title(graph_title)
                 
                 #cmap = 'RdBu'
                 colors = [(1, 0.49803921568627450980392156862745, 0.05490196078431372549019607843137), (1, 1, 1), (0.12156862745098039215686274509804, 0.46666666666666666666666666666667, 0.70588235294117647058823529411765)]  # R -> G -> B
@@ -374,7 +374,7 @@ class Plots:
                 plt.xlabel('Bin ('+str(settings.bin_size) + '$\mu$s width)', fontsize='large')
                 plt.ylabel('Address', fontsize='large')
 
-                plt.title(graph_tile, fontsize='x-large')
+                plt.title(graph_title, fontsize='x-large')
 
                 colorbar = plt.colorbar(ticks=[100, 50, 0, -50, -100], orientation='horizontal')
                 colorbar.set_label('Cochlea predominance', rotation=0, fontsize='large', labelpad= 10)
@@ -410,7 +410,7 @@ class Plots:
 
         if verbose == True: start_time = time.time()
 
-        # Get the number of frequency channels set in the configuratio
+        # Get the number of frequency channels set in the configuration
         mso_number_freq_ch = localization_settings.mso_end_channel - localization_settings.mso_start_channel + 1
 
         # Create the activity matrix
@@ -425,7 +425,7 @@ class Plots:
             # Accumulate the activity for each neuron for each frequency channel according to the LocalizationFIle
             mso_activity[freq_channel][neuron_id] = mso_activity[freq_channel][neuron_id] + 1
         
-        if verbose == True: print('ACTIVITY MATRIX CALCULATION', time.time() - start_time)
+        if verbose == True: print('MSO HEATMAP CALCULATION', time.time() - start_time)
 
         # Generate the labels lists
         freq_channel_labels = []
@@ -474,7 +474,7 @@ class Plots:
         htmap_fig.show()
 
     @staticmethod
-    def mso_spikegram(localization_file, settings, localization_settings, dot_size = 0.2, graph_tile = 'MSO spikegram', verbose = False):
+    def mso_spikegram(localization_file, settings, localization_settings, dot_size = 0.2, graph_title = 'MSO spikegram', verbose = False):
         """
         Plots the 3D spikegram (also known as raster plot) of the MSO information contained in a LocalizationFile.
         This is, a graph where the X axis represents neuron IDs, the Y axis means time, and the Z axis represents the frequency channels of the cochlea, and where every spike is plotted as a dot.
@@ -484,7 +484,7 @@ class Plots:
                 settings (MainSettings): Configuration parameters for the file to plot.
                 localization_settings (LocalizationSettings): Localization configuration parameters for the file to plot.
                 dot_size (float): Size of the dots used in the spikegram plot.
-                graph_tile (string, optional): Text that will appear as title for the graph.
+                graph_title (string, optional): Text that will appear as title for the graph.
                 verbose (boolean, optional): Set to True if you want the execution time of the function to be printed.
 
         Returns:
@@ -500,14 +500,14 @@ class Plots:
         plt.style.use('seaborn-whitegrid')
         msospk_fig = plt.figure()
         ax = msospk_fig.add_subplot(111, projection='3d')
-        msospk_fig.canvas.set_window_title(graph_tile)
+        msospk_fig.canvas.set_window_title(graph_title)
 
         # Plot all the spikes stored in the localization_file
         ax.scatter(localization_file.mso_neuron_ids, localization_file.mso_timestamps, localization_file.mso_channels, s=dot_size)
             
-        if verbose == True: print('SPIKEGRAM CALCULATION', time.time() - start_time)
+        if verbose == True: print('MSO SPIKEGRAM CALCULATION', time.time() - start_time)
 
-        plt.title(graph_tile, fontsize='x-large')
+        plt.title(graph_title, fontsize='x-large')
 
         # Set the label of each axis
         ax.set_xlabel('Neuron ID', fontsize='large')
@@ -523,7 +523,7 @@ class Plots:
         msospk_fig.show()
 
     @staticmethod
-    def mso_localization(localization_file, settings, localization_settings, graph_title = "MSO localization estimation", start_at_zero = True, verbose = False):
+    def mso_localization_plot(localization_file, settings, localization_settings, graph_title = "MSO localization estimation", start_at_zero = True, verbose = False):
         """
         Plots the result of the coincidence counters of the Jeffress model for the MSO according to the activity in the LocalizationFile.
 
@@ -580,7 +580,7 @@ class Plots:
 
             mso_max_activity[i] = index_max_activity
 
-        if verbose == True: print('ACTIVITY MATRIX CALCULATION', time.time() - start_time)
+        if verbose == True: print('MSO_LOCALIZATION PLOT CALCULATION', time.time() - start_time)
 
         # Set the figure
         plt.style.use('seaborn-whitegrid')
@@ -624,7 +624,7 @@ class Plots:
         mso_loc_fig.show()
     
     @staticmethod
-    def mso_histogram(localization_file, settings, localization_settings, graph_tile = 'MSO histogram', verbose = False):
+    def mso_histogram(localization_file, settings, localization_settings, graph_title = 'MSO histogram', verbose = False):
         """
         Plots the 3D histogram of the MSO information contained in a LocalizationFile.
         
@@ -634,7 +634,7 @@ class Plots:
                 localization_file (LocalizationFile): Localization file to plot.
                 settings (MainSettings): Configuration parameters for the file to plot.
                 localization_settings (LocalizationSettings): Localization configuration parameters for the file to plot.
-                graph_tile (string, optional): Text that will appear as title for the graph.
+                graph_title (string, optional): Text that will appear as title for the graph.
                 verbose (boolean, optional): Set to True if you want the execution time of the function to be printed.
 
         Returns:
@@ -661,7 +661,7 @@ class Plots:
             # Accumulate the activity for each neuron for each frequency channel according to the LocalizationFIle
             mso_activity[freq_channel][neuron_id] = mso_activity[freq_channel][neuron_id] + 1
 
-        if verbose == True: print('HISTOGRAM CALCULATION:', time.time() - start_time)
+        if verbose == True: print('MSO HISTOGRAM CALCULATION:', time.time() - start_time)
 
         # Representation
         plt.style.use('seaborn-whitegrid')
@@ -702,7 +702,7 @@ class Plots:
         # And all the ticks' labels
         ax.set_yticklabels(freq_channel_labels)
 
-        mso_hst_fig.canvas.set_window_title(graph_tile)
-        plt.title(graph_tile, fontsize='x-large')
+        mso_hst_fig.canvas.set_window_title(graph_title)
+        plt.title(graph_title, fontsize='x-large')
 
         mso_hst_fig.show()
