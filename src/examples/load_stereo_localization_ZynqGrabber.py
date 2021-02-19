@@ -19,7 +19,7 @@ def run(path, settings, settings_localization):
 
     Plots.mso_spikegram(stereo_file_soc, settings, settings_localization)
     Plots.mso_heatmap(stereo_file_soc, settings_localization)
-    Plots.mso_localization(stereo_file_soc, settings, settings_localization)
+    Plots.mso_localization_plot(stereo_file_soc, settings, settings_localization)
     Plots.mso_histogram(stereo_file_soc, settings, settings_localization)
 
     plt.show()
