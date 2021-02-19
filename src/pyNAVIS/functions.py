@@ -360,7 +360,7 @@ class Functions:
 					return None
 			elif spikes_file_extension == ".txt":
 				spikes_file, localization_file = Loaders.loadZynqGrabberData(spikes_file, settings, localization_settings)
-			else
+			else:
 				print("[Functions.PDF_report] > InputFileExtensionError: the extension of the input file is not valid.")
 				return None
 			spikes_file.timestamps = Functions.adapt_timestamps(spikes_file.timestamps, settings)
