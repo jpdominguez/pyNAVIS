@@ -54,7 +54,7 @@ class MainSettings:
 
 class LocalizationSettings:
     """
-    Class that collects the configuration settings of pyNAVS when working with a NAS model that integrates the sound source localization model
+    Class that collects the configuration settings of pyNAVS when working with a NAS model that integrates the sound source localization model.
 
     Attributes:
         mso_start_channel (int): First NAS frequency channel that is connected to the MSO module.
@@ -65,9 +65,9 @@ class LocalizationSettings:
         lso_num_neurons_channel (int): Number of neurons used for each frequency channel in the LSO module.
 
     Notes:
-            The first frequency channel is the channel number 0.
+            The first frequency channel is channel number 0.
 
-            The frequency channel range should coincide with the parameter num_channels set in MainSettings.
+            The frequency channel range should match the parameter num_channels set in MainSettings.
 
             The values set here should be the same that the one used for generating the FPGA configuration file.
     """
