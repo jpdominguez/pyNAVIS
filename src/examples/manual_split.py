@@ -7,7 +7,7 @@ def run(path, settings):
 
     # Load file
     spikes_file = Loaders.loadAEDAT(path, settings)
-    spikes_file = Functions.adapt_SpikesFile(spikes_file, settings)
+    spikes_file.timestamps = Functions.adapt_timestamps(spikes_file.timestamps, settings)
     Functions.check_SpikesFile(spikes_file, settings)
     Plots.spikegram(spikes_file, settings, verbose=True)
     Plots.sonogram(spikes_file, settings, verbose=True)

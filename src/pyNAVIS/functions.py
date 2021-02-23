@@ -31,6 +31,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 from .loaders import SpikesFile
+from .loaders import LocalizationFile
 from .savers import Savers
 from .utils import Utils
 from .plots import Plots
@@ -86,26 +87,74 @@ class Functions:
 		if a and b and c:
 			print("[Functions.check_SpikesFile] > The loaded SpikesFile file has been checked and it's OK")
 				
+	@staticmethod
+	def check_LocalizationFile(localization_file, settings, localization_settings):
+		"""
+		Checks if the spiking information contained in the LocalizationFile is correct and prints "The loaded LocalizationFile file has been checked and it's OK" if the file passes all the checks.
+		
+		Parameters:
+				localization_file (LocalizationFile): File to check.
+				settings (MainSettings): Configuration parameters for the file to check.
+				localization_settings (LocalizationSettings): Configuration parameters of the localization model for the file to check.
+
+		Returns:
+				None.
+		
+		Raises:
+				TimestampOrderError: If the LocalizationFile contains at least one timestamp which value is less than 0.
+				TimestampOrderError: If the LocalizationFile contains at least one timestamp that is lesser than its previous one.
+				ChannelValueError: If the LocalizationFile contains at least one address less than mso_start_channel or greater than mso_end_channel that you specified in the LocalizationSettings.
+				NeuronIDValueError: If the LocalizationFile contains at least one address less than 0 or greater than the mso_num_neurons_channel you specified in LocalizationSettings
+		Notes:   
+				If mso_start_channel is set to 33 and mso_end_channel is set to 36, there will be four possible channel values: [33, 36]
+		"""
+
+		# Check if all timestamps are greater than zero
+		a = all(item >= 0  for item in localization_file.mso_timestamps)
+
+		if not a:
+			print("[Functions.check_LocalizationFile] > TimestampOrderError: The LocalizationFile file that you loaded has at least one timestamp that is less than 0.")
+
+		# Check if each timestamp is greater than its previous one
+		b = not any(i > 0 and localization_file.mso_timestamps[i] < localization_file.mso_timestamps[i-1] for i in range(len(localization_file.mso_timestamps)))
+
+		if not b:
+			print("[Functions.check_LocalizationFile] > TimestampOrderError: The LocalizationFile file that you loaded has at least one timestamp whose value is lesser than its previous one.")
+
+		# Check if all channel values are between mso_start_channel and mso_end_channel
+		c = all(item >= localization_settings.mso_start_channel and item <= localization_settings.mso_end_channel for item in localization_file.mso_channels)
+
+		if not c:
+			print("[Functions.check_LocalizationFile] > ChannelValueError: The LocalizationFile file that you loaded has at least one event whose channel value is either less than mso_start_channel or greater than mso_end_channel.")
+
+		# Check if all neuron IDs are between zero and the number of mso_num_neurons_channel
+		d = all(item >= 0 and item < localization_settings.mso_num_neurons_channel for item in localization_file.mso_neuron_ids)
+
+		if not d:
+			print("[Functions.check_LocalizationFile] > NeuronIDValueError: The LocalizationFile file that you loaded has at least one event whose neuron ID value is either less than zero or greater than mso_num_neurons_channel.")
+
+		if a and b and c and d:
+			print("[Functions.check_LocalizationFile] > The loaded LocalizationFile file has been checked and it's OK")
 
 	@staticmethod 
-	def adapt_SpikesFile(spikes_file, settings):
+	def adapt_timestamps(timestamps, settings):
 		"""
-		Subtracts the smallest timestamp of the SpikesFile to all of the timestamps contained in the file (in order to start from 0)
+		Subtracts the smallest timestamp of the timestamps list to all of the timestamps contained in the list (in order to start from 0)
 		It also adapts timestamps based on the tick frequency (ts_tick in the MainSettings).
 		
 		Parameters:
-				spikes_file (SpikesFile): File to adapt.
+				timestamps (int[]): Timestamps of the file to adapt.
 				settings (MainSettings): Configuration parameters for the file to adapt.
 
 		Returns:
-				SpikesFile:  Adapted SpikesFile.
+				adapted_timestamps:  Adapted timestamps list.
 		"""
-		minimum_ts = min(spikes_file.timestamps)
+		minimum_ts = min(timestamps)
 		if settings.reset_timestamp:
-			spikes_file.timestamps = [(x - minimum_ts)*settings.ts_tick for x in spikes_file.timestamps]
+			adapted_timestamps = [(x - minimum_ts)*settings.ts_tick for x in timestamps]
 		else:
-			spikes_file.timestamps = [x*settings.ts_tick for x in spikes_file.timestamps]
-		return spikes_file
+			adapted_timestamps = [x*settings.ts_tick for x in timestamps]
+		return adapted_timestamps
 
 
 	@staticmethod
@@ -236,7 +285,6 @@ class Functions:
 			print("[Functions.mono_to_stereo] > SettingsError: this functionality cannot be performed over a stereo aedat file.")        
 
 
-
 	@staticmethod
 	def extract_channels_activities(spikes_file, addresses, reset_addresses = True, verbose = False):
 		"""
@@ -269,16 +317,20 @@ class Functions:
 		return new_spikes_file
 
 
-	
-
 	@staticmethod
-	def PDF_report(spikes_file, settings, output_path, plots = ["Spikegram", "Sonogram", "Histogram", "Average activity", "Difference between L/R"], vector = False, verbose = False):
+	def PDF_report(spikes_file, settings, output_path, plots = ["Spikegram", "Sonogram", "Histogram", "Average activity", "Difference between L/R"], add_localization_report = False, localization_file = None, localization_settings = None, localization_plots = ["MSO spikegram", "MSO heatmap", "MSO histogram", "MSO localization"], vector = False, verbose = False):
 		"""
 		Generates a PDF report with the spikegram, sonogram, histogram, average activity and difference between L/R plots obtained from the input SpikesFile or path containing SpikeFiles.
 		
 		Parameters:
 				spikes_file (SpikesFile or string): File or path to use.
 				settings (MainSettings): Configuration parameters for the input file.
+				output_path (string): Destination path.
+				plots (string[]): List to select the plots to be included in the PDF report.
+				add_localization_report (boolean, optional): If True, the localization plots will be included in the PDF report.
+				localization_file (LocalizationFile, optional): If add_localization_report is set to True, this parameter is mandatory, and it should contain the localization information.
+				localization_settings (LocalizationSettings, optional): If add_localization_report is set to True, this parameter is mandatory, and it should contain the localization settings.
+				localization_plots (string[], optional): If add_localization_report is set to True, this parameter is mandatory, and it should contain the list of localization plots.
 				vector (boolean, optional): Set to True if you want the Spikegram plot vectorized. Note: this may make your PDF heavy.
 				verbose (boolean, optional): Set to True if you want the execution time of the function to be printed.
 
@@ -294,14 +346,30 @@ class Functions:
 			spikes_file_extension = os.path.splitext(spikes_file)
 
 			if spikes_file_extension == ".aedat":
-				spikes_file = Loaders.loadAEDAT(spikes_file, settings)
+				if add_localization_report == False:
+					spikes_file = Loaders.loadAEDAT(spikes_file, settings)
+				elif add_localization_report != False and localization_file != None and localization_settings != None:
+					spikes_file, localization_file = Loaders.loadAEDATLocalization(spikes_file, settings, localization_settings)
+				else:
+					print("[Functions.PDF_report] > ParametersError: the input parameters are not correct.")
+					return None
 			elif spikes_file_extension == ".csv":
-				spikes_file = Loaders.loadCSV(spikes_file, settings)
+				if add_localization_report == False:
+					spikes_file = Loaders.loadCSV(spikes_file, delimiter=',')
+				elif add_localization_report != False and localization_file != None and localization_settings != None:
+					spikes_file, localization_file = Loaders.loadCSVLocalization(spikes_file, delimiter=',')
+				else:
+					print("[Functions.PDF_report] > ParametersError: the input parameters are not correct.")
+					return None
 			elif spikes_file_extension == ".txt":
-				spikes_file = Loaders.loadZynqGrabberData(spikes_file, settings)
-    				
-			spikes_file = Functions.adapt_SpikesFile(spikes_file, settings)
-		
+				spikes_file, localization_file = Loaders.loadZynqGrabberData(spikes_file, settings, localization_settings)
+			else:
+				print("[Functions.PDF_report] > InputFileExtensionError: the extension of the input file is not valid.")
+				return None
+			spikes_file.timestamps = Functions.adapt_timestamps(spikes_file.timestamps, settings)
+			if add_localization_report == True:
+				localization_file.timestamps = Functions.adapt_timestamps(localization_file.timestamps, settings)
+
 		if isinstance(spikes_file, SpikesFile):
     		
 			pdf = matplotlib.backends.backend_pdf.PdfPages(output_path)
@@ -332,6 +400,30 @@ class Functions:
 				pdf.savefig()
 				plt.draw()
 
+			if add_localization_report == True:
+				if isinstance(localization_file, LocalizationFile):
+					# MSO spikegram
+					if any("MSO spikegram" in s for s in localization_plots):
+						mso_spikegram = Plots.mso_spikegram(localization_file, settings, localization_settings)
+						pdf.savefig(mso_spikegram)
+						plt.draw()
+					# MSO heatmap
+					if any("MSO heatmap" in s for s in localization_plots):
+						mso_heatmap = Plots.mso_heatmap(localization_file, localization_settings)		
+						pdf.savefig(mso_heatmap)
+						plt.draw()
+					# MSO histogram
+					if any("MSO histogram" in s for s in localization_plots):
+						mso_histogram = Plots.mso_histogram(localization_file, settings, localization_settings)		
+						pdf.savefig(mso_histogram)
+						plt.draw()
+					# MSO localization
+					if any("MSO localization" in s for s in localization_plots):
+						mso_localization = Plots.mso_localization(localization_file, settings, localization_settings)		
+						pdf.savefig(mso_localization)
+						plt.draw()
+				else:
+					print("[Functions.PDF_report] > InputFileError: the input LocalizationFile is not valid.")
 
 			d = pdf.infodict()
 			d['Title'] = 'pyNAVIS report'

@@ -51,3 +51,31 @@ class MainSettings:
         self.bin_size = bin_size
         self.on_off_both = on_off_both
         self.reset_timestamp = reset_timestamp
+
+class LocalizationSettings:
+    """
+    Class that collects the configuration settings of pyNAVS when working with a NAS model that integrates the sound source localization model.
+
+    Attributes:
+        mso_start_channel (int): First NAS frequency channel that is connected to the MSO module.
+        mso_end_channel (int): Last NAS frequency channel that is connected to the MSO module.
+        mso_num_neurons_channel (int): Number of coincidence detector neurons used for each frequency channel in the MSO module.
+        lso_start_channel (int): First NAS frequency channel that is connected to the LSO module.
+        lso_end_channel (int): Last NAS frequency channel that is connected to the LSO module.
+        lso_num_neurons_channel (int): Number of neurons used for each frequency channel in the LSO module.
+
+    Notes:
+            The first frequency channel is channel number 0.
+
+            The frequency channel range should match the parameter num_channels set in MainSettings.
+
+            The values set here should be the same that the one used for generating the FPGA configuration file.
+    """
+
+    def __init__(self, mso_start_channel, mso_end_channel, mso_num_neurons_channel, lso_start_channel = 0, lso_end_channel = 1, lso_num_neurons_channel = 1):
+        self.mso_start_channel = mso_start_channel
+        self.mso_end_channel = mso_end_channel
+        self.mso_num_neurons_channel = mso_num_neurons_channel
+        self.lso_start_channel = lso_start_channel
+        self.lso_end_channel = lso_end_channel
+        self.lso_num_neurons_channel = lso_num_neurons_channel
