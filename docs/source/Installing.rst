@@ -66,12 +66,32 @@ To install ``pyNAVIS``, run the following line in the terminal:
 
 This will automatically install all the dependencies needed to use this package, which are ``numpy``, ``scipy`` and ``matplotlib``.
 
-You can now start using ``pyNAVIS``. Head over to the :doc:`Getting Started section <Getting started>` to introduce you to its functionalities and how to use it.
+You can now start using ``pyNAVIS``. Head over to the :doc:`Getting Started section <Getting started>` to introduce you to its functionalities and how to use it. Some other useful commands can be seen in the following note:
 
+.. note::
+   To update pyNAVIS to the latest version, use the following command:
 
+   .. prompt:: bash $
 
+      pip install --upgrade pyNAVIS
 
+   To install a specific version of pyNAVIS use the following command:
 
+   .. prompt:: bash $
+
+      pip install pyNAVIS==version
+
+   To upgrade an already installed pyNAVIS package to the latest from PyPi use the following command:
+
+   .. prompt:: bash $
+
+      pip install --upgrade pyNAVIS
+
+   To uninstall pyNAVIS use the following command:
+
+   .. prompt:: bash $
+
+      pip uninstall pyNAVIS
 
 .. _dev_install:
  
