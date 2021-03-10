@@ -419,7 +419,7 @@ class Functions:
 						plt.draw()
 					# MSO localization
 					if any("MSO localization" in s for s in localization_plots):
-						mso_localization = Plots.mso_localization(localization_file, settings, localization_settings)		
+						mso_localization = Plots.mso_localization_plot(localization_file, settings, localization_settings)		
 						pdf.savefig(mso_localization)
 						plt.draw()
 				else:
