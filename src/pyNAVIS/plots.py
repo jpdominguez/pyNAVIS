@@ -523,7 +523,7 @@ class Plots:
         msospk_fig.show()
 
     @staticmethod
-    def mso_localization(localization_file, settings, localization_settings, graph_title = "MSO localization estimation", start_at_zero = True, verbose = False):
+    def mso_localization_plot(localization_file, settings, localization_settings, graph_title = "MSO localization estimation", start_at_zero = True, verbose = False):
         """
         Plots the result of the coincidence counters of the Jeffress model for the MSO according to the activity in the LocalizationFile.
 
