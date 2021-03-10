@@ -222,11 +222,14 @@ class Loaders:
 
             ## Read file ##
             i = 0
+            total_number_events_counter = 0
+            invalid_localization_data_counter = 0
             try:
                 while 1:
                     # Read a word and unpack the event data
                     buff = f.read(settings.address_size)
                     ev = struct.unpack(unpack_param, buff)[0]
+                    total_number_events_counter = total_number_events_counter + 1
                     # Read a word and unpack the event timestamp
                     buff = f.read(4)
                     ts = struct.unpack('>L', buff)[0]
@@ -241,17 +244,27 @@ class Loaders:
                     elif auditory_model == 1:
                         # Localization event
 
-                        # Apply a mask to obtain the correct values
+                        # Set the valid data flag to true
+                        valid_localization_data = True
+
+                        # Apply a mask to obtain the correct values and check them
                         neuron_id = (ev & 0x3E00) >> 9
+                        if neuron_id < 0 or neuron_id >= localization_settings.mso_num_neurons_channel:
+                            valid_localization_data = False
                         freq_channel = (ev & 0x00FE) >> 1
+                        if freq_channel < localization_settings.mso_start_channel or freq_channel > localization_settings.mso_end_channel:
+                            valid_localization_data = False
 
                         xso_type = (ev & 0x4000) >> 14
 
                         if xso_type == 0:
                             # MSO event
-                            neuron_ids_mso.append(neuron_id)
-                            channels_mso.append(freq_channel)
-                            timestamps_mso.append(ts)
+                            if valid_localization_data:
+                                neuron_ids_mso.append(neuron_id)
+                                channels_mso.append(freq_channel)
+                                timestamps_mso.append(ts)
+                            else:
+                                invalid_localization_data_counter = invalid_localization_data_counter + 1
                         elif xso_type == 1:
                             # LSO event
                             neuron_ids_lso.append(neuron_id)
@@ -278,6 +291,9 @@ class Loaders:
         localization_file.lso_neuron_ids = neuron_ids_lso
         localization_file.lso_channels = channels_lso
         localization_file.lso_timestamps = timestamps_lso
+        # Let the user know if there were dumped events
+        if invalid_localization_data_counter > 0:
+            print("[Loaders.loadAEDATLocalization] > DataWarning: " + str(invalid_localization_data_counter) + " of " + str(total_number_events_counter) + " were dumped due to invalid unpacked data!")
         return spikes_file, localization_file
 
     @staticmethod
