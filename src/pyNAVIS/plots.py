@@ -243,7 +243,8 @@ class Plots:
                 verbose (boolean, optional): Set to True if you want the execution time of the function to be printed.
 
         Returns:
-                None.
+                int[ ] average_activity_L: Average activity array.
+                int[ ] average_activity_R: Average activity array. Only returned if the mono_stereo parameter in settings is set to 1
         """
         aedat_addr_ts = zip(spikes_file.addresses, spikes_file.timestamps)
         total_time = int(max(spikes_file.timestamps))
@@ -305,6 +306,10 @@ class Plots:
 
         plt.tight_layout()
         avg_fig.show()
+        if settings.mono_stereo == 0:
+            return average_activity_L
+        else:
+            return average_activity_L, average_activity_R
 
     @staticmethod
     def difference_between_LR(spikes_file, settings, return_data = False, graph_title = 'Diff. between L and R cochlea', verbose = False):
