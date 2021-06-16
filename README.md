@@ -98,6 +98,28 @@ Thank you for contributing to pyNAVIS!
 </p>
 
 
+<h2 name="Cite">Cite this work</h2>
+<p align="justify">
+<b>APA</b>: Dominguez-Morales, J. P., Gutierrez-Galan, D., Rios-Navarro, A., Duran-Lopez, L., Dominguez-Morales, M., & Jimenez-Fernandez, A. (2021). pyNAVIS: An open-source cross-platform software for spike-based neuromorphic audio information processing. Neurocomputing, 449, 172-175.
+</p>
+<p align="justify">
+<b>ISO 690</b>: DOMINGUEZ-MORALES, Juan P., et al. pyNAVIS: An open-source cross-platform software for spike-based neuromorphic audio information processing. Neurocomputing, 2021, vol. 449, p. 172-175.
+</p>
+<p align="justify">
+<b>MLA</b>: Dominguez-Morales, Juan P., et al. "pyNAVIS: An open-source cross-platform software for spike-based neuromorphic audio information processing." Neurocomputing 449 (2021): 172-175.
+</p>
+<p align="justify">
+<b>BibTeX</b>: @article{dominguez2021pynavis,
+  title={pyNAVIS: An open-source cross-platform software for spike-based neuromorphic audio information processing},
+  author={Dominguez-Morales, Juan P and Gutierrez-Galan, D and Rios-Navarro, A and Duran-Lopez, L and Dominguez-Morales, M and Jimenez-Fernandez, A},
+  journal={Neurocomputing},
+  volume={449},
+  pages={172--175},
+  year={2021},
+  publisher={Elsevier}
+}
+</p>
+
 
 
 
