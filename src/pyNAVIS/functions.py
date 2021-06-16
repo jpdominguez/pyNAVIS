@@ -441,3 +441,26 @@ class Functions:
 
 		else:
 			print("[Functions.PDF_report] > InputFileError: the input SpikesFile is not valid.")
+
+
+	@staticmethod
+	def ISI(spikes_file, verbose = False):
+		"""
+		Generates an array with the inter-spike intervals of the input SpikesFile.
+		
+		Parameters:
+				spikes_file (SpikesFile or string): File or path to use.
+				settings (MainSettings): Configuration parameters for the input file.
+				verbose (boolean, optional): Set to True if you want the execution time of the function to be printed.
+
+		Returns:
+				int[]: inter-spike interval array.
+		"""
+
+		if verbose == True: start_time = time.time()
+		
+		isi_array = np.diff(spikes_file.timestamps)
+
+		if verbose == True: print('ISI CALCULATION', time.time() - start_time)
+
+		return isi_array
