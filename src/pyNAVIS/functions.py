@@ -25,6 +25,7 @@ import time
 import copy
 import random
 import datetime
+import os
 
 import matplotlib.backends.backend_pdf
 import matplotlib.pyplot as plt
@@ -32,6 +33,7 @@ import numpy as np
 
 from .loaders import SpikesFile
 from .loaders import LocalizationFile
+from .loaders import Loaders
 from .savers import Savers
 from .utils import Utils
 from .plots import Plots
@@ -434,6 +436,8 @@ class Functions:
 			d['ModDate'] = datetime.datetime.today()
 
 			pdf.close()
+			plt.close()
+			print("[Functions.PDF_report] > PDF report generated correctly")
 
 		else:
 			print("[Functions.PDF_report] > InputFileError: the input SpikesFile is not valid.")
