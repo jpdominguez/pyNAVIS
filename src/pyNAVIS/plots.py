@@ -67,22 +67,34 @@ class Plots:
         if settings.mono_stereo == 0:
             plt.scatter(spikes_file.timestamps[0::dot_freq], spikes_file.addresses[0::dot_freq], s=dot_size)
         else:
-            aedat_addr_ts = list(zip(spikes_file.addresses, spikes_file.timestamps))
-            addr, ts = zip(*[(evt[0], evt[1]) for evt in aedat_addr_ts if evt[0] < settings.num_channels*(settings.on_off_both + 1)])
-            plt.scatter(ts[0::dot_freq], addr[0::dot_freq], s=dot_size, label='Left cochlea')
-            addr, ts = zip(*[(evt[0], evt[1]) for evt in aedat_addr_ts if evt[0] >= settings.num_channels*(settings.on_off_both + 1) and evt[0] < settings.num_channels*(settings.on_off_both + 1)*2])
-            plt.scatter(ts[0::dot_freq], addr[0::dot_freq], s=dot_size, label='Right cochlea')
+            mid_address = settings.num_channels*(settings.on_off_both + 1)
+            top_address = mid_address * 2
+
+            addresses = np.array(spikes_file.addresses)
+            timestamps = np.array(spikes_file.timestamps)
+
+            sup_indexes = np.argwhere(addresses >= mid_address)
+            sup_addresses = addresses[sup_indexes]
+            sup_timestamps = timestamps[sup_indexes]
+
+            inf_addresses = addresses[-sup_indexes]
+            inf_timestamps = timestamps[-sup_indexes]
+
+            plt.scatter(inf_timestamps, inf_addresses, s=dot_size, label="Left cochlea")
+            plt.scatter(sup_timestamps, sup_addresses, s=dot_size, label="Right cochlea")
             plt.legend(fancybox=False, ncol=2, loc='upper center', markerscale=2/dot_size, frameon=True)
-            
-        if verbose == True: print('SPIKEGRAM CALCULATION', time.time() - start_time)
+
+        max_timestamp = np.max(spikes_file.timestamps)
+        if verbose == True:
+            print('SPIKEGRAM CALCULATION', time.time() - start_time)
 
         plt.title(graph_title, fontsize='x-large')
         plt.xlabel('Timestamp ($\mu$s)', fontsize='large')
         plt.ylabel('Address', fontsize='large')
-        plt.ylim([0, settings.num_channels*(settings.on_off_both + 1)*(settings.mono_stereo + 1)])
+        plt.ylim([0, mid_address*(settings.mono_stereo + 1)])
 
         if start_at_zero:
-            plt.xlim([0, np.max(spikes_file.timestamps)])
+            plt.xlim([0, max_timestamp])
 
         plt.tight_layout()
         spk_fig.show()
