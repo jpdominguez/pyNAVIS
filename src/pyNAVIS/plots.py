@@ -74,11 +74,16 @@ class Plots:
             timestamps = np.array(spikes_file.timestamps)
 
             sup_indexes = np.argwhere(addresses >= mid_address)
+            
             sup_addresses = addresses[sup_indexes]
+            sup_addresses = sup_addresses[::dot_freq]
             sup_timestamps = timestamps[sup_indexes]
+            sup_timestamps = sup_timestamps[::dot_freq]
 
             inf_addresses = addresses[-sup_indexes]
+            inf_addresses = inf_addresses[::dot_freq]
             inf_timestamps = timestamps[-sup_indexes]
+            inf_timestamps = inf_timestamps[::dot_freq]
 
             plt.scatter(inf_timestamps, inf_addresses, s=dot_size, label="Left cochlea")
             plt.scatter(sup_timestamps, sup_addresses, s=dot_size, label="Right cochlea")
