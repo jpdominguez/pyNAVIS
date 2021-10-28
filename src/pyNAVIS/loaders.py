@@ -23,6 +23,7 @@
 import math
 import struct
 import csv
+import numpy as np
 
 
 class SpikesFile:
@@ -70,66 +71,41 @@ class Loaders:
     """
 
     @staticmethod
-    def loadAEDAT(path, settings):
+    def loadAEDAT(path, address_size, timestamp_size):
         """
         Loads an AEDAT (.aedat) file.
-        
+
         Parameters:
                 path (string): Full path of the AEDAT file to be loaded, including name and extension.
                 settings (MainSettings): Configuration parameters for the file to load.
 
         Returns:
                 SpikesFile: SpikesFile containing all the addresses and timestamps of the file.
-        Raises:
-                SettingsError: If settings.address_size is different than 2 and 4.
-
         """
-        unpack_param = ">H"
-        
-        if settings.address_size == 2:
-            unpack_param = ">H"
-        elif settings.address_size == 4:
-            unpack_param = ">L"
-        else:
-            print("[Loaders.loadAEDAT] > SettingsError: Only address sizes implemented are 2 and 4 bytes")
+        # Read all the file
+        file = open(path, "rb")
+        file_data = file.read()
 
-        with open(path, 'rb') as f:
-            ## Check header ##
-            p = 0
-            lt = f.readline()
-            while lt and lt[0] == ord("#"):
-                p += len(lt)
-                lt = f.readline()
-            f.seek(p)
+        # Find last header line
+        end_string = "#End Of ASCII Header\r\n"
+        index = file_data.find(end_string.encode("utf-8")) + len(end_string)
 
-            f.seek(0, 2)
-            eof = f.tell()
+        # Raw data extraction
+        spikes_array = file_data[index:]
 
-            num_events = math.floor((eof-p)/(settings.address_size + 4))
+        address_param = ">u" + str(address_size)
+        timestamp_param = ">u" + str(timestamp_size)
+        bytes_struct = np.dtype(address_param + ", " + timestamp_param)
 
-            f.seek(p)
+        spikes = np.frombuffer(spikes_array, bytes_struct)
+        addresses = spikes['f0']
+        timestamps = spikes['f1']
 
-            events = [0] * int(num_events)
-            timestamps = [0] * int(num_events)
+        spikes_file = SpikesFile(addresses, timestamps)
 
-            ## Read file ##
-            i = 0
-            try:
-                while 1:
-                    buff = f.read(settings.address_size)
-                    x = struct.unpack(unpack_param, buff)[0]
-                    events[i] = x
+        # Close the file
+        file.close()
 
-                    buff = f.read(4)
-                    x = struct.unpack('>L', buff)[0]
-                    timestamps[i] = x
-
-                    i += 1
-            except Exception as inst:
-                pass
-        spikes_file = SpikesFile([], [])
-        spikes_file.addresses = events
-        spikes_file.timestamps = timestamps
         return spikes_file
 
     @staticmethod
@@ -149,14 +125,14 @@ class Loaders:
 
         """
         unpack_param = ">H"
-        
+
         if settings.address_size == 2:
             unpack_param = ">H"
         elif settings.address_size == 4:
             unpack_param = ">L"
         else:
             print("[Loaders.loadAEDATLocalization] > SettingsError: Only address sizes implemented are 2 and 4 bytes")
-        
+
         # Check the localization_settings values
         localization_settings_error = False
 
@@ -164,12 +140,12 @@ class Loaders:
         if ((localization_settings.mso_start_channel < 0) or (localization_settings.mso_start_channel >= settings.num_channels)):
             print("[Loaders.loadAEDATLocalization] > LocalizationSettingsError: MSO start frequency channel range should be in the range [0, num_channels-1]")
             localization_settings_error = True
-        
+
         # MSO start frequency channel and end frequency channel
         if (localization_settings.mso_end_channel < localization_settings.mso_start_channel):
             print("[Loaders.loadAEDATLocalization] > LocalizationSettingsError: MSO start frequency channel should be lower than MSO end frequency channel")
             localization_settings_error = True
-        
+
         # MSO start frequency channel and end frequency channel
         if ((localization_settings.mso_num_neurons_channel < 1) or (localization_settings.mso_num_neurons_channel > 32)):
             print("[Loaders.loadAEDATLocalization] > LocalizationSettingsError: MSO number of neurons value should be in the range [1, 32]")
@@ -179,17 +155,17 @@ class Loaders:
         if ((localization_settings.lso_start_channel < 0) or (localization_settings.lso_start_channel >= settings.num_channels)):
             print("[Loaders.loadAEDATLocalization] > LocalizationSettingsError: LSO start frequency channel range should be in the range [0, num_channels-1]")
             localization_settings_error = True
-        
+
         # LSO start frequency channel and end frequency channel
         if (localization_settings.lso_end_channel < localization_settings.lso_start_channel):
             print("[Loaders.loadAEDATLocalization] > LocalizationSettingsError: LSO start frequency channel should be lower than LSO end frequency channel")
             localization_settings_error = True
-        
+
         # LSO start frequency channel and end frequency channel
         if ((localization_settings.lso_num_neurons_channel < 1) or (localization_settings.lso_num_neurons_channel > 32)):
             print("[Loaders.loadAEDATLocalization] > LocalizationSettingsError: lSO number of neurons value should be in the range [1, 32]")
             localization_settings_error = True
-        
+
         if(localization_settings_error):
             return None
 
@@ -233,7 +209,7 @@ class Loaders:
                     # Read a word and unpack the event timestamp
                     buff = f.read(4)
                     ts = struct.unpack('>L', buff)[0]
-                    
+
                     # Check if the event is a NAS event of SOC event
                     auditory_model = (ev & 0x8000) >> 15
 
@@ -314,7 +290,7 @@ class Loaders:
         """
         addresses = []
         timestamps = []
-        
+
 
         with open(path) as csv_file:
             csv_reader = csv.reader(csv_file, delimiter=delimiter)
@@ -356,7 +332,7 @@ class Loaders:
         neuron_ids_lso = []
         channels_lso =  []
         timestamps_lso = []
-        
+
 
         with open(path) as csv_file:
             csv_reader = csv.reader(csv_file, delimiter=delimiter)
@@ -409,7 +385,7 @@ class Loaders:
         spikes_file = SpikesFile([], [])
         spikes_file.addresses = addresses_nas
         spikes_file.timestamps = timestamps_nas
-        
+
         localization_file = LocalizationFile([], [], [], [], [], [])
         localization_file.mso_neuron_ids = neuron_ids_mso
         localization_file.mso_channels = channels_mso
@@ -417,7 +393,7 @@ class Loaders:
         localization_file.lso_neuron_ids = neuron_ids_lso
         localization_file.lso_channels = channels_lso
         localization_file.lso_timestamps = timestamps_lso
-        
+
         return spikes_file, localization_file
 
     @staticmethod
@@ -434,7 +410,7 @@ class Loaders:
                 spikes_file: SpikesFile containing all the addresses and timestamps of the file.
                 localization_file: LocalizationFile containing all the events from both the MSO and LSO models of the file.
         """
-        
+
         addresses = []
         timestamps = []
 
@@ -445,10 +421,10 @@ class Loaders:
         neuron_ids_lso = []
         channels_lso =  []
         timestamps_lso = []
-        
-        txt_file = open(path, 'r') 
-        txt_lines = txt_file.readlines() 
-        
+
+        txt_file = open(path, 'r')
+        txt_lines = txt_file.readlines()
+
         count = 0
         for line in txt_lines:
             event = line.strip().split(',')
@@ -461,7 +437,7 @@ class Loaders:
             decoded_events_polarities      = int(event[6])           # 0 pos, 1 neg
 
             # It could be either NAS (auditory_models = 0) or SOC events (auditory_models = 1)
-            if decoded_events_auditory_models == 0: 
+            if decoded_events_auditory_models == 0:
                 # NAS event
                 timestamps.append(int(decoded_events_timestamps))
                 addresses.append(int(decoded_events_freq_ch_addrs*(1+settings.on_off_both) + decoded_events_polarities +  settings.num_channels*decoded_events_channels*(1+settings.on_off_both)))
@@ -473,7 +449,7 @@ class Loaders:
                     timestamps_mso.append(int(decoded_events_timestamps))
                     channels_mso.append(int(decoded_events_freq_ch_addrs))
                     neuron_ids_mso.append(int(decoded_events_neuron_ids))
-                    
+
                 elif decoded_events_xso_types == 1:
                     # LSO event
                     timestamps_lso.append(int(decoded_events_timestamps))
