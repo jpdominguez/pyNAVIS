@@ -97,7 +97,7 @@ class Functions:
 		if all_ok:
 			print("[Functions.check_SpikesFile] > The loaded SpikesFile file has been checked and it's OK")
 
-		return all_ok
+		return [not any_negative, increasing_order, all_in_range]
 				
 	@staticmethod
 	def check_LocalizationFile(localization_file, settings, localization_settings):
