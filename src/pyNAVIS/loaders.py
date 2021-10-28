@@ -91,7 +91,8 @@ class Loaders:
         index = file_data.find(end_string.encode("utf-8")) + len(end_string)
 
         # Raw data extraction
-        spikes_array = file_data[index:]
+        num_spikes = int(math.floor(len(file_data[index:]) / (settings.address_size + settings.timestamp_size)))
+        spikes_array = file_data[index:index + num_spikes * (settings.address_size + settings.timestamp_size)]
 
         address_param = ">u" + str(settings.address_size)
         timestamp_param = ">u" + str(settings.timestamp_size)
