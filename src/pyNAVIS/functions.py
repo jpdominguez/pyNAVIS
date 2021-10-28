@@ -91,7 +91,7 @@ class Functions:
 			print(
 				"[Functions.check_SpikesFile] > AddressValueError: The SpikesFile file that you loaded has at least one event whose address is either less than 0 or greater than the number of addresses that you specified.")
 
-		if not any_negative and b and c:
+		if not any_negative and increasing_order and all_in_range:
 			print("[Functions.check_SpikesFile] > The loaded SpikesFile file has been checked and it's OK")
 				
 	@staticmethod
