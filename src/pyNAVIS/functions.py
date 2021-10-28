@@ -175,14 +175,13 @@ class Functions:
 		return adapted_timestamps
 
 	@staticmethod
-	def order_SpikesFile(spikes_file):
-		# Convert to numpy array
-		spikes_file = np.array(spikes_file, copy=False)
+	def order_SpikesFile(spikes_file, settings):
+		# Indices that would sort the file
+		indexes = np.argsort(spikes_file.timestamps)
 
-		# Sort the array
-		spikes_file.sort(axis=1)
-
-		return spikes_file
+		# Sort the arrays
+		spikes_file.addresses = spikes_file.addresses[indexes]
+		spikes_file.timestamps = spikes_file.timestamps[indexes]
 
 
 	@staticmethod
