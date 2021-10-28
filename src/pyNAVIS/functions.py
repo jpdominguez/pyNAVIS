@@ -148,12 +148,12 @@ class Functions:
 		if a and b and c and d:
 			print("[Functions.check_LocalizationFile] > The loaded LocalizationFile file has been checked and it's OK")
 
-	@staticmethod 
+	@staticmethod
 	def adapt_timestamps(timestamps, settings):
 		"""
 		Subtracts the smallest timestamp of the timestamps list to all of the timestamps contained in the list (in order to start from 0)
 		It also adapts timestamps based on the tick frequency (ts_tick in the MainSettings).
-		
+
 		Parameters:
 				timestamps (int[]): Timestamps of the file to adapt.
 				settings (MainSettings): Configuration parameters for the file to adapt.
@@ -173,6 +173,16 @@ class Functions:
 			adapted_timestamps = timestamps * settings.ts_tick
 
 		return adapted_timestamps
+
+	@staticmethod
+	def order_SpikesFile(spikes_file):
+		# Convert to numpy array
+		spikes_file = np.array(spikes_file, copy=False)
+
+		# Sort the array
+		spikes_file.sort(axis=1)
+
+		return spikes_file
 
 
 	@staticmethod
