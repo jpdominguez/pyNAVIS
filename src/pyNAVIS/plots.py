@@ -32,6 +32,7 @@ import time
 
 from .utils import Utils
 
+
 class Plots:
     @staticmethod
     def spikegram(spikes_file, settings, dot_size = 0.2, dot_freq = 1, graph_title = 'Spikegram', start_at_zero = True, verbose = False):
@@ -252,10 +253,10 @@ class Plots:
         return spikes_count
 
     @staticmethod
-    def average_activity(spikes_file, settings, graph_title = 'Average activity', verbose=False):
+    def average_activity(spikes_file, settings, graph_title='Average activity', verbose=False):
         """
         Plots the average activity plot of a SpikesFile.
-        
+
         This is, a graph where time is represented in the X axis, and average number of spikes in the Y axis.
 
         Parameters:
@@ -268,63 +269,58 @@ class Plots:
                 int[ ] average_activity_L: Average activity array.
                 int[ ] average_activity_R: Average activity array. Only returned if the mono_stereo parameter in settings is set to 1
         """
-        aedat_addr_ts = zip(spikes_file.addresses, spikes_file.timestamps)
-        total_time = int(max(spikes_file.timestamps))
+        # Convert to numpy array
+        addresses = np.array(spikes_file.addresses, copy=False)
+        timestamps = np.array(spikes_file.timestamps, copy=False)
+
+        # Define plot variables
+        total_time = np.max(timestamps)
         last_ts = 0
-        average_activity_L = np.zeros(int(math.ceil(total_time/settings.bin_size))+1)
-        if(settings.mono_stereo == 1):
-            average_activity_R = np.zeros(int(math.ceil(total_time/settings.bin_size))+1)
+        mid_address = settings.num_channels * (settings.on_off_both + 1)
+        num_bins = int(math.ceil(total_time / settings.bin_size))
 
-        #THIS TWO ONLY IF CHECK DETECTS AEDAT NOT IN ORDER
-        aedat_addr_ts = sorted(aedat_addr_ts, key=Utils.getKey)
-        spikes_file = Utils.extract_addr_and_ts(aedat_addr_ts)
+        average_activity_L = np.zeros(num_bins)
+        if settings.mono_stereo == 1:
+            average_activity_R = np.zeros(num_bins)
 
-        if verbose == True: start_time = time.time()
-        if settings.mono_stereo == 1: 
-            for i in range(0, total_time, settings.bin_size):        
-                evtL = 0
-                evtR = 0
+        if verbose:
+            start_time = time.time()
 
-                a =  bisect_left(spikes_file.timestamps, last_ts)
-                b =  bisect_right(spikes_file.timestamps, last_ts + settings.bin_size)
+        # Array of bins
+        bins = np.arange(num_bins) * settings.bin_size
 
-                events_list = spikes_file.addresses[a:b]
-                
-                for j in events_list:
-                    if j < settings.num_channels*(1 + settings.on_off_both):
-                        evtL = evtL + 1
-                    elif j >= settings.num_channels*(1 + settings.on_off_both) and j < settings.num_channels*(1 + settings.on_off_both)*2:
-                        evtR = evtR + 1
+        # Calculate the bin associated with each timestamp
+        bins_indexes = np.digitize(timestamps, bins)
 
-                average_activity_L[int(i/settings.bin_size)] = evtL
-                average_activity_R[int(i/settings.bin_size)] = evtR
-                last_ts = last_ts + settings.bin_size
-        elif settings.mono_stereo == 0:
-            for i in range(0, total_time, settings.bin_size):
-                evtL = 0
+        # Cutting indexes (timestamps must be sorted)
+        cut_indexes = np.where(np.diff(bins_indexes) > 0)[0]
 
-                a =  bisect_left(spikes_file.timestamps, last_ts)
-                b =  bisect_right(spikes_file.timestamps, last_ts + settings.bin_size)
-                events_list = spikes_file.addresses[a:b]
-                
-                for j in events_list:
-                    evtL = evtL + 1
+        # Split timestamps by cutting indexes
+        spikes_per_bins = np.array_split(addresses, cut_indexes)
 
-                average_activity_L[i//settings.bin_size] = evtL
-                last_ts = last_ts + settings.bin_size
-        if verbose == True: print('AVERAGE ACTIVITY CALCULATION', time.time() - start_time)
+        # Calculate the number of spikes in the bins
+        for i in range(len(spikes_per_bins)):
+            count_below = np.count_nonzero(spikes_per_bins[i] < mid_address)
+            average_activity_L[i] = count_below
+
+        if settings.mono_stereo == 1:
+            for i in range(len(spikes_per_bins)):
+                average_activity_R[i] = len(spikes_per_bins[i]) - average_activity_L[i]
+
+        if verbose:
+            print('AVERAGE ACTIVITY CALCULATION', time.time() - start_time)
 
         plt.style.use('seaborn-whitegrid')
         avg_fig = plt.figure()
         avg_fig.canvas.set_window_title(graph_title)
         plt.title(graph_title, fontsize='x-large')
-        plt.xlabel('Bin ('+str(settings.bin_size) + '$\mu$s width)', fontsize='large')
+        plt.xlabel('Bin (' + str(settings.bin_size) + '$\mu$s width)', fontsize='large')
         plt.ylabel('No. of spikes', fontsize='large')
 
-        plt.plot(np.arange(math.ceil(total_time/settings.bin_size)+1), average_activity_L, label='Left cochlea')
-        if(settings.mono_stereo == 1):
-            plt.plot(np.arange(math.ceil(total_time/settings.bin_size)+1), average_activity_R, label='Right cochlea')
-            plt.legend(loc='best',  ncol=2, frameon=True)
+        plt.plot(bins / settings.bin_size, average_activity_L, label='Left cochlea')
+        if settings.mono_stereo == 1:
+            plt.plot(bins / settings.bin_size, average_activity_R, label='Right cochlea')
+            plt.legend(loc='best', ncol=2, frameon=True)
 
         plt.tight_layout()
         avg_fig.show()
