@@ -70,8 +70,8 @@ class Plots:
             mid_address = settings.num_channels*(settings.on_off_both + 1)
             top_address = mid_address * 2
 
-            addresses = np.array(spikes_file.addresses)
-            timestamps = np.array(spikes_file.timestamps)
+            addresses = np.array(spikes_file.addresses, copy=False)
+            timestamps = np.array(spikes_file.timestamps, copy=False)
 
             sup_indexes = np.argwhere(addresses >= mid_address)
             
