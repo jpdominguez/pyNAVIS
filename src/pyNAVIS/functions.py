@@ -156,11 +156,17 @@ class Functions:
 		Returns:
 				adapted_timestamps:  Adapted timestamps list.
 		"""
-		minimum_ts = min(timestamps)
+		# Convert to numpy array
+		timestamps = np.array(timestamps, copy=False)
+
 		if settings.reset_timestamp:
-			adapted_timestamps = [(x - minimum_ts)*settings.ts_tick for x in timestamps]
+			# Find the minimum
+			minimum_ts = np.min(timestamps)
+
+			adapted_timestamps = (timestamps - minimum_ts) * settings.ts_tick
 		else:
-			adapted_timestamps = [x*settings.ts_tick for x in timestamps]
+			adapted_timestamps = timestamps * settings.ts_tick
+
 		return adapted_timestamps
 
 
