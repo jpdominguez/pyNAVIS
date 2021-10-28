@@ -43,50 +43,55 @@ class Functions:
 	@staticmethod
 	def check_SpikesFile(spikes_file, settings):
 		"""
-		Checks if the spiking information contained in the SpikesFile is correct and prints "The loaded SpikesFile file has been checked and it's OK" if the file passes all the checks.
-		
-		Parameters:
-				spikes_file (SpikesFile): File to check.
-				settings (MainSettings): Configuration parameters for the file to check.
+        Checks if the spiking information contained in the SpikesFile is correct and prints "The loaded SpikesFile file has been checked and it's OK" if the file passes all the checks.
 
-		Returns:
-				None.
-		
-		Raises:
-				TimestampOrderError: If the SpikesFile contains at least one timestamp which value is less than 0.
-				TimestampOrderError: If the SpikesFile contains at least one timestamp that is lesser than its previous one.
-				AddressValueError: If the SpikesFile contains at least one address less than 0 or greater than the num_channels that you specified in the MainSettings.
-		Notes:   
-				If mono_stereo is set to 1 (stereo) in the MainSettings, then  addresses should be less than num_channels*2.
+        Parameters:
+                spikes_file (SpikesFile): File to check.
+                settings (MainSettings): Configuration parameters for the file to check.
 
-				If on_off_both is set to 1 (both) in the MainSettings, then addresses should be less than num_channels*2.
-				
-				If mono_stereo is set to 1 and on_off_both is set to 1 in the MainSettings, then addresses should be less than num_channels*2*2.
-		"""
+        Returns:
+                None.
 
-		if settings.on_off_both == 1:
-			number_of_addresses = settings.num_channels*2
-		else:
-			number_of_addresses = settings.num_channels
+        Raises:
+                TimestampOrderError: If the SpikesFile contains at least one timestamp which value is less than 0.
+                TimestampOrderError: If the SpikesFile contains at least one timestamp that is lesser than its previous one.
+                AddressValueError: If the SpikesFile contains at least one address less than 0 or greater than the num_channels that you specified in the MainSettings.
+        Notes:
+                If mono_stereo is set to 1 (stereo) in the MainSettings, then  addresses should be less than num_channels*2.
+
+                If on_off_both is set to 1 (both) in the MainSettings, then addresses should be less than num_channels*2.
+
+                If mono_stereo is set to 1 and on_off_both is set to 1 in the MainSettings, then addresses should be less than num_channels*2*2.
+        """
+		# Convert to numpy arrays
+		addresses = np.array(spikes_file.addresses, copy=False)
+		timestamps = np.array(spikes_file.timestamps, copy=False)
+
 		# Check if all timestamps are greater than zero
-		a = all(item >= 0  for item in spikes_file.timestamps)
+		any_negative = np.any(timestamps < 0)
 
-		if not a:
-			print("[Functions.check_SpikesFile] > TimestampOrderError: The SpikesFile file that you loaded has at least one timestamp that is less than 0.")
+		if any_negative:
+			print(
+				"[Functions.check_SpikesFile] > TimestampOrderError: The SpikesFile file that you loaded has at least one timestamp that is less than 0.")
 
 		# Check if each timestamp is greater than its previous one
-		b = not any(i > 0 and spikes_file.timestamps[i] < spikes_file.timestamps[i-1] for i in range(len(spikes_file.timestamps)))
+		increasing_order = np.all(np.diff(timestamps) >= 0)
 
-		if not b:
-			print("[Functions.check_SpikesFile] > TimestampOrderError: The SpikesFile file that you loaded has at least one timestamp whose value is lesser than its previous one.")
+		if not increasing_order:
+			print(
+				"[Functions.check_SpikesFile] > TimestampOrderError: The SpikesFile file that you loaded has at least one timestamp whose value is lesser than its previous one.")
+
+		# Calculate maximum number of addresses
+		number_of_addresses = settings.num_channels * (settings.on_off_both + 1) * (settings.mono_stereo + 1)
 
 		# Check if all addresses are between zero and the total number of addresses
-		c = all(item >= 0 and item < number_of_addresses*(settings.mono_stereo + 1) for item in spikes_file.addresses)
+		all_in_range = np.all((addresses >= 0) & (addresses < number_of_addresses))
 
-		if not c:
-			print("[Functions.check_SpikesFile] > AddressValueError: The SpikesFile file that you loaded has at least one event whose address is either less than 0 or greater than the number of addresses that you specified.")
+		if not all_in_range:
+			print(
+				"[Functions.check_SpikesFile] > AddressValueError: The SpikesFile file that you loaded has at least one event whose address is either less than 0 or greater than the number of addresses that you specified.")
 
-		if a and b and c:
+		if not any_negative and b and c:
 			print("[Functions.check_SpikesFile] > The loaded SpikesFile file has been checked and it's OK")
 				
 	@staticmethod
