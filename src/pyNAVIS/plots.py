@@ -55,8 +55,8 @@ class Plots:
         Note: 
                 A value of 10 in dot_freq means that for every 10 spikes, only 1 will be plotted. This helps reducing lag when plotting heavy files.
         """
-
-        if verbose == True: start_time = time.time()
+        if verbose:
+            start_time = time.time()
         #REPRESENTATION
         plt.style.use('seaborn-whitegrid')
         spk_fig = plt.figure()
@@ -67,14 +67,15 @@ class Plots:
         if settings.mono_stereo == 0:
             plt.scatter(spikes_file.timestamps[0::dot_freq], spikes_file.addresses[0::dot_freq], s=dot_size)
         else:
-            mid_address = settings.num_channels*(settings.on_off_both + 1)
+            mid_address = settings.num_channels * (settings.on_off_both + 1)
             top_address = mid_address * 2
 
+            # Convert to numpy arrays
             addresses = np.array(spikes_file.addresses, copy=False)
             timestamps = np.array(spikes_file.timestamps, copy=False)
 
             sup_indexes = np.argwhere(addresses >= mid_address)
-            
+
             sup_addresses = addresses[sup_indexes]
             sup_addresses = sup_addresses[::dot_freq]
             sup_timestamps = timestamps[sup_indexes]
@@ -90,7 +91,7 @@ class Plots:
             plt.legend(fancybox=False, ncol=2, loc='upper center', markerscale=2/dot_size, frameon=True)
 
         max_timestamp = np.max(spikes_file.timestamps)
-        if verbose == True:
+        if verbose:
             print('SPIKEGRAM CALCULATION', time.time() - start_time)
 
         plt.title(graph_title, fontsize='x-large')
@@ -122,49 +123,53 @@ class Plots:
         Returns:
                 int[ , ]: Sonogram matrix. Only returned if return_data is set to True.
         """
-        if verbose == True: start_time = time.time()
+        if verbose:
+            start_time = time.time()
 
+        # Convert to numpy array
+        timestamps = np.array(spikes_file.timestamps, copy=False)
+
+        # Check start
         if start_at_zero:
-            total_time = max(spikes_file.timestamps)
+            total_time = np.max(timestamps)
             last_time = 0
         else:
-            total_time = max(spikes_file.timestamps) - min(spikes_file.timestamps)
-            last_time = min(spikes_file.timestamps)
-        
+            min_timestamp = np.min(timestamps)
+            total_time = np.max(timestamps) - min_timestamp
+            last_time = min_timestamp
 
-        sonogram = np.zeros((settings.num_channels*(settings.on_off_both + 1)*(settings.mono_stereo+1), int(math.ceil(total_time/settings.bin_size))))
+        # Calculate number of addresses and number of windows
+        num_addresses = settings.num_channels * (settings.on_off_both + 1) * (settings.mono_stereo + 1)
+        num_windows = int(math.ceil(total_time / settings.bin_size))
 
-        its = int(math.ceil(total_time/settings.bin_size))
-        
-        #THIS IS NOT NEEDED IF TS ARE SORTED
-        aedat_addr_ts = zip(spikes_file.addresses, spikes_file.timestamps)
-        aedat_addr_ts = sorted(aedat_addr_ts, key=Utils.getKey)
-        spikes_file = Utils.extract_addr_and_ts(aedat_addr_ts)
-        
-        for i in range(its):
+        # Define sonogram array
+        sonogram = np.zeros((num_addresses, num_windows))
 
-            a =  bisect_left(spikes_file.timestamps, last_time)
-            b =  bisect_right(spikes_file.timestamps, last_time + settings.bin_size)
+        # Bincount
+        for i in range(num_windows):
+            a = bisect_left(spikes_file.timestamps, last_time)
+            b = bisect_right(spikes_file.timestamps, last_time + settings.bin_size)
 
             blockAddr = spikes_file.addresses[a:b]
 
-            spikes = np.bincount(blockAddr, minlength=settings.num_channels*(settings.on_off_both + 1)*(settings.mono_stereo+1))        
+            spikes = np.bincount(blockAddr, minlength=num_addresses)
 
             last_time += settings.bin_size
             sonogram[:, i] = spikes
 
-        if verbose == True: print('SONOGRAM CALCULATION', time.time() - start_time)
-        
-        if return_data == False:
+        if verbose:
+            print('SONOGRAM CALCULATION', time.time() - start_time)
+
+        if not return_data:
             # REPRESENTATION
             plt.style.use('default')
             sng_fig = plt.figure()
             sng_fig.canvas.set_window_title(graph_title)
 
-            plt.imshow(sonogram, aspect="auto", cmap='hot') #, aspect="auto")
+            plt.imshow(sonogram, aspect="auto", cmap='hot')  # , aspect="auto")
             plt.gca().invert_yaxis()
 
-            plt.xlabel('Bin ('+str(settings.bin_size) + '$\mu$s width)', fontsize='large')
+            plt.xlabel('Bin (' + str(settings.bin_size) + '$\mu$s width)', fontsize='large')
             plt.ylabel('Address', fontsize='large')
 
             plt.title(graph_title, fontsize='x-large')
@@ -179,19 +184,19 @@ class Plots:
 
             if settings.mono_stereo == 1:
                 plt.annotate('Right cochlea',
-                xy=(1.00, 0.75), xytext=(5, 0),
-                xycoords=('axes fraction', 'axes fraction'),
-                textcoords='offset points',
-                size=11, ha='center', va='center', rotation=270)
+                             xy=(1.00, 0.75), xytext=(5, 0),
+                             xycoords=('axes fraction', 'axes fraction'),
+                             textcoords='offset points',
+                             size=11, ha='center', va='center', rotation=270)
 
                 plt.annotate('Left cochlea',
-                xy=(1.00, 0.25), xytext=(5, 0),
-                xycoords=('axes fraction', 'axes fraction'),
-                textcoords='offset points',
-                size=11, ha='center', va='center', rotation=270)
+                             xy=(1.00, 0.25), xytext=(5, 0),
+                             xycoords=('axes fraction', 'axes fraction'),
+                             textcoords='offset points',
+                             size=11, ha='center', va='center', rotation=270)
 
             colorbar = plt.colorbar()
-            colorbar.set_label('No. of spikes', rotation=270, fontsize='large', labelpad= 10)
+            colorbar.set_label('No. of spikes', rotation=270, fontsize='large', labelpad=10)
 
             sng_fig.show()
         else:

@@ -38,6 +38,7 @@ from .savers import Savers
 from .utils import Utils
 from .plots import Plots
 
+
 class Functions:
 
 	@staticmethod
@@ -71,15 +72,13 @@ class Functions:
 		any_negative = np.any(timestamps < 0)
 
 		if any_negative:
-			print(
-				"[Functions.check_SpikesFile] > TimestampOrderError: The SpikesFile file that you loaded has at least one timestamp that is less than 0.")
+			print("[Functions.check_SpikesFile] > TimestampOrderError: The SpikesFile file that you loaded has at least one timestamp that is less than 0.")
 
 		# Check if each timestamp is greater than its previous one
 		increasing_order = np.all(np.diff(timestamps) >= 0)
 
 		if not increasing_order:
-			print(
-				"[Functions.check_SpikesFile] > TimestampOrderError: The SpikesFile file that you loaded has at least one timestamp whose value is lesser than its previous one.")
+			print("[Functions.check_SpikesFile] > TimestampOrderError: The SpikesFile file that you loaded has at least one timestamp whose value is lesser than its previous one.")
 
 		# Calculate maximum number of addresses
 		number_of_addresses = settings.num_channels * (settings.on_off_both + 1) * (settings.mono_stereo + 1)
@@ -88,8 +87,7 @@ class Functions:
 		all_in_range = np.all((addresses >= 0) & (addresses < number_of_addresses))
 
 		if not all_in_range:
-			print(
-				"[Functions.check_SpikesFile] > AddressValueError: The SpikesFile file that you loaded has at least one event whose address is either less than 0 or greater than the number of addresses that you specified.")
+			print("[Functions.check_SpikesFile] > AddressValueError: The SpikesFile file that you loaded has at least one event whose address is either less than 0 or greater than the number of addresses that you specified.")
 
 		# Check if all is OK
 		all_ok = not any_negative and increasing_order and all_in_range
