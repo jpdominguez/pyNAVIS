@@ -71,7 +71,7 @@ class Loaders:
     """
 
     @staticmethod
-    def loadAEDAT(path, address_size, timestamp_size):
+    def loadAEDAT(path, settings):
         """
         Loads an AEDAT (.aedat) file.
 
@@ -93,8 +93,8 @@ class Loaders:
         # Raw data extraction
         spikes_array = file_data[index:]
 
-        address_param = ">u" + str(address_size)
-        timestamp_param = ">u" + str(timestamp_size)
+        address_param = ">u" + str(settings.address_size)
+        timestamp_param = ">u" + str(settings.timestamp_size)
         bytes_struct = np.dtype(address_param + ", " + timestamp_param)
 
         spikes = np.frombuffer(spikes_array, bytes_struct)
