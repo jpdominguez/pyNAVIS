@@ -91,8 +91,13 @@ class Functions:
 			print(
 				"[Functions.check_SpikesFile] > AddressValueError: The SpikesFile file that you loaded has at least one event whose address is either less than 0 or greater than the number of addresses that you specified.")
 
-		if not any_negative and increasing_order and all_in_range:
+		# Check if all is OK
+		all_ok = not any_negative and increasing_order and all_in_range
+
+		if all_ok:
 			print("[Functions.check_SpikesFile] > The loaded SpikesFile file has been checked and it's OK")
+
+		return all_ok
 				
 	@staticmethod
 	def check_LocalizationFile(localization_file, settings, localization_settings):
