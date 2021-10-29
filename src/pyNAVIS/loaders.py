@@ -88,7 +88,7 @@ class Loaders:
 
         # Find last header line
         end_string = "#End Of ASCII Header\r\n"
-        index = file_data.find(end_string.encode("utf-8")) + len(end_string)
+        index = file_data.find(end_string.encode("utf-8"))
         if index != -1:
             index += len(end_string)
         else:
