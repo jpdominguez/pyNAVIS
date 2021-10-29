@@ -89,6 +89,10 @@ class Loaders:
         # Find last header line
         end_string = "#End Of ASCII Header\r\n"
         index = file_data.find(end_string.encode("utf-8")) + len(end_string)
+        if index != -1:
+            index += len(end_string)
+        else:
+            index = 0
 
         # Raw data extraction
         num_spikes = int(math.floor(len(file_data[index:]) / (settings.address_size + settings.timestamp_size)))
@@ -108,6 +112,8 @@ class Loaders:
         file.close()
 
         return spikes_file
+
+    # TODO: Check the rest of loading functions
 
     @staticmethod
     def loadAEDATLocalization(path, settings, localization_settings):
