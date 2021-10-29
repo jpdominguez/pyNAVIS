@@ -170,7 +170,7 @@ class Functions:
 		else:
 			adapted_timestamps = timestamps * settings.ts_tick
 
-		return adapted_timestamps
+		return adapted_timestamps.astype(dtype=np.dtype(">u" + str(settings.timestamp_size)))
 
 	@staticmethod
 	def order_SpikesFile(spikes_file, settings):
