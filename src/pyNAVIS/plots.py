@@ -65,12 +65,11 @@ class Plots:
 
         random.seed(0)
 
+        mid_address = settings.num_channels * (settings.on_off_both + 1)
+
         if settings.mono_stereo == 0:
             plt.scatter(spikes_file.timestamps[0::dot_freq], spikes_file.addresses[0::dot_freq], s=dot_size)
         else:
-            mid_address = settings.num_channels * (settings.on_off_both + 1)
-            top_address = mid_address * 2
-
             # Convert to numpy arrays
             addresses = np.array(spikes_file.addresses, copy=False)
             timestamps = np.array(spikes_file.timestamps, copy=False)
@@ -91,7 +90,6 @@ class Plots:
             plt.scatter(sup_timestamps, sup_addresses, s=dot_size, label="Right cochlea")
             plt.legend(fancybox=False, ncol=2, loc='upper center', markerscale=2/dot_size, frameon=True)
 
-        max_timestamp = np.max(spikes_file.timestamps)
         if verbose:
             print('SPIKEGRAM CALCULATION', time.time() - start_time)
 
@@ -101,6 +99,7 @@ class Plots:
         plt.ylim([0, mid_address*(settings.mono_stereo + 1)])
 
         if start_at_zero:
+            max_timestamp = np.max(spikes_file.timestamps)
             plt.xlim([0, max_timestamp])
 
         plt.tight_layout()
@@ -302,10 +301,8 @@ class Plots:
         for i in range(len(spikes_per_bins)):
             count_below = np.count_nonzero(spikes_per_bins[i] < mid_address)
             average_activity_L[i] = count_below
-
-        if settings.mono_stereo == 1:
-            for i in range(len(spikes_per_bins)):
-                average_activity_R[i] = len(spikes_per_bins[i]) - average_activity_L[i]
+            if settings.mono_stereo == 1:
+                average_activity_R[i] = len(spikes_per_bins[i]) - count_below
 
         if verbose:
             print('AVERAGE ACTIVITY CALCULATION', time.time() - start_time)
