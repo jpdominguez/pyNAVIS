@@ -24,6 +24,7 @@ import math
 import struct
 import csv
 import numpy as np
+from .functions import Functions
 
 
 class SpikesFile:
@@ -110,6 +111,13 @@ class Loaders:
 
         # Close the file
         file.close()
+
+        # Check correct address values and increasing timestamp order in the loaded aedat file
+        _, order_is_ok, all_in_range = Functions.check_SpikesFile(spikes_file, settings)
+        if not all_in_range:
+            raise ValueError("Addresses are not in range. Could be due to bad decoding")
+        if not order_is_ok:
+            Functions.order_SpikesFile(spikes_file, settings)
 
         return spikes_file
 
