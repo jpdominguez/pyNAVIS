@@ -75,7 +75,7 @@ class Functions:
 			print("[Functions.check_SpikesFile] > TimestampOrderError: The SpikesFile file that you loaded has at least one timestamp that is less than 0.")
 
 		# Check if each timestamp is greater than its previous one
-		increasing_order = np.all(np.diff(timestamps) >= 0)
+		increasing_order = np.all(timestamps[:-1] <= timestamps[1:])
 
 		if not increasing_order:
 			print("[Functions.check_SpikesFile] > TimestampOrderError: The SpikesFile file that you loaded has at least one timestamp whose value is lesser than its previous one.")
