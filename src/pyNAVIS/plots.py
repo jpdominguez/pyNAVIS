@@ -103,7 +103,8 @@ class Plots:
             plt.xlim([0, max_timestamp])
 
         plt.tight_layout()
-        spk_fig.show()
+
+        return spk_fig
 
     @staticmethod
     def sonogram(spikes_file, settings, return_data = False, graph_title = 'Sonogram', start_at_zero = True, verbose = False):
@@ -198,7 +199,7 @@ class Plots:
             colorbar = plt.colorbar()
             colorbar.set_label('No. of spikes', rotation=270, fontsize='large', labelpad=10)
 
-            sng_fig.show()
+            return sng_fig
         else:
             return sonogram
 
@@ -248,8 +249,8 @@ class Plots:
                 plt.plot(np.arange(settings.num_channels * (settings.on_off_both + 1) * (settings.mono_stereo + 1)), spikes_count)
 
         plt.tight_layout()
-        hst_fig.show()
-        return spikes_count
+
+        return spikes_count, hst_fig
 
     @staticmethod
     def average_activity(spikes_file, settings, graph_title='Average activity', verbose=False):
@@ -320,11 +321,10 @@ class Plots:
             plt.legend(loc='best', ncol=2, frameon=True)
 
         plt.tight_layout()
-        avg_fig.show()
         if settings.mono_stereo == 0:
-            return average_activity_L
+            return average_activity_L, avg_fig
         else:
-            return average_activity_L, average_activity_R
+            return average_activity_L, average_activity_R, avg_fig
 
     @staticmethod
     def difference_between_LR(spikes_file, settings, return_data=False, graph_title='Diff. between L and R cochlea',
@@ -398,8 +398,8 @@ class Plots:
             if not return_data:
                 # REPRESENTATION
                 plt.style.use('default')
-                sng_fig = plt.figure()
-                sng_fig.canvas.set_window_title(graph_title)
+                dlr_fig = plt.figure()
+                dlr_fig.canvas.set_window_title(graph_title)
 
                 # cmap = 'RdBu'
                 colors = [(1, 0.49803921568627450980392156862745, 0.05490196078431372549019607843137), (1, 1, 1), (
@@ -421,7 +421,8 @@ class Plots:
                 colorbar.set_label('Cochlea predominance', rotation=0, fontsize='large', labelpad=10)
                 colorbar.ax.set_xticklabels(['100% L\nCochlea', '50%', '0%\nL==R', '50%', '100% R\nCochlea'])
                 colorbar.ax.invert_xaxis()
-                sng_fig.show()
+
+                return dlr_fig
             else:
                 return diff
         else:
