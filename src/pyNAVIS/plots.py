@@ -221,7 +221,7 @@ class Plots:
         """
 
         start_time = time.time()
-        
+
         spikes_count = np.bincount(spikes_file.addresses, minlength=settings.num_channels * (settings.on_off_both + 1) * (settings.mono_stereo + 1))
 
         if verbose == True: print('HISTOGRAM CALCULATION:', time.time() - start_time)
@@ -327,7 +327,8 @@ class Plots:
             return average_activity_L, average_activity_R
 
     @staticmethod
-    def difference_between_LR(spikes_file, settings, return_data = False, graph_title = 'Diff. between L and R cochlea', verbose = False):
+    def difference_between_LR(spikes_file, settings, return_data=False, graph_title='Diff. between L and R cochlea',
+                              verbose=False, start_at_zero=True):
         """
         Plots a plot showing the differente between the left and the right activity of a SpikesFile.
 
@@ -337,6 +338,7 @@ class Plots:
                 return_data (boolean, optional): When set to True, the sonogram matrix will be returned instead of plotted.
                 graph_title (string, optional): Text that will appear as title for the graph.
                 verbose (boolean, optional): Set to True if you want the execution time of the function to be printed.
+                start_at_zero (boolean, optional): If set to True, the X axis will start at 0, instead of starting at the minimum timestamp.
 
         Returns:
                 int[ , ]: Disparity matrix. Only returned if return_data is set to True.
@@ -347,66 +349,86 @@ class Plots:
         Note:
                 This function can only be called if the mono_stereo parameter in settings is set to 1.
         """
-        if settings.mono_stereo == 1:    
-            total_time = max(spikes_file.timestamps) - min(spikes_file.timestamps)
-            diff = np.zeros((settings.num_channels*(settings.on_off_both + 1), int(math.ceil(total_time/settings.bin_size))))
+        if settings.mono_stereo == 1:
+            if verbose:
+                start_time = time.time()
 
-            last_time = min(spikes_file.timestamps)
+            # Convert to numpy array
+            timestamps = np.array(spikes_file.timestamps, copy=False)
 
-            its = int(math.ceil(total_time/settings.bin_size))
+            # Check start
+            if start_at_zero:
+                total_time = np.max(timestamps)
+                last_time = 0
+            else:
+                min_timestamp = np.min(timestamps)
+                total_time = np.max(timestamps) - min_timestamp
+                last_time = min_timestamp
 
-            #THIS IS NOT NEEDED IF TS ARE SORTED
-            aedat_addr_ts = list(zip(spikes_file.addresses, spikes_file.timestamps))
-            aedat_addr_ts = sorted(aedat_addr_ts, key=Utils.getKey)
-            spikes_file = Utils.extract_addr_and_ts(aedat_addr_ts)
+            # Calculate number of addresses and number of windows
+            num_addresses = settings.num_channels * (settings.on_off_both + 1) * (settings.mono_stereo + 1)
+            mid_address = round(num_addresses / 2)
+            num_windows = int(math.ceil(total_time / settings.bin_size))
 
-            if verbose == True: start_time = time.time()
-            for i in range(its):
-                a =  bisect_left(spikes_file.timestamps, last_time)
-                b =  bisect_right(spikes_file.timestamps, last_time + settings.bin_size)
+            # Define diff array and partial arrays
+            diff = np.zeros((round(num_addresses / 2), num_windows))
+
+            if verbose:
+                start_time = time.time()
+
+            for i in range(num_windows):
+                a = bisect_left(spikes_file.timestamps, last_time)
+                b = bisect_right(spikes_file.timestamps, last_time + settings.bin_size)
 
                 blockAddr = spikes_file.addresses[a:b]
-                
-                spikes = np.bincount(blockAddr, minlength=settings.num_channels*(settings.on_off_both + 1)*(settings.mono_stereo+1))
-                
+
+                spikes = np.bincount(blockAddr, minlength=num_addresses)
+
+                diff[:, i] = spikes[0:mid_address] - spikes[mid_address:num_addresses]
+
                 last_time += settings.bin_size
 
-                diff[:, i] = [x1 - x2 for (x1, x2) in list(zip(spikes[0:settings.num_channels*(settings.on_off_both + 1)], spikes[settings.num_channels*(settings.on_off_both + 1):settings.num_channels*(settings.on_off_both + 1)*2]))]
-            if verbose == True: print('DIFF CALCULATION', time.time() - start_time)
-            
-            if max(abs(np.min(diff)), np.max(diff)) != 0: diff = diff*100/max(abs(np.min(diff)), np.max(diff))
+            if verbose:
+                print('DIFF CALCULATION', time.time() - start_time)
 
-            if return_data == False:
+            max_abs = np.max(abs(diff))
+            if max_abs != 0:
+                diff = diff * 100 / max_abs
+
+            if not return_data:
                 # REPRESENTATION
                 plt.style.use('default')
                 sng_fig = plt.figure()
                 sng_fig.canvas.set_window_title(graph_title)
-                
-                #cmap = 'RdBu'
-                colors = [(1, 0.49803921568627450980392156862745, 0.05490196078431372549019607843137), (1, 1, 1), (0.12156862745098039215686274509804, 0.46666666666666666666666666666667, 0.70588235294117647058823529411765)]  # R -> G -> B
+
+                # cmap = 'RdBu'
+                colors = [(1, 0.49803921568627450980392156862745, 0.05490196078431372549019607843137), (1, 1, 1), (
+                    0.12156862745098039215686274509804, 0.46666666666666666666666666666667,
+                    0.70588235294117647058823529411765)]  # R -> G -> B
                 n_bins = [3, 6, 10, 100]  # Discretizes the interpolation into bins
                 cmap_name = 'my_list'
                 cm = LinearSegmentedColormap.from_list(cmap_name, colors, N=100)
 
-                plt.imshow(diff, vmin=-100, vmax=100, aspect="auto", cmap=cm) #, aspect="auto")
+                plt.imshow(diff, vmin=-100, vmax=100, aspect="auto", cmap=cm)  # , aspect="auto")
                 plt.gca().invert_yaxis()
 
-                plt.xlabel('Bin ('+str(settings.bin_size) + '$\mu$s width)', fontsize='large')
+                plt.xlabel('Bin (' + str(settings.bin_size) + '$\mu$s width)', fontsize='large')
                 plt.ylabel('Address', fontsize='large')
 
                 plt.title(graph_title, fontsize='x-large')
 
                 colorbar = plt.colorbar(ticks=[100, 50, 0, -50, -100], orientation='horizontal')
-                colorbar.set_label('Cochlea predominance', rotation=0, fontsize='large', labelpad= 10)
+                colorbar.set_label('Cochlea predominance', rotation=0, fontsize='large', labelpad=10)
                 colorbar.ax.set_xticklabels(['100% L\nCochlea', '50%', '0%\nL==R', '50%', '100% R\nCochlea'])
                 colorbar.ax.invert_xaxis()
                 sng_fig.show()
             else:
                 return diff
         else:
-            #print("This functionality is only available for stereo AEDAT files.")
-            print("[Plots.difference_between_LR] > SettingsError: This functionality is only available for stereo files.")
-        
+            # print("This functionality is only available for stereo AEDAT files.")
+            print(
+                "[Plots.difference_between_LR] > SettingsError: This functionality is only available for stereo files.")
+
     @staticmethod
     def mso_heatmap(localization_file, localization_settings, graph_title = "MSO heatmap", enable_colorbar = True, verbose = False):
         """
@@ -444,14 +466,14 @@ class Plots:
             neuron_id = localization_file.mso_neuron_ids[i]
             # Accumulate the activity for each neuron for each frequency channel according to the LocalizationFIle
             mso_activity[freq_channel][neuron_id] = mso_activity[freq_channel][neuron_id] + 1
-        
+
         if verbose == True: print('MSO HEATMAP CALCULATION', time.time() - start_time)
 
         # Generate the labels lists
         freq_channel_labels = []
         for i in range(localization_settings.mso_start_channel, localization_settings.mso_end_channel + 1):
             freq_channel_labels.append(str(i))
-        
+
         neuron_id_labels = []
         for i in range(0, localization_settings.mso_num_neurons_channel):
             neuron_id_labels.append(str(i))
@@ -460,7 +482,7 @@ class Plots:
         plt.style.use('seaborn-ticks')
         htmap_fig, htmap_ax = plt.subplots()
         htmap_fig.canvas.set_window_title(graph_title)
-        
+
         # Create the heatmap image
         htmap_im = plt.imshow(mso_activity, cmap='viridis')
 
@@ -487,7 +509,7 @@ class Plots:
             for j in range(len(neuron_id_labels)):
                 text = htmap_ax.text(j, i, mso_activity[i, j],
                             ha="center", va="center", color="w", fontsize='xx-small')
-        
+
         plt.title(graph_title, fontsize='x-large')
 
         plt.tight_layout()
@@ -524,7 +546,7 @@ class Plots:
 
         # Plot all the spikes stored in the localization_file
         ax.scatter(localization_file.mso_neuron_ids, localization_file.mso_timestamps, localization_file.mso_channels, s=dot_size)
-            
+
         if verbose == True: print('MSO SPIKEGRAM CALCULATION', time.time() - start_time)
 
         plt.title(graph_title, fontsize='x-large')
@@ -610,7 +632,7 @@ class Plots:
         plt.xlabel('Bin ('+str(settings.bin_size) + '$\mu$s width)', fontsize='large')
         plt.ylabel('Position (in degrees)', fontsize='large')
         plt.ylim([-1, localization_settings.mso_num_neurons_channel + 1])
-        
+
         yticklabels = []
         angle_slot = 180.0 / localization_settings.mso_num_neurons_channel
         for slot_index in range(0, localization_settings.mso_num_neurons_channel):
@@ -642,7 +664,7 @@ class Plots:
 
         plt.tight_layout()
         mso_loc_fig.show()
-    
+
     @staticmethod
     def mso_histogram(localization_file, settings, localization_settings, graph_title = 'MSO histogram', verbose = False):
         """
@@ -665,7 +687,7 @@ class Plots:
         """
 
         start_time = time.time()
-        
+
         # Set the total number of frequency channels
         mso_number_freq_ch = localization_settings.mso_end_channel - localization_settings.mso_start_channel + 1
 
@@ -716,7 +738,7 @@ class Plots:
         freq_channel_labels = []
         for i in range(localization_settings.mso_start_channel, localization_settings.mso_end_channel + 1):
             freq_channel_labels.append(str(i))
-        
+
         # Set all the ticks
         ax.set_yticks(np.arange(len(freq_channel_labels)))
         # And all the ticks' labels
