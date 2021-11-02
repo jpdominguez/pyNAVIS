@@ -21,11 +21,10 @@
 
 import random
 
-import numpy as np
-
-from .loaders import SpikesFile
-from .savers import Savers
 from .main_settings import MainSettings
+from .objects import SpikesFile
+from .savers import Savers
+
 
 class Generators:
     

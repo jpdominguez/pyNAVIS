@@ -1,7 +1,9 @@
 from .dataset_gen import DatasetGenerators
 from .functions import Functions
+from .functions import ReportFunctions
 from .generators import Generators
-from .loaders import SpikesFile, Loaders
+from .loaders import Loaders
+from .objects import SpikesFile
 from .plots import Plots
 from .savers import Savers
 from .splitters import Splitters

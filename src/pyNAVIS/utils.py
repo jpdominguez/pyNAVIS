@@ -19,14 +19,10 @@
 ##                                                                             ##
 #################################################################################
 
-import math
-import struct
 import time
 
-import matplotlib.pyplot as plt
-import numpy as np
+from .objects import SpikesFile
 
-from .loaders import SpikesFile
 
 class Utils:
 
