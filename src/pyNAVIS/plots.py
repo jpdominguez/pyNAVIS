@@ -27,6 +27,7 @@ from bisect import bisect_left, bisect_right
 import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib.colors import LinearSegmentedColormap
+from pyNAVIS import Functions
 
 
 class Plots:
@@ -91,14 +92,14 @@ class Plots:
         if verbose:
             print('SPIKEGRAM CALCULATION', time.time() - start_time)
 
+        if start_at_zero and spikes_file.min_ts != 0:
+            Functions.adapt_timestamps(spikes_file, settings)
+
         plt.title(graph_title, fontsize='x-large')
         plt.xlabel('Timestamp ($\mu$s)', fontsize='large')
+        plt.xlim([spikes_file.min_ts, spikes_file.max_ts])
         plt.ylabel('Address', fontsize='large')
         plt.ylim([0, mid_address * (settings.mono_stereo + 1)])
-
-        if start_at_zero:
-            max_timestamp = np.max(spikes_file.timestamps)
-            plt.xlim([0, max_timestamp])
 
         plt.tight_layout()
 
@@ -125,17 +126,12 @@ class Plots:
         if verbose:
             start_time = time.time()
 
-        # Convert to numpy array
-        timestamps = np.array(spikes_file.timestamps, copy=False)
+        # In range timestamps
+        if start_at_zero and spikes_file.min_ts != 0:
+            Functions.adapt_timestamps(spikes_file, settings)
 
-        # Check start
-        if start_at_zero:
-            total_time = np.max(timestamps)
-            last_time = 0
-        else:
-            min_timestamp = np.min(timestamps)
-            total_time = np.max(timestamps) - min_timestamp
-            last_time = min_timestamp
+        total_time = spikes_file.max_ts - spikes_file.min_ts
+        last_time = spikes_file.min_ts
 
         # Calculate number of addresses and number of windows
         num_addresses = settings.num_channels * (settings.on_off_both + 1) * (settings.mono_stereo + 1)
@@ -222,10 +218,10 @@ class Plots:
         start_time = time.time()
 
         spikes_count = np.bincount(spikes_file.addresses,
-                                   minlength=settings.num_channels * (settings.on_off_both + 1) * (
-                                               settings.mono_stereo + 1))
+                                   minlength=settings.num_channels * (settings.on_off_both + 1) * (settings.mono_stereo + 1))
 
-        if verbose == True: print('HISTOGRAM CALCULATION:', time.time() - start_time)
+        if verbose:
+            print('HISTOGRAM CALCULATION:', time.time() - start_time)
 
         plt.style.use('seaborn-whitegrid')
         hst_fig = plt.figure()
@@ -284,8 +280,7 @@ class Plots:
         timestamps = np.array(spikes_file.timestamps, copy=False)
 
         # Define plot variables
-        total_time = np.max(timestamps)
-        last_ts = 0
+        total_time = spikes_file.max_ts - spikes_file.min_ts
         mid_address = settings.num_channels * (settings.on_off_both + 1)
         num_bins = int(math.ceil(total_time / settings.bin_size))
 
@@ -363,17 +358,12 @@ class Plots:
             if verbose:
                 start_time = time.time()
 
-            # Convert to numpy array
-            timestamps = np.array(spikes_file.timestamps, copy=False)
+            # In range timestamps
+            if start_at_zero and spikes_file.min_ts != 0:
+                Functions.adapt_timestamps(spikes_file, settings)
 
-            # Check start
-            if start_at_zero:
-                total_time = np.max(timestamps)
-                last_time = 0
-            else:
-                min_timestamp = np.min(timestamps)
-                total_time = np.max(timestamps) - min_timestamp
-                last_time = min_timestamp
+            total_time = spikes_file.max_ts - spikes_file.min_ts
+            last_time = spikes_file.min_ts
 
             # Calculate number of addresses and number of windows
             num_addresses = settings.num_channels * (settings.on_off_both + 1) * (settings.mono_stereo + 1)

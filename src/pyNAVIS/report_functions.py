@@ -68,7 +68,8 @@ class ReportFunctions:
             else:
                 print("[Functions.PDF_report] > InputFileExtensionError: the extension of the input file is not valid.")
                 return None
-            spikes_file.timestamps = Functions.adapt_timestamps(spikes_file.timestamps, settings)
+            if spikes_file.min_ts != 0:
+                Functions.adapt_timestamps(spikes_file, settings)
             if add_localization_report == True:
                 localization_file.timestamps = Functions.adapt_timestamps(localization_file.timestamps, settings)
 

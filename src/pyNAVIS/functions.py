@@ -151,7 +151,7 @@ class Functions:
 		Returns:
 				adapted_timestamps:  Adapted timestamps list.
 		"""
-		if spikes_file.timestamps:
+		if spikes_file.timestamps != []:
 			# Convert to numpy array
 			timestamps = np.array(spikes_file.timestamps, copy=False)
 
