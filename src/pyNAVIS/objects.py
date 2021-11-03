@@ -1,3 +1,6 @@
+import numpy as np
+
+
 class SpikesFile:
     """
     Class that contains all the addresses and timestamps of a file.
@@ -12,6 +15,17 @@ class SpikesFile:
     def __init__(self, addresses=[], timestamps=[]):
         self.addresses = addresses
         self.timestamps = timestamps
+
+        if timestamps:
+            self.max_ts_index = np.argmax(timestamps)
+            self.max_ts = timestamps[self.max_ts_index]
+            self.min_ts_index = np.argmin(timestamps)
+            self.min_ts = timestamps[self.min_ts_index]
+        else:
+            self.max_ts_index = None
+            self.max_ts = None
+            self.min_ts_index = None
+            self.min_ts = None
 
 
 class LocalizationFile:

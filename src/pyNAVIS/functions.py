@@ -88,7 +88,7 @@ class Functions:
 			print("[Functions.check_SpikesFile] > The loaded SpikesFile file has been checked and it's OK")
 
 		return not any_negative, increasing_order, all_in_range
-				
+
 	@staticmethod
 	def check_LocalizationFile(localization_file, settings, localization_settings):
 		"""
@@ -139,30 +139,42 @@ class Functions:
 			print("[Functions.check_LocalizationFile] > The loaded LocalizationFile file has been checked and it's OK")
 
 	@staticmethod
-	def adapt_timestamps(timestamps, settings):
+	def adapt_timestamps(spikes_file, settings):
 		"""
 		Subtracts the smallest timestamp of the timestamps list to all of the timestamps contained in the list (in order to start from 0)
 		It also adapts timestamps based on the tick frequency (ts_tick in the MainSettings).
 
 		Parameters:
-				timestamps (int[]): Timestamps of the file to adapt.
+		  		spikes_file:
 				settings (MainSettings): Configuration parameters for the file to adapt.
 
 		Returns:
 				adapted_timestamps:  Adapted timestamps list.
 		"""
-		# Convert to numpy array
-		timestamps = np.array(timestamps, copy=False)
+		if spikes_file.timestamps:
+			# Convert to numpy array
+			timestamps = np.array(spikes_file.timestamps, copy=False)
 
-		if settings.reset_timestamp:
-			# Find the minimum
-			minimum_ts = np.min(timestamps)
+			if settings.reset_timestamp:
+				# Substract the minimum to all timestamps
+				minimum_ts = spikes_file.min_ts
+				adapted_timestamps = (timestamps - minimum_ts) * settings.ts_tick
 
-			adapted_timestamps = (timestamps - minimum_ts) * settings.ts_tick
+				# Update the maximum and minimum values
+				spikes_file.max_ts = spikes_file.max_ts - minimum_ts
+				spikes_file.min_ts = 0
+			else:
+				adapted_timestamps = timestamps * settings.ts_tick
+
+				# Update the maximum and minimum values
+				spikes_file.max_ts = adapted_timestamps[spikes_file.max_ts_index]
+				spikes_file.min_ts = adapted_timestamps[spikes_file.min_ts_index]
+
+			# Update the timestamps
+			spikes_file.timestamps = adapted_timestamps.astype(dtype=np.dtype(">u" + str(settings.timestamp_size)))
 		else:
-			adapted_timestamps = timestamps * settings.ts_tick
+			print("[Functions.adapt_timestamps] > The SpikesFile timestamps are empty")
 
-		return adapted_timestamps.astype(dtype=np.dtype(">u" + str(settings.timestamp_size)))
 
 	@staticmethod
 	def order_SpikesFile(spikes_file, settings):
@@ -241,15 +253,15 @@ class Functions:
 			spikes_file_mono = Utils.extract_addr_and_ts(addr_ts)
 			if left_right:
 				spikes_file_mono.addresses = [x-left_right*settings.num_channels*(settings.on_off_both + 1) for x in spikes_file_mono.addresses]
-			
-			
+
+
 			if return_save_both == 0:
 				return spikes_file_mono
 			elif return_save_both == 1 or return_save_both == 2:
-				Savers.save_as_any(spikes_file_mono, path=path, output_format=output_format, settings=settings) 
+				Savers.save_as_any(spikes_file_mono, path=path, output_format=output_format, settings=settings)
 				if return_save_both == 2:
 					return spikes_file_mono
-			
+
 		else:
 			print("[Functions.stereo_to_mono] > SettingsError: this functionality cannot be performed over a mono aedat file.")
 
@@ -294,12 +306,12 @@ class Functions:
 			elif return_save_both == 1 or return_save_both == 2:
 				#settings_new = copy.deepcopy(settings)
 				#settings_new.mono_stereo = 1
-				Savers.save_as_any(spikes_file_new, path=path, output_format=output_format, settings=settings) 
+				Savers.save_as_any(spikes_file_new, path=path, output_format=output_format, settings=settings)
 				if return_save_both == 2:
 					return spikes_file_new
 
 		else:
-			print("[Functions.mono_to_stereo] > SettingsError: this functionality cannot be performed over a stereo aedat file.")        
+			print("[Functions.mono_to_stereo] > SettingsError: this functionality cannot be performed over a stereo aedat file.")
 
 
 	@staticmethod
@@ -349,7 +361,7 @@ class Functions:
 		"""
 
 		if verbose == True: start_time = time.time()
-		
+
 		isi_array = np.diff(spikes_file.timestamps)
 
 		if verbose == True: print('ISI CALCULATION', time.time() - start_time)
