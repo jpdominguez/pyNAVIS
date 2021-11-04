@@ -65,6 +65,9 @@ class Plots:
 
         mid_address = settings.num_channels * (settings.on_off_both + 1)
 
+        if start_at_zero and spikes_file.min_ts != 0:
+            Functions.adapt_timestamps(spikes_file, settings)
+
         if settings.mono_stereo == 0:
             plt.scatter(spikes_file.timestamps[0::dot_freq], spikes_file.addresses[0::dot_freq],
                         s=dot_size, rasterized=True)
@@ -80,9 +83,9 @@ class Plots:
             sup_timestamps = timestamps[sup_indexes]
             sup_timestamps = sup_timestamps[::dot_freq]
 
-            inf_addresses = addresses[-sup_indexes]
+            inf_addresses = np.delete(addresses, sup_indexes)
             inf_addresses = inf_addresses[::dot_freq]
-            inf_timestamps = timestamps[-sup_indexes]
+            inf_timestamps = np.delete(timestamps, sup_indexes)
             inf_timestamps = inf_timestamps[::dot_freq]
 
             plt.scatter(inf_timestamps, inf_addresses, s=dot_size, label="Left cochlea", rasterized=True)
@@ -91,9 +94,6 @@ class Plots:
 
         if verbose:
             print('SPIKEGRAM CALCULATION', time.time() - start_time)
-
-        if start_at_zero and spikes_file.min_ts != 0:
-            Functions.adapt_timestamps(spikes_file, settings)
 
         plt.title(graph_title, fontsize='x-large')
         plt.xlabel('Timestamp ($\mu$s)', fontsize='large')
