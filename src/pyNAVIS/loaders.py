@@ -62,13 +62,34 @@ class Loaders:
         num_spikes = int(math.floor(len(file_data[index:]) / (settings.address_size + settings.timestamp_size)))
         spikes_array = file_data[index:index + num_spikes * (settings.address_size + settings.timestamp_size)]
 
-        address_param = ">u" + str(settings.address_size)
-        timestamp_param = ">u" + str(settings.timestamp_size)
-        bytes_struct = np.dtype(address_param + ", " + timestamp_param)
+        if settings.address_size != 3 and settings.timestamp_size != 3:
+            address_param = ">u" + str(settings.address_size)
+            timestamp_param = ">u" + str(settings.timestamp_size)
+            bytes_struct = np.dtype(address_param + ", " + timestamp_param)
 
-        spikes = np.frombuffer(spikes_array, bytes_struct)
-        addresses = spikes['f0']
-        timestamps = spikes['f1']
+            spikes = np.frombuffer(spikes_array, bytes_struct)
+            addresses = spikes['f0']
+            timestamps = spikes['f1']
+
+        else:
+            # Separate addresses and timestamps
+            spikes_struct = np.dtype([("addresses", ">u1", settings.address_size),
+                                      ("timestamps", ">u1", settings.timestamp_size)])
+            spikes = np.frombuffer(spikes_array, spikes_struct)
+
+            # Fill addresses and timestamps with zeros to reach 4-bytes per element
+            address_struct = np.dtype([("zeros", ">u1", (4 - settings.address_size,)),
+                                       ("addresses", ">u1", (settings.address_size,))])
+            timestamp_struct = np.dtype([("zeros", ">u1", (4 - settings.timestamp_size,)),
+                                         ("timestamps", ">u1", (settings.timestamp_size,))])
+            filled_addresses = np.zeros(len(spikes), dtype=address_struct)
+            filled_timestamps = np.zeros(len(spikes), dtype=timestamp_struct)
+            filled_addresses['addresses'] = spikes['addresses']
+            filled_timestamps['timestamps'] = spikes['timestamps']
+
+            # View these filled addresses and timestamps as 4-byte ints
+            addresses = filled_addresses.view(">u4")
+            timestamps = filled_timestamps.view(">u4")
 
         spikes_file = SpikesFile(addresses, timestamps)
 
