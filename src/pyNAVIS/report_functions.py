@@ -136,7 +136,8 @@ class ReportFunctions:
                     print("[Functions.PDF_report] > InputFileError: the input LocalizationFile is not valid.")
 
             for fig in figures:
-                pdf.savefig(fig, dpi=300)
+                pdf.savefig(fig, dpi=150)
+                plt.close(fig)
 
             d = pdf.infodict()
             d['Title'] = 'pyNAVIS report'
