@@ -1,6 +1,7 @@
 import datetime
 import os
 
+import matplotlib
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_pdf import PdfPages
 
@@ -40,6 +41,9 @@ class ReportFunctions:
 		Notes:
 				If the path used as input is a folder instead of a spikes file, the PDF report is generated for every spikes file contained in the folder.
 		"""
+
+        # Set a non-interactive backend for matplotlib
+        matplotlib.use('pdf')
 
         if isinstance(spikes_file, str):
 
