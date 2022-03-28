@@ -38,7 +38,7 @@ class Utils:
 				SpikesFile: A SpikesFile object with the addresses and timestamps obtained from zipped_addr_ts
 		"""
 
-		spikes_file = SpikesFile([], [])
+		spikes_file = SpikesFile()
 		spikes_file.addresses = [x[0] for x in zipped_addr_ts]
 		spikes_file.timestamps = [x[1] for x in zipped_addr_ts]
 		return spikes_file

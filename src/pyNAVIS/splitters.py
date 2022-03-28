@@ -21,9 +21,10 @@
 
 
 import copy
-import random
+# import random
 import numpy as np
 import time
+import os
 from bisect import bisect_left, bisect_right
 
 from .functions import Functions
@@ -150,7 +151,7 @@ class Splitters:
         number_of_splits_generated = 0
         index_previous_split = 0
         new_spikes_file = SpikesFile([], [])
-        spikes_filtered = segmenter_RT(spikes_file,noise_threshold, bin_width, return_save_both = 0)
+        spikes_filtered = Splitters.segmenter_RT(spikes_file,noise_threshold, bin_width, return_save_both = 0)
 
         for i in range(1, len(spikes_filtered.timestamps)):
             if spikes_filtered.timestamps[i] - spikes_filtered.timestamps[i-1] >= bin_width:

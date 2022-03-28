@@ -25,7 +25,7 @@ import time
 
 import numpy as np
 
-from .objects import LocalizationFile
+# from .objects import LocalizationFile
 from .objects import SpikesFile
 from .savers import Savers
 from .utils import Utils

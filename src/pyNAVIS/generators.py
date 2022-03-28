@@ -20,6 +20,7 @@
 #################################################################################
 
 import random
+import numpy as np
 
 from .main_settings import MainSettings
 from .objects import SpikesFile
@@ -46,7 +47,6 @@ class Generators:
                 SpikesFile: SpikesFile containing the sweep. Returned only if return_save_both is either 0 or 2.
         """
 
-        spikes_file = SpikesFile([], [])
         time_per_cycle = float(length) // cycles
         spikes_per_cycle = freq * (num_ch * 2 - 1)
         time_between_spikes = float(time_per_cycle) // spikes_per_cycle
@@ -63,8 +63,7 @@ class Generators:
                     current_spike_id += 1
         settings = MainSettings(num_channels = num_ch, mono_stereo = 0)
 
-        spikes_file.timestamps = timestamps
-        spikes_file.addresses = addrs
+        spikes_file = SpikesFile(addrs, timestamps)
 
         if return_save_both == 0:
             return spikes_file
@@ -90,7 +89,6 @@ class Generators:
                 SpikesFile: SpikesFile containing the shift. Returned only if return_save_both is either 0 or 2.
         """
 
-        spikes_file = SpikesFile([], [])
         total_spikes_no = freq * num_ch
         addrs = [0] * int(total_spikes_no)
         timestamps = [0] * int(total_spikes_no)
@@ -104,8 +102,7 @@ class Generators:
                 timestamps[current_spike_id] = int(current_spike_id*time_between_spikes)
                 current_spike_id += 1
         settings = MainSettings(num_channels = num_ch, mono_stereo = 0)
-        spikes_file.timestamps = timestamps
-        spikes_file.addresses = addrs
+        spikes_file = SpikesFile(addrs, timestamps)
         if return_save_both == 0:
             return spikes_file
         elif return_save_both == 1 or return_save_both == 2:
@@ -130,7 +127,6 @@ class Generators:
                 SpikesFile: SpikesFile containing the spikes. Returned only if return_save_both is either 0 or 2.
         """
 
-        spikes_file = SpikesFile([], [])
         addrs = [0] * int(freq*length/1000000)
         timestamps = [0] * int(freq*length/1000000)
         random.seed(0)
@@ -139,8 +135,8 @@ class Generators:
             timestamps[i] = int(i*1000000/freq) #Multiplying by 1000000 to convert timestamps to microseconds
         
         settings = MainSettings(num_channels = num_ch, mono_stereo = 0)
-        spikes_file.timestamps = timestamps
-        spikes_file.addresses = addrs
+
+        spikes_file = SpikesFile(addrs, timestamps)
         if return_save_both == 0:
             return spikes_file
         elif return_save_both == 1 or return_save_both == 2:

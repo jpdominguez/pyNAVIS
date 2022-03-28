@@ -4,8 +4,7 @@ from pyNAVIS import *
 
 def run(path, settings):    
     stereo_file = Loaders.loadAEDAT(path, settings)
-    stereo_file.timestamps = Functions.adapt_timestamps(stereo_file.timestamps, settings)
-    Functions.check_SpikesFile(stereo_file, settings)
+    Functions.adapt_timestamps(stereo_file, settings)
     
     Plots.spikegram(stereo_file, settings)
     Plots.sonogram(stereo_file, settings)

@@ -7,8 +7,7 @@ def run(path, settings):
 
     # Load file
     spikes_file = Loaders.loadAEDAT(path, settings)
-    spikes_file.timestamps = Functions.adapt_timestamps(spikes_file.timestamps, settings)
-    Functions.check_SpikesFile(spikes_file, settings)
+    Functions.adapt_timestamps(spikes_file, settings)
     Plots.spikegram(spikes_file, settings, verbose=True)
     Plots.sonogram(spikes_file, settings, verbose=True)
     Plots.histogram(spikes_file, settings, verbose=True)
@@ -18,7 +17,7 @@ def run(path, settings):
 
 
     manual_split_spikes = Splitters.manual_splitter(spikes_file, init=0, end=100000, settings=settings, return_save_both=0)
-    Plots.spikegram(manual_split_spikes, settings, graph_tile='Splitted SpikesFile spikegram', verbose=True)
-    Plots.sonogram(manual_split_spikes, settings, graph_tile='Splitted SpikesFile sonogram', verbose=True)
+    Plots.spikegram(manual_split_spikes, settings, graph_title='Splitted SpikesFile spikegram', verbose=True)
+    Plots.sonogram(manual_split_spikes, settings, graph_title='Splitted SpikesFile sonogram', verbose=True)
 
     plt.show()
