@@ -29,7 +29,7 @@ from bisect import bisect_left, bisect_right
 from .functions import Functions
 from .savers import Savers
 from .utils import Utils
-from .loaders import SpikesFile
+from .objects import SpikesFile
 
 class Splitters:
 
@@ -150,7 +150,7 @@ class Splitters:
         number_of_splits_generated = 0
         index_previous_split = 0
         new_spikes_file = SpikesFile([], [])
-        spikes_filtered =  segmenter_RT(spikes_file,noise_threshold, bin_width, return_save_both = 0)
+        spikes_filtered = segmenter_RT(spikes_file,noise_threshold, bin_width, return_save_both = 0)
 
         for i in range(1, len(spikes_filtered.timestamps)):
             if spikes_filtered.timestamps[i] - spikes_filtered.timestamps[i-1] >= bin_width:

@@ -29,6 +29,7 @@ class MainSettings:
         ts_tick (float): Timestamp tick. Correspondence factor between timestamp value in file and actual time.
         num_channels (int): Number of cochlea channels.
         address_size (int): Number of bytes that each address is using. Only needed when loading .aedat files
+        timestamp_size (int): Number of bytes that each timestamp is using. Only needed when loading .aedat files
         on_off_both (int): Select wether the addresses contained in the file are ON, OFF or if it is using both.
         reset_timestamp (boolean): Select wether to have timedtamps starting at 0 (True) or leave it as they are (False).
     
@@ -43,10 +44,11 @@ class MainSettings:
             reset_timestamp subtracts the smallest timestamp in the file to each of the timestamps.
     """
 
-    def __init__(self, num_channels, mono_stereo = 0, address_size = 2, ts_tick = 1, bin_size = 20000, on_off_both = 1, reset_timestamp = True):
+    def __init__(self, num_channels, mono_stereo = 0, address_size = 2, timestamp_size=4, ts_tick = 1, bin_size = 20000, on_off_both = 1, reset_timestamp = True):
         self.num_channels = num_channels
         self.mono_stereo = mono_stereo
         self.address_size = address_size
+        self.timestamp_size = timestamp_size
         self.ts_tick = ts_tick
         self.bin_size = bin_size
         self.on_off_both = on_off_both

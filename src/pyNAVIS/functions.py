@@ -19,76 +19,76 @@
 ##                                                                             ##
 #################################################################################
 
-import math
-import struct
-import time
 import copy
 import random
-import datetime
-import os
+import time
 
-import matplotlib.backends.backend_pdf
-import matplotlib.pyplot as plt
 import numpy as np
 
-from .loaders import SpikesFile
-from .loaders import LocalizationFile
-from .loaders import Loaders
+from .objects import LocalizationFile
+from .objects import SpikesFile
 from .savers import Savers
 from .utils import Utils
-from .plots import Plots
+
 
 class Functions:
 
 	@staticmethod
 	def check_SpikesFile(spikes_file, settings):
 		"""
-		Checks if the spiking information contained in the SpikesFile is correct and prints "The loaded SpikesFile file has been checked and it's OK" if the file passes all the checks.
-		
-		Parameters:
-				spikes_file (SpikesFile): File to check.
-				settings (MainSettings): Configuration parameters for the file to check.
+        Checks if the spiking information contained in the SpikesFile is correct and prints "The loaded SpikesFile file has been checked and it's OK" if the file passes all the checks.
 
-		Returns:
-				None.
-		
-		Raises:
-				TimestampOrderError: If the SpikesFile contains at least one timestamp which value is less than 0.
-				TimestampOrderError: If the SpikesFile contains at least one timestamp that is lesser than its previous one.
-				AddressValueError: If the SpikesFile contains at least one address less than 0 or greater than the num_channels that you specified in the MainSettings.
-		Notes:   
-				If mono_stereo is set to 1 (stereo) in the MainSettings, then  addresses should be less than num_channels*2.
+        Parameters:
+                spikes_file (SpikesFile): File to check.
+                settings (MainSettings): Configuration parameters for the file to check.
 
-				If on_off_both is set to 1 (both) in the MainSettings, then addresses should be less than num_channels*2.
-				
-				If mono_stereo is set to 1 and on_off_both is set to 1 in the MainSettings, then addresses should be less than num_channels*2*2.
-		"""
+        Returns:
+                None.
 
-		if settings.on_off_both == 1:
-			number_of_addresses = settings.num_channels*2
-		else:
-			number_of_addresses = settings.num_channels
+        Raises:
+                TimestampOrderError: If the SpikesFile contains at least one timestamp which value is less than 0.
+                TimestampOrderError: If the SpikesFile contains at least one timestamp that is lesser than its previous one.
+                AddressValueError: If the SpikesFile contains at least one address less than 0 or greater than the num_channels that you specified in the MainSettings.
+        Notes:
+                If mono_stereo is set to 1 (stereo) in the MainSettings, then  addresses should be less than num_channels*2.
+
+                If on_off_both is set to 1 (both) in the MainSettings, then addresses should be less than num_channels*2.
+
+                If mono_stereo is set to 1 and on_off_both is set to 1 in the MainSettings, then addresses should be less than num_channels*2*2.
+        """
+		# Convert to numpy arrays
+		addresses = np.array(spikes_file.addresses, copy=False)
+		timestamps = np.array(spikes_file.timestamps, copy=False)
+
 		# Check if all timestamps are greater than zero
-		a = all(item >= 0  for item in spikes_file.timestamps)
+		any_negative = np.any(timestamps < 0)
 
-		if not a:
+		if any_negative:
 			print("[Functions.check_SpikesFile] > TimestampOrderError: The SpikesFile file that you loaded has at least one timestamp that is less than 0.")
 
 		# Check if each timestamp is greater than its previous one
-		b = not any(i > 0 and spikes_file.timestamps[i] < spikes_file.timestamps[i-1] for i in range(len(spikes_file.timestamps)))
+		increasing_order = np.all(timestamps[:-1] <= timestamps[1:])
 
-		if not b:
+		if not increasing_order:
 			print("[Functions.check_SpikesFile] > TimestampOrderError: The SpikesFile file that you loaded has at least one timestamp whose value is lesser than its previous one.")
 
-		# Check if all addresses are between zero and the total number of addresses
-		c = all(item >= 0 and item < number_of_addresses*(settings.mono_stereo + 1) for item in spikes_file.addresses)
+		# Calculate maximum number of addresses
+		number_of_addresses = settings.num_channels * (settings.on_off_both + 1) * (settings.mono_stereo + 1)
 
-		if not c:
+		# Check if all addresses are between zero and the total number of addresses
+		all_in_range = np.all((addresses >= 0) & (addresses < number_of_addresses))
+
+		if not all_in_range:
 			print("[Functions.check_SpikesFile] > AddressValueError: The SpikesFile file that you loaded has at least one event whose address is either less than 0 or greater than the number of addresses that you specified.")
 
-		if a and b and c:
+		# Check if all is OK
+		all_ok = not any_negative and increasing_order and all_in_range
+
+		if all_ok:
 			print("[Functions.check_SpikesFile] > The loaded SpikesFile file has been checked and it's OK")
-				
+
+		return not any_negative, increasing_order, all_in_range
+
 	@staticmethod
 	def check_LocalizationFile(localization_file, settings, localization_settings):
 		"""
@@ -138,25 +138,52 @@ class Functions:
 		if a and b and c and d:
 			print("[Functions.check_LocalizationFile] > The loaded LocalizationFile file has been checked and it's OK")
 
-	@staticmethod 
-	def adapt_timestamps(timestamps, settings):
+	@staticmethod
+	def adapt_timestamps(spikes_file, settings):
 		"""
 		Subtracts the smallest timestamp of the timestamps list to all of the timestamps contained in the list (in order to start from 0)
 		It also adapts timestamps based on the tick frequency (ts_tick in the MainSettings).
-		
+
 		Parameters:
-				timestamps (int[]): Timestamps of the file to adapt.
+		  		spikes_file:
 				settings (MainSettings): Configuration parameters for the file to adapt.
 
 		Returns:
 				adapted_timestamps:  Adapted timestamps list.
 		"""
-		minimum_ts = min(timestamps)
-		if settings.reset_timestamp:
-			adapted_timestamps = [(x - minimum_ts)*settings.ts_tick for x in timestamps]
+		if spikes_file.timestamps != []:
+			# Convert to numpy array
+			timestamps = np.array(spikes_file.timestamps, copy=False)
+
+			if settings.reset_timestamp:
+				# Substract the minimum to all timestamps
+				minimum_ts = spikes_file.min_ts
+				adapted_timestamps = (timestamps - minimum_ts) * settings.ts_tick
+
+				# Update the maximum and minimum values
+				spikes_file.max_ts = spikes_file.max_ts - minimum_ts
+				spikes_file.min_ts = 0
+			else:
+				adapted_timestamps = timestamps * settings.ts_tick
+
+				# Update the maximum and minimum values
+				spikes_file.max_ts = adapted_timestamps[spikes_file.max_ts_index]
+				spikes_file.min_ts = adapted_timestamps[spikes_file.min_ts_index]
+
+			# Update the timestamps
+			spikes_file.timestamps = adapted_timestamps.astype(dtype=np.dtype(">u" + str(settings.timestamp_size)))
 		else:
-			adapted_timestamps = [x*settings.ts_tick for x in timestamps]
-		return adapted_timestamps
+			print("[Functions.adapt_timestamps] > The SpikesFile timestamps are empty")
+
+
+	@staticmethod
+	def order_SpikesFile(spikes_file, settings):
+		# Indices that would sort the file
+		indexes = np.argsort(spikes_file.timestamps)
+
+		# Sort the arrays
+		spikes_file.addresses = spikes_file.addresses[indexes]
+		spikes_file.timestamps = spikes_file.timestamps[indexes]
 
 
 	@staticmethod
@@ -226,15 +253,15 @@ class Functions:
 			spikes_file_mono = Utils.extract_addr_and_ts(addr_ts)
 			if left_right:
 				spikes_file_mono.addresses = [x-left_right*settings.num_channels*(settings.on_off_both + 1) for x in spikes_file_mono.addresses]
-			
-			
+
+
 			if return_save_both == 0:
 				return spikes_file_mono
 			elif return_save_both == 1 or return_save_both == 2:
-				Savers.save_as_any(spikes_file_mono, path=path, output_format=output_format, settings=settings) 
+				Savers.save_as_any(spikes_file_mono, path=path, output_format=output_format, settings=settings)
 				if return_save_both == 2:
 					return spikes_file_mono
-			
+
 		else:
 			print("[Functions.stereo_to_mono] > SettingsError: this functionality cannot be performed over a mono aedat file.")
 
@@ -279,12 +306,12 @@ class Functions:
 			elif return_save_both == 1 or return_save_both == 2:
 				#settings_new = copy.deepcopy(settings)
 				#settings_new.mono_stereo = 1
-				Savers.save_as_any(spikes_file_new, path=path, output_format=output_format, settings=settings) 
+				Savers.save_as_any(spikes_file_new, path=path, output_format=output_format, settings=settings)
 				if return_save_both == 2:
 					return spikes_file_new
 
 		else:
-			print("[Functions.mono_to_stereo] > SettingsError: this functionality cannot be performed over a stereo aedat file.")        
+			print("[Functions.mono_to_stereo] > SettingsError: this functionality cannot be performed over a stereo aedat file.")
 
 
 	@staticmethod
@@ -320,130 +347,6 @@ class Functions:
 
 
 	@staticmethod
-	def PDF_report(spikes_file, settings, output_path, plots = ["Spikegram", "Sonogram", "Histogram", "Average activity", "Difference between L/R"], add_localization_report = False, localization_file = None, localization_settings = None, localization_plots = ["MSO spikegram", "MSO heatmap", "MSO histogram", "MSO localization"], vector = False, verbose = False):
-		"""
-		Generates a PDF report with the spikegram, sonogram, histogram, average activity and difference between L/R plots obtained from the input SpikesFile or path containing SpikeFiles.
-		
-		Parameters:
-				spikes_file (SpikesFile or string): File or path to use.
-				settings (MainSettings): Configuration parameters for the input file.
-				output_path (string): Destination path.
-				plots (string[]): List to select the plots to be included in the PDF report.
-				add_localization_report (boolean, optional): If True, the localization plots will be included in the PDF report.
-				localization_file (LocalizationFile, optional): If add_localization_report is set to True, this parameter is mandatory, and it should contain the localization information.
-				localization_settings (LocalizationSettings, optional): If add_localization_report is set to True, this parameter is mandatory, and it should contain the localization settings.
-				localization_plots (string[], optional): If add_localization_report is set to True, this parameter is mandatory, and it should contain the list of localization plots.
-				vector (boolean, optional): Set to True if you want the Spikegram plot vectorized. Note: this may make your PDF heavy.
-				verbose (boolean, optional): Set to True if you want the execution time of the function to be printed.
-
-		Returns:
-				None.
-		
-		Notes:   
-				If the path used as input is a folder instead of a spikes file, the PDF report is generated for every spikes file contained in the folder.
-		"""
-
-		if isinstance(spikes_file, str):
-    			
-			spikes_file_extension = os.path.splitext(spikes_file)
-
-			if spikes_file_extension == ".aedat":
-				if add_localization_report == False:
-					spikes_file = Loaders.loadAEDAT(spikes_file, settings)
-				elif add_localization_report != False and localization_file != None and localization_settings != None:
-					spikes_file, localization_file = Loaders.loadAEDATLocalization(spikes_file, settings, localization_settings)
-				else:
-					print("[Functions.PDF_report] > ParametersError: the input parameters are not correct.")
-					return None
-			elif spikes_file_extension == ".csv":
-				if add_localization_report == False:
-					spikes_file = Loaders.loadCSV(spikes_file, delimiter=',')
-				elif add_localization_report != False and localization_file != None and localization_settings != None:
-					spikes_file, localization_file = Loaders.loadCSVLocalization(spikes_file, delimiter=',')
-				else:
-					print("[Functions.PDF_report] > ParametersError: the input parameters are not correct.")
-					return None
-			elif spikes_file_extension == ".txt":
-				spikes_file, localization_file = Loaders.loadZynqGrabberData(spikes_file, settings, localization_settings)
-			else:
-				print("[Functions.PDF_report] > InputFileExtensionError: the extension of the input file is not valid.")
-				return None
-			spikes_file.timestamps = Functions.adapt_timestamps(spikes_file.timestamps, settings)
-			if add_localization_report == True:
-				localization_file.timestamps = Functions.adapt_timestamps(localization_file.timestamps, settings)
-
-		if isinstance(spikes_file, SpikesFile):
-    		
-			pdf = matplotlib.backends.backend_pdf.PdfPages(output_path)
-			
-			# Spikegram
-			if any("Spikegram" in s for s in plots):
-				spikegram = Plots.spikegram(spikes_file, settings, )
-				pdf.savefig(spikegram)
-				plt.draw()
-			# Sonogram
-			if any("Sonogram" in s for s in plots):
-				sonogram = Plots.sonogram(spikes_file, settings)		
-				pdf.savefig(sonogram)
-				plt.draw()
-			# Histogram
-			if any("Histogram" in s for s in plots):
-				Plots.histogram(spikes_file, settings,)		
-				pdf.savefig()
-				plt.draw()
-			# Average activity
-			if any("Average activity" in s for s in plots):
-				Plots.average_activity(spikes_file, settings,)		
-				pdf.savefig()
-				plt.draw()
-			# Difference between L/R
-			if settings.mono_stereo == 1 and any("Difference between L/R" in s for s in plots):		
-				Plots.difference_between_LR(spikes_file, settings,)		
-				pdf.savefig()
-				plt.draw()
-
-			if add_localization_report == True:
-				if isinstance(localization_file, LocalizationFile):
-					# MSO spikegram
-					if any("MSO spikegram" in s for s in localization_plots):
-						mso_spikegram = Plots.mso_spikegram(localization_file, settings, localization_settings)
-						pdf.savefig(mso_spikegram)
-						plt.draw()
-					# MSO heatmap
-					if any("MSO heatmap" in s for s in localization_plots):
-						mso_heatmap = Plots.mso_heatmap(localization_file, localization_settings)		
-						pdf.savefig(mso_heatmap)
-						plt.draw()
-					# MSO histogram
-					if any("MSO histogram" in s for s in localization_plots):
-						mso_histogram = Plots.mso_histogram(localization_file, settings, localization_settings)		
-						pdf.savefig(mso_histogram)
-						plt.draw()
-					# MSO localization
-					if any("MSO localization" in s for s in localization_plots):
-						mso_localization = Plots.mso_localization_plot(localization_file, settings, localization_settings)		
-						pdf.savefig(mso_localization)
-						plt.draw()
-				else:
-					print("[Functions.PDF_report] > InputFileError: the input LocalizationFile is not valid.")
-
-			d = pdf.infodict()
-			d['Title'] = 'pyNAVIS report'
-			d['Author'] = 'Juan P. Dominguez-Morales'
-			d['Subject'] = 'pyNAVIS report'
-			d['Keywords'] = 'pyNAVIS'
-			d['CreationDate'] = datetime.datetime.today()
-			d['ModDate'] = datetime.datetime.today()
-
-			pdf.close()
-			plt.close()
-			print("[Functions.PDF_report] > PDF report generated correctly")
-
-		else:
-			print("[Functions.PDF_report] > InputFileError: the input SpikesFile is not valid.")
-
-
-	@staticmethod
 	def ISI(spikes_file, verbose = False):
 		"""
 		Generates an array with the inter-spike intervals of the input SpikesFile.
@@ -458,7 +361,7 @@ class Functions:
 		"""
 
 		if verbose == True: start_time = time.time()
-		
+
 		isi_array = np.diff(spikes_file.timestamps)
 
 		if verbose == True: print('ISI CALCULATION', time.time() - start_time)
