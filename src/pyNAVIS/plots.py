@@ -59,7 +59,7 @@ class Plots:
         # REPRESENTATION
         plt.style.use('seaborn-whitegrid')
         spk_fig = plt.figure()
-        spk_fig.canvas.set_window_title(graph_title)
+        spk_fig.canvas.manager.set_window_title(graph_title)
 
         random.seed(0)
 
