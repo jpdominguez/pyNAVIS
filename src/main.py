@@ -5,10 +5,12 @@ from pyNAVIS import Loaders, Plots, MainSettings, Functions
 import matplotlib.pyplot as plt
 
 
-settings = MainSettings(num_channels=32, mono_stereo=0, on_off_both=1, address_size=2, ts_tick=1, bin_size=10000)
+settings = MainSettings(num_channels=64, mono_stereo=0, on_off_both=1, address_size=2, ts_tick=0.2, bin_size=10000, reset_timestamp=1)
 
-file = Loaders.loadAEDAT('examples/test_files/sound_mono_32ch_ONOFF_addr2b_ts02.aedat', settings)
+file = Loaders.loadAEDAT('examples/test_files/130Hz_mono_64ch_ONOFF_addr2b_ts02.aedat', settings)
+print(file.min_ts, file.max_ts)
 Functions.adapt_timestamps(file, settings)
+print(file.min_ts, file.max_ts)
 spikes_per_channel = Plots.histogram(file, settings, graph_title='Mono sound example')
 Plots.sonogram(file, settings, graph_title='Mono sound example')
 Plots.average_activity(file, settings, graph_title='Mono sound example')

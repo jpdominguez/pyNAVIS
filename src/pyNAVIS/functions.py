@@ -161,14 +161,14 @@ class Functions:
 				adapted_timestamps = (timestamps - minimum_ts) * settings.ts_tick
 
 				# Update the maximum and minimum values
-				spikes_file.max_ts = spikes_file.max_ts - minimum_ts
+				spikes_file.max_ts = (spikes_file.max_ts - minimum_ts) * settings.ts_tick
 				spikes_file.min_ts = 0
 			else:
 				adapted_timestamps = timestamps * settings.ts_tick
 
 				# Update the maximum and minimum values
-				spikes_file.max_ts = adapted_timestamps[spikes_file.max_ts_index]
-				spikes_file.min_ts = adapted_timestamps[spikes_file.min_ts_index]
+				spikes_file.max_ts = adapted_timestamps[spikes_file.max_ts_index] * settings.ts_tick
+				spikes_file.min_ts = adapted_timestamps[spikes_file.min_ts_index] * settings.ts_tick
 
 			# Update the timestamps
 			spikes_file.timestamps = adapted_timestamps.astype(dtype=np.dtype(">u" + str(settings.timestamp_size)))
