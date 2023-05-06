@@ -8,14 +8,14 @@ with open('HISTORY.md') as history_file:
 """
 setup_args = dict(
     name='pyNAVIS',
-    version='1.1.0',
+    version='1.1.1',
     description='Useful tools to analyze and process spiking information from neuromorphic auditory sensors.',
     long_description_content_type="text/markdown",
     long_description=README,
     license='GPL',
     packages=find_packages(),
     author='Juan P. Dominguez-Morales',
-    author_email='jpdominguez@atc.us.es',
+    author_email='jpdominguez@us.es',
     keywords=['pyNAVIS', 'NAVIS', 'neuromorphic engineering', "neuromorphic audio processing", "neuromorphic sensors"],
     url='https://github.com/jpdominguez/pyNAVIS',
     download_url='https://pypi.org/project/pyNAVIS/'
