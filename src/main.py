@@ -1,46 +1,20 @@
 import os
 
 from examples import gen_random, gen_shift, gen_sweep, load_stereo_AEDAT, manual_split, stereo_to_mono, mono_to_stereo, phaselock, load_stereo_localization_AEDAT, load_stereo_localization_CSV, load_stereo_localization_ZynqGrabber
-from pyNAVIS import *
+from pyNAVIS import Loaders, Plots, MainSettings, Functions
 import matplotlib.pyplot as plt
 
-dirname = os.path.dirname(__file__)
 
+settings = MainSettings(num_channels=32, mono_stereo=0, on_off_both=1, address_size=2, ts_tick=1, bin_size=10000)
 
-# settings = MainSettings(num_channels=32, mono_stereo=0, on_off_both=1, address_size=4, ts_tick=1, bin_size=10000)
+file = Loaders.loadAEDAT('examples/test_files/sound_mono_32ch_ONOFF_addr2b_ts02.aedat', settings)
+Functions.adapt_timestamps(file, settings)
+spikes_per_channel = Plots.histogram(file, settings, graph_title='Mono sound example')
+Plots.sonogram(file, settings, graph_title='Mono sound example')
+Plots.average_activity(file, settings, graph_title='Mono sound example')
+Plots.difference_between_LR(file, settings, graph_title='Mono sound example')
 
-# file = Loaders.loadAEDAT('C:\\Users\\juado\\Downloads\\Telegram Desktop\\WhiteNoise.aedat', settings)
-# Functions.adapt_timestamps(file, settings)
-# spikes_per_channel = Plots.histogram(file, settings, graph_title='WhiteNoise')
-# spikes_per_channel_ON = spikes_per_channel[0]
-# spikes_per_channel_ON = [spikes_per_channel_ON[x]/57.0 for x in range(0, len(spikes_per_channel_ON), 2)]
-
-# print(spikes_per_channel_ON)
-
-
-# #################################################
-
-
-# file = Loaders.loadAEDAT('C:\\Users\\juado\\Downloads\\Telegram Desktop\\Sweep.aedat', settings)
-# Functions.adapt_timestamps(file, settings)
-# spikes_per_channel = Plots.histogram(file, settings, graph_title='Sweep')
-# spikes_per_channel_ON = spikes_per_channel[0]
-# spikes_per_channel_ON = [spikes_per_channel_ON[x]/30.0 for x in range(0, len(spikes_per_channel_ON), 2)]
-
-# print(spikes_per_channel_ON)
-
-
-# plt.show()
-
-
-
-
-
-
-
-
-
-
+plt.show()
 
 
 #%% Sweep generation example

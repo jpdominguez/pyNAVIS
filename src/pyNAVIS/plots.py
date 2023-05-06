@@ -159,7 +159,7 @@ class Plots:
             # REPRESENTATION
             plt.style.use('default')
             sng_fig = plt.figure()
-            sng_fig.canvas.set_window_title(graph_title)
+            sng_fig.canvas.manager.set_window_title(graph_title)
 
             plt.imshow(sonogram, aspect="auto", cmap='hot', rasterized=True)  # , aspect="auto")
             plt.gca().invert_yaxis()
@@ -225,7 +225,7 @@ class Plots:
 
         plt.style.use('seaborn-whitegrid')
         hst_fig = plt.figure()
-        hst_fig.canvas.set_window_title(graph_title)
+        hst_fig.canvas.manager.set_window_title(graph_title)
         plt.title(graph_title, fontsize='x-large')
         plt.xlabel('Address', fontsize='large')
         plt.ylabel('No. of spikes', fontsize='large')
@@ -315,7 +315,7 @@ class Plots:
 
         plt.style.use('seaborn-whitegrid')
         avg_fig = plt.figure()
-        avg_fig.canvas.set_window_title(graph_title)
+        avg_fig.canvas.manager.set_window_title(graph_title)
         plt.title(graph_title, fontsize='x-large')
         plt.xlabel('Bin (' + str(settings.bin_size) + '$\mu$s width)', fontsize='large')
         plt.ylabel('No. of spikes', fontsize='large')
@@ -399,7 +399,7 @@ class Plots:
                 # REPRESENTATION
                 plt.style.use('default')
                 dlr_fig = plt.figure()
-                dlr_fig.canvas.set_window_title(graph_title)
+                dlr_fig.canvas.manager.set_window_title(graph_title)
 
                 # cmap = 'RdBu'
                 colors = [(1, 0.49803921568627450980392156862745, 0.05490196078431372549019607843137), (1, 1, 1), (
@@ -482,7 +482,7 @@ class Plots:
         # REPRESENTATION
         plt.style.use('seaborn-ticks')
         htmap_fig, htmap_ax = plt.subplots()
-        htmap_fig.canvas.set_window_title(graph_title)
+        htmap_fig.canvas.manager.set_window_title(graph_title)
 
         # Create the heatmap image
         htmap_im = plt.imshow(mso_activity, cmap='viridis')
@@ -544,7 +544,7 @@ class Plots:
         plt.style.use('seaborn-whitegrid')
         msospk_fig = plt.figure()
         ax = msospk_fig.add_subplot(111, projection='3d')
-        msospk_fig.canvas.set_window_title(graph_title)
+        msospk_fig.canvas.manager.set_window_title(graph_title)
 
         # Plot all the spikes stored in the localization_file
         ax.scatter(localization_file.mso_neuron_ids, localization_file.mso_timestamps, localization_file.mso_channels,
@@ -631,7 +631,7 @@ class Plots:
         # Set the figure
         plt.style.use('seaborn-whitegrid')
         mso_loc_fig = plt.figure()
-        mso_loc_fig.canvas.set_window_title(graph_title)
+        mso_loc_fig.canvas.manager.set_window_title(graph_title)
         plt.title(graph_title, fontsize='x-large')
         plt.xlabel('Bin (' + str(settings.bin_size) + '$\mu$s width)', fontsize='large')
         plt.ylabel('Position (in degrees)', fontsize='large')
@@ -748,7 +748,7 @@ class Plots:
         # And all the ticks' labels
         ax.set_yticklabels(freq_channel_labels)
 
-        mso_hst_fig.canvas.set_window_title(graph_title)
+        mso_hst_fig.canvas.manager.set_window_title(graph_title)
         plt.title(graph_title, fontsize='x-large')
 
         mso_hst_fig.show()
