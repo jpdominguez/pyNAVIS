@@ -219,6 +219,10 @@ class Functions:
 						prevSpike[spikes_file.addresses[i]//2] = spikes_file.addresses[i]%2
 			spikes_file = SpikesFile([], [])
 			spikes_file.addresses = phaseLockedAddrs
+			spikes_file.min_ts = np.min(phaseLockedTs)
+			spikes_file.max_ts = np.max(phaseLockedTs)
+			spikes_file.min_ts_index = np.argmin(phaseLockedTs)
+			spikes_file.max_ts_index = np.argmax(phaseLockedTs)
 			spikes_file.timestamps = phaseLockedTs
 			return spikes_file
 		else:
