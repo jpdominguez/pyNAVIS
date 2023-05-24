@@ -8,7 +8,7 @@ with open('HISTORY.md') as history_file:
 """
 setup_args = dict(
     name='pyNAVIS',
-    version='1.1.6',
+    version='1.1.7',
     description='Useful tools to analyze and process spiking information from neuromorphic auditory sensors.',
     long_description_content_type="text/markdown",
     long_description=README,
