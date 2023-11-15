@@ -3,3 +3,4 @@ autodocsumm
 matplotlib
 sphinx-prompt
 recommonmark
+sphinx_rtd_theme
