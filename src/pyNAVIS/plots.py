@@ -27,7 +27,7 @@ from bisect import bisect_left, bisect_right
 import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib.colors import LinearSegmentedColormap
-from pyNAVIS import Functions
+from .functions import Functions
 
 
 class Plots:
