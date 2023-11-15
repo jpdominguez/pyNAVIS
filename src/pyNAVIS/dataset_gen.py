@@ -24,13 +24,11 @@ import time
 import matplotlib
 import numpy as np
 
-"""
-
 from .functions import Functions
 from .loaders import Loaders
 from .plots import Plots
 from .savers import Savers
-"""
+
 
 
 class DatasetGenerators:
@@ -67,8 +65,9 @@ class DatasetGenerators:
 
         for file in files:
             spikes_file = Loaders.loadAEDAT(file, settings)
-            sonogram_data = Plots.sonogram(spikes_file.addresses, spikes_file.timestamps, settings, return_data = True)
-            matplotlib.image.imsave(os.path.join(path_output_folder, os.path.basename(file)) + '.png', sonogram_data)
+            Functions.adapt_timestamps(spikes_file, settings)
+            sonogram_data = Plots.sonogram(spikes_file, settings, return_data = True)
+            matplotlib.image.imsave(os.path.join(path_output_folder, os.path.basename(file)) + '.png', sonogram_data, origin='lower')
             
             if verbose == True:
                 progress += 1
@@ -152,7 +151,8 @@ class DatasetGenerators:
                 break
 
         for file in files:
-            spikes_file = Loaders.loadAEDAT(file, settings)            
+            spikes_file = Loaders.loadAEDAT(file, settings)
+            Functions.adapt_timestamps(spikes_file, settings)
             histogram_data = Plots.histogram(spikes_file, settings)
             np.savetxt(os.path.join(path_output_folder, os.path.basename(file)) + ".csv", histogram_data, delimiter=",", fmt='%d')
             
