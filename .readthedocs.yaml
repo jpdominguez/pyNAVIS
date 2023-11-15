@@ -7,9 +7,7 @@ version: 1.1.9
 
 # Set the version of Python and other tools you might need
 build:
-  os: any
-  tools:
-    python: "3.8"
+  python: "3.8"
 
 # Build documentation in the docs/ directory with Sphinx
 sphinx:
