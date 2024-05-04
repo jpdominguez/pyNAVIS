@@ -15,8 +15,7 @@ class SpikesFile:
     def __init__(self, addresses=[], timestamps=[]):
         self.addresses = addresses
         self.timestamps = timestamps
-
-        if timestamps != []:
+        if len(timestamps) > 0:
             self.max_ts_index = np.argmax(timestamps)
             self.max_ts = timestamps[self.max_ts_index]
             self.min_ts_index = np.argmin(timestamps)
