@@ -32,6 +32,7 @@ class MainSettings:
         timestamp_size (int): Number of bytes that each timestamp is using. Only needed when loading .aedat files
         on_off_both (int): Select wether the addresses contained in the file are ON, OFF or if it is using both.
         reset_timestamp (boolean): Select wether to have timedtamps starting at 0 (True) or leave it as they are (False).
+        verbose (boolean): Select wether to print information about the file being loaded (True) or not (False
     
     Notes:
             Set ts_tick to 1 for .aedat files recorded with jAER, to 0.2 for files recorded with USBAERmini2, and to 80e-3 for files recorded with zynqGrabber.
@@ -44,7 +45,7 @@ class MainSettings:
             reset_timestamp subtracts the smallest timestamp in the file to each of the timestamps.
     """
 
-    def __init__(self, num_channels, mono_stereo = 0, address_size = 2, timestamp_size=4, ts_tick = 1, bin_size = 20000, on_off_both = 1, reset_timestamp = True):
+    def __init__(self, num_channels, mono_stereo = 0, address_size = 2, timestamp_size=4, ts_tick = 1, bin_size = 20000, on_off_both = 1, reset_timestamp = True,verbose=True):
         self.num_channels = num_channels
         self.mono_stereo = mono_stereo
         self.address_size = address_size
@@ -53,7 +54,8 @@ class MainSettings:
         self.bin_size = bin_size
         self.on_off_both = on_off_both
         self.reset_timestamp = reset_timestamp
-
+        self.verbose = verbose
+        
 class LocalizationSettings:
     """
     Class that collects the configuration settings of pyNAVS when working with a NAS model that integrates the sound source localization model.
