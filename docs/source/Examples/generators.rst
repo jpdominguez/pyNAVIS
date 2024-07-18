@@ -33,7 +33,7 @@ Then, you can use that variable to plot the spikes. Here you can see an example 
 
 .. prompt:: python \
 
-    import matplotlib.pyplo as plt
+    import matplotlib.pyplot as plt
     
     rand_settings = MainSettings(num_channels=64, mono_stereo=0, on_off_both=0, bin_size=20000)
     
