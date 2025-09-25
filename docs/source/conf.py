@@ -33,7 +33,7 @@ release = '1.1.25'
 # ones.
 extensions = [    'sphinx.ext.autodoc',
     'sphinx.ext.viewcode',
-    'sphinxcontrib.napoleon', 'autodocsumm', 'recommonmark', 'sphinx-prompt']
+    'sphinx.ext.napoleon', 'autodocsumm', 'recommonmark', 'sphinx-prompt']
 
 #napoleon_use_param = False
 napoleon_use_ivar = True

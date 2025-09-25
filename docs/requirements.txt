@@ -1,4 +1,4 @@
-sphinxcontrib-napoleon
+sphinx>=5.0
 autodocsumm
 matplotlib
 sphinx-prompt
