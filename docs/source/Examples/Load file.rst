@@ -53,7 +53,7 @@ Using the previous example, follow this lines of code to adapt the timestamps of
     from pyNAVIS import *
     settings = MainSettings(num_channels=16, mono_stereo=1, on_off_both=1, address_size=2, ts_tick=0.2, bin_size=10000)
     spikes_info = Loaders.loadAEDAT('path/to/file/name.aedat', settings)
-    spikes_file_adapted = Functions.adapt_SpikesFile(spikes_info, settings)
+    Functions.adapt_timestamps(spikes_info, settings)
 
 This function returns a new SpikesFile with the same information as the one used as input, but with the timestamps adapted.
 
@@ -68,14 +68,14 @@ Then, the ``check_SpikesFile()`` function can be used to check if the SpikesFile
     from pyNAVIS import *
     settings = MainSettings(num_channels=16, mono_stereo=1, on_off_both=1, address_size=2, ts_tick=0.2, bin_size=10000)
     spikes_info = Loaders.loadAEDAT('path/to/file/name.aedat', settings)
-    spikes_file_adapted = Functions.adapt_SpikesFile(spikes_info, settings)
-    Functions.check_SpikesFile(stereo_file, settings)
+    Functions.adapt_timestamps(spikes_info, settings)
+    Functions.check_SpikesFile(spikes_info, settings)
 
 .. note::
-    Both the adapt_SpikesFile() and the check_SpikesFile() functions are completely optional.
+    Both the adapt_timestamps() and the check_SpikesFile() functions are completely optional.
 
 
-3. Plot information
+1. Plot information
 ##############################
 
 To plot the spikegram (also known as cochleogram or raster plot), sonogram, histogram, average activity and the difference between left and right cochlea, follow the next example:
@@ -85,12 +85,12 @@ To plot the spikegram (also known as cochleogram or raster plot), sonogram, hist
     from pyNAVIS import *
     settings = MainSettings(num_channels=16, mono_stereo=1, on_off_both=1, address_size=2, ts_tick=0.2, bin_size=10000)
     spikes_info = Loaders.loadAEDAT('path/to/file/name.aedat', settings)
-    spikes_file_adapted = Functions.adapt_SpikesFile(spikes_info, settings)
-    Plots.spikegram(spikes_file_adapted, settings)
-    Plots.sonogram(spikes_file_adapted, settings)
-    Plots.histogram(spikes_file_adapted, settings)
-    Plots.average_activity(spikes_file_adapted, settings)
-    Plots.difference_between_LR(spikes_file_adapted, settings)
+    Functions.adapt_timestamps(spikes_info, settings)
+    Plots.spikegram(spikes_info, settings)
+    Plots.sonogram(spikes_info, settings)
+    Plots.histogram(spikes_info, settings)
+    Plots.average_activity(spikes_info, settings)
+    Plots.difference_between_LR(spikes_info, settings)
 
 
 .. note::

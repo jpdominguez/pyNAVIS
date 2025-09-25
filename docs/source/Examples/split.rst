@@ -20,16 +20,16 @@ Here you can find an example where a file is loaded and then a portion of it is 
 
     settings = MainSettings(num_channels=16, mono_stereo=1, on_off_both=1, address_size=2, ts_tick=0.2, bin_size=10000)
     spikes_info = Loaders.loadAEDAT('path/to/file/name.aedat', settings)
-    spikes_file_adapted = Functions.adapt_SpikesFile(spikes_info, settings)
+    Functions.adapt_timestamps(spikes_info, settings)
 
-    manual_split_spikes = Splitters.manual_splitter(spikes_file_adapted, init=init_timestamp, end=end_timestamp, settings=settings, return_save_both=0)
+    manual_split_spikes = Splitters.manual_splitter(spikes_info, init=init_timestamp, end=end_timestamp, settings=settings, return_save_both=0)
 
 
 Whose information can be saved into a file, plotted, or processed.
 
 
 
-2. Extract a set of addresses from the file
+1. Extract a set of addresses from the file
 ###########################################
 
 You can also extract a user-defined set of addresses from a file.
@@ -46,9 +46,9 @@ See the following example:
 
     settings = MainSettings(num_channels=16, mono_stereo=1, on_off_both=1, address_size=2, ts_tick=0.2, bin_size=10000)
     spikes_info = Loaders.loadAEDAT('path/to/file/name.aedat', settings)
-    spikes_file_adapted = Functions.adapt_SpikesFile(spikes_info, settings)
+    Functions.adapt_timestamps(spikes_info, settings)
 
-    addresses_info = Functions.extract_channels_activities(spikes_file_adapted, addresses=addresses_set)
+    addresses_info = Functions.extract_channels_activities(spikes_info, addresses=addresses_set)
 
 If you want to plot **addresses_info**, the settings should be changed to support the number of addresses that this new variable has.
 

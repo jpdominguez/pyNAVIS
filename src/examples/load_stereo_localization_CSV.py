@@ -6,10 +6,10 @@ def run(path, settings, settings_localization, include_nas = True):
     stereo_file_nas, stereo_file_soc = Loaders.loadCSVLocalization(path, delimiter=',')
 
     if include_nas == True:
-        stereo_file_nas.timestamps = Functions.adapt_timestamps(stereo_file_nas.timestamps, settings)
+        Functions.adapt_timestamps(stereo_file_nas, settings)
         Functions.check_SpikesFile(stereo_file_nas, settings)
 
-    stereo_file_soc.mso_timestamps = Functions.adapt_timestamps(stereo_file_soc.mso_timestamps, settings)
+    Functions.adapt_timestamps(stereo_file_soc, settings)
     Functions.check_LocalizationFile(stereo_file_soc, settings, settings_localization)
     
     if include_nas == True:

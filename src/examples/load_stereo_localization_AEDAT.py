@@ -5,10 +5,10 @@ from pyNAVIS import *
 def run(path, settings, settings_localization):    
     stereo_file_nas, stereo_file_soc = Loaders.loadAEDATLocalization(path, settings, settings_localization)
 
-    stereo_file_nas.timestamps = Functions.adapt_timestamps(stereo_file_nas.timestamps, settings)
+    Functions.adapt_timestamps(stereo_file_nas, settings)
     Functions.check_SpikesFile(stereo_file_nas, settings)
 
-    stereo_file_soc.mso_timestamps = Functions.adapt_timestamps(stereo_file_soc.mso_timestamps, settings)
+    Functions.adapt_timestamps(stereo_file_soc, settings)
     Functions.check_LocalizationFile(stereo_file_soc, settings, settings_localization)
     
     Plots.spikegram(stereo_file_nas, settings)
