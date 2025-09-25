@@ -57,7 +57,7 @@ class Plots:
         if verbose:
             start_time = time.time()
         # REPRESENTATION
-        plt.style.use('seaborn-whitegrid')
+        plt.style.use('seaborn-v0_8-whitegrid')
         spk_fig = plt.figure()
         spk_fig.canvas.manager.set_window_title(graph_title)
 
@@ -223,7 +223,7 @@ class Plots:
         if verbose:
             print('HISTOGRAM CALCULATION:', time.time() - start_time)
 
-        plt.style.use('seaborn-whitegrid')
+        plt.style.use('seaborn-v0_8-whitegrid')
         hst_fig = plt.figure()
         hst_fig.canvas.manager.set_window_title(graph_title)
         plt.title(graph_title, fontsize='x-large')
@@ -313,7 +313,7 @@ class Plots:
         if verbose:
             print('AVERAGE ACTIVITY CALCULATION', time.time() - start_time)
 
-        plt.style.use('seaborn-whitegrid')
+        plt.style.use('seaborn-v0_8-whitegrid')
         avg_fig = plt.figure()
         avg_fig.canvas.manager.set_window_title(graph_title)
         plt.title(graph_title, fontsize='x-large')
@@ -541,7 +541,7 @@ class Plots:
         if verbose == True: start_time = time.time()
 
         # REPRESENTATION
-        plt.style.use('seaborn-whitegrid')
+        plt.style.use('seaborn-v0_8-whitegrid')
         msospk_fig = plt.figure()
         ax = msospk_fig.add_subplot(111, projection='3d')
         msospk_fig.canvas.manager.set_window_title(graph_title)
@@ -629,7 +629,7 @@ class Plots:
         if verbose == True: print('MSO_LOCALIZATION PLOT CALCULATION', time.time() - start_time)
 
         # Set the figure
-        plt.style.use('seaborn-whitegrid')
+        plt.style.use('seaborn-v0_8-whitegrid')
         mso_loc_fig = plt.figure()
         mso_loc_fig.canvas.manager.set_window_title(graph_title)
         plt.title(graph_title, fontsize='x-large')
@@ -710,7 +710,7 @@ class Plots:
         if verbose == True: print('MSO HISTOGRAM CALCULATION:', time.time() - start_time)
 
         # Representation
-        plt.style.use('seaborn-whitegrid')
+        plt.style.use('seaborn-v0_8-whitegrid')
         mso_hst_fig = plt.figure()
         ax = mso_hst_fig.add_subplot(111, projection='3d')
 
