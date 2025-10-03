@@ -271,7 +271,7 @@ class Functions:
 
 
 	@staticmethod
-	def mono_to_stereo(spikes_file, delay, settings, return_save_both = 0, path = None, output_format = '.aedat'):
+	def mono_to_stereo(spikes_file, settings, delay = 0, return_save_both = 0, path = None, output_format = '.aedat'):
 		"""
 		Generates a stereo AEDAT SpikesFile from a mono SpikesFile with a specific delay between both.
 
