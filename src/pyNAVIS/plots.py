@@ -73,8 +73,8 @@ class Plots:
                         s=dot_size, rasterized=True)
         else:
             # Convert to numpy arrays
-            addresses = np.array(spikes_file.addresses, copy=False)
-            timestamps = np.array(spikes_file.timestamps, copy=False)
+            addresses = np.asarray(spikes_file.addresses) #np.array(spikes_file.addresses, copy=False)
+            timestamps = np.asarray(spikes_file.timestamps) #np.array(spikes_file.timestamps, copy=False)
 
             sup_indexes = np.argwhere(addresses >= mid_address)
 
@@ -276,8 +276,8 @@ class Plots:
                 int[ ] average_activity_R: Average activity array. Only returned if the mono_stereo parameter in settings is set to 1
         """
         # Convert to numpy array
-        addresses = np.array(spikes_file.addresses, copy=False)
-        timestamps = np.array(spikes_file.timestamps, copy=False)
+        addresses = np.asarray(spikes_file.addresses) #np.array(spikes_file.addresses, copy=False)
+        timestamps = np.asarray(spikes_file.timestamps) #np.array(spikes_file.timestamps, copy=False)
 
         # Define plot variables
         total_time = spikes_file.max_ts - spikes_file.min_ts
