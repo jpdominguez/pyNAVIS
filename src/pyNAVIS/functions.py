@@ -57,8 +57,8 @@ class Functions:
                 If mono_stereo is set to 1 and on_off_both is set to 1 in the MainSettings, then addresses should be less than num_channels*2*2.
         """
 		# Convert to numpy arrays
-		addresses = np.array(spikes_file.addresses, copy=False)
-		timestamps = np.array(spikes_file.timestamps, copy=False)
+		addresses = np.asarray(spikes_file.addresses)
+		timestamps = np.asarray(spikes_file.timestamps)
 
 		# Check if all timestamps are greater than zero
 		any_negative = np.any(timestamps < 0)
@@ -153,7 +153,7 @@ class Functions:
 		"""
 		if len(spikes_file.timestamps)>0:
 			# Convert to numpy array
-			timestamps = np.array(spikes_file.timestamps, copy=False)
+			timestamps = np.asarray(spikes_file.timestamps)
 
 			if settings.reset_timestamp:
 				# Substract the minimum to all timestamps
