@@ -68,8 +68,11 @@ class Splitters:
         spikes_file_new.timestamps = spikes_file_new.timestamps[a:b]
 
         if settings.reset_timestamp == True:
-            minimum_ts = min(spikes_file_new.timestamps)
-            spikes_file_new.timestamps = [(x - minimum_ts) for x in spikes_file_new.timestamps]
+            minimum_ts = np.min(spikes_file_new.timestamps)
+            # Ensure timestamps are a numpy array and subtract minimum_ts vectorized
+            spikes_file_new.timestamps = np.array(spikes_file_new.timestamps) - minimum_ts
+        spikes_file_new.min_ts = np.min(spikes_file_new.timestamps)
+        spikes_file_new.max_ts = np.max(spikes_file_new.timestamps)
 
         if return_save_both == 0:
             return spikes_file_new
