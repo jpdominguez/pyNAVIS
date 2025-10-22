@@ -23,7 +23,7 @@ copyright = '2018, Juan P. Dominguez-Morales'
 author = 'Juan P. Dominguez-Morales'
 
 # The full version, including alpha/beta/rc tags
-release = '1.2.1'
+release = '1.2.2'
 
 
 # -- General configuration ---------------------------------------------------
