@@ -251,13 +251,20 @@ class Functions:
 		"""
 
 		if settings.mono_stereo:
-			addr_ts = list(zip(spikes_file.addresses, spikes_file.timestamps))
-			addr_ts = [x for x in addr_ts if x[0] >= left_right*settings.num_channels*(settings.on_off_both + 1) and x[0] < (left_right+1)*settings.num_channels*(settings.on_off_both + 1)]
+			start = left_right * settings.num_channels * (settings.on_off_both + 1)
+			end = (left_right + 1) * settings.num_channels * (settings.on_off_both + 1)
+
+			addrs = np.asarray(spikes_file.addresses)
+			ts = np.asarray(spikes_file.timestamps)
+
+			mask = (addrs >= start) & (addrs < end)
+
+			# Build addr_ts from the filtered numpy arrays (tolist so Utils.extract_addr_and_ts receives native Python types)
+			filtered_addrs = (addrs[mask] - start).tolist()
+			filtered_ts = ts[mask].tolist()
+			addr_ts = list(zip(filtered_addrs, filtered_ts))
 
 			spikes_file_mono = Utils.extract_addr_and_ts(addr_ts)
-			if left_right:
-				spikes_file_mono.addresses = [x-left_right*settings.num_channels*(settings.on_off_both + 1) for x in spikes_file_mono.addresses]
-
 
 			if return_save_both == 0:
 				return spikes_file_mono
@@ -294,22 +301,36 @@ class Functions:
 
 		if settings.mono_stereo == 0:
 			spikes_file_new = copy.deepcopy(spikes_file)
-			newAddrs = [(x + settings.num_channels*(settings.on_off_both+1)) for x in spikes_file_new.addresses]
-			spikes_file_new.addresses.extend(newAddrs)
-			newTs = [(x + delay) for x in spikes_file_new.timestamps]
-			spikes_file_new.timestamps.extend(newTs)
-			addr_ts = list(zip(spikes_file_new.addresses, spikes_file_new.timestamps))
-			addr_ts = sorted(addr_ts, key=lambda v: (v, random.random())) #key=getKey)  #THIS DISORDERS TSS
+
+			# Work with numpy arrays
+			addrs_arr = np.asarray(spikes_file_new.addresses)
+			ts_arr = np.asarray(spikes_file_new.timestamps)
+
+			offset = settings.num_channels * (settings.on_off_both + 1)
+			new_addrs = addrs_arr + offset
+			new_ts = ts_arr + delay
+
+			all_addrs = np.concatenate((addrs_arr, new_addrs))
+			all_ts = np.concatenate((ts_arr, new_ts))
+
+			# Sort by address and use a random tie-breaker to disorder timestamps within the same address
+			rand = np.random.random(all_addrs.shape)
+			order = np.lexsort((rand, all_addrs))  # primary key: all_addrs, secondary: rand
+			sorted_addrs = all_addrs[order]
+			sorted_ts = all_ts[order]
+
+			# Convert to list of (addr, ts) for Utils.extract_addr_and_ts
+			addr_ts = list(zip(sorted_addrs.tolist(), sorted_ts.tolist()))
 			spikes_file_new = Utils.extract_addr_and_ts(addr_ts)
 
+			# Preserve original behavior: if delay < 0, adjust timestamps
 			if delay < 0:
-				spikes_file_new.timestamps = [x-delay for x in spikes_file_new.timestamps]
+				ts_arr2 = np.asarray(spikes_file_new.timestamps) - delay
+				spikes_file_new.timestamps = ts_arr2.tolist()
 
 			if return_save_both == 0:
 				return spikes_file_new
 			elif return_save_both == 1 or return_save_both == 2:
-				#settings_new = copy.deepcopy(settings)
-				#settings_new.mono_stereo = 1
 				Savers.save_as_any(spikes_file_new, path=path, output_format=output_format, settings=settings)
 				if return_save_both == 2:
 					return spikes_file_new
