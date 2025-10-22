@@ -251,14 +251,49 @@ class Functions:
 		"""
 
 		if settings.mono_stereo:
-			addr_ts = list(zip(spikes_file.addresses, spikes_file.timestamps))
-			addr_ts = [x for x in addr_ts if x[0] >= left_right*settings.num_channels*(settings.on_off_both + 1) and x[0] < (left_right+1)*settings.num_channels*(settings.on_off_both + 1)]
+			# Convert to numpy arrays if they aren't already
+			if not isinstance(spikes_file.addresses, np.ndarray):
+				addresses = np.array(spikes_file.addresses)
+			else:
+				addresses = spikes_file.addresses
+				
+			if not isinstance(spikes_file.timestamps, np.ndarray):
+				timestamps = np.array(spikes_file.timestamps)
+			else:
+				timestamps = spikes_file.timestamps
 
-			spikes_file_mono = Utils.extract_addr_and_ts(addr_ts)
+			# Calculate address range for the selected channel (left or right)
+			channel_offset = left_right * settings.num_channels * (settings.on_off_both + 1)
+			min_addr = channel_offset
+			max_addr = (left_right + 1) * settings.num_channels * (settings.on_off_both + 1)
+
+			# Use numpy boolean indexing to filter addresses and timestamps
+			mask = (addresses >= min_addr) & (addresses < max_addr)
+			filtered_addresses = addresses[mask]
+			filtered_timestamps = timestamps[mask]
+
+			# Create new SpikesFile
+			spikes_file_mono = SpikesFile([], [])
+			
+			# Adjust addresses if extracting right channel (subtract offset to start from 0)
 			if left_right:
-				spikes_file_mono.addresses = [x-left_right*settings.num_channels*(settings.on_off_both + 1) for x in spikes_file_mono.addresses]
+				spikes_file_mono.addresses = filtered_addresses - channel_offset
+			else:
+				spikes_file_mono.addresses = filtered_addresses
+				
+			spikes_file_mono.timestamps = filtered_timestamps
 
-
+			# Ensure arrays are numpy arrays and set min/max values
+			spikes_file_mono.addresses = np.array(spikes_file_mono.addresses, dtype=int)
+			spikes_file_mono.timestamps = np.array(spikes_file_mono.timestamps, dtype=int)
+			
+			if len(spikes_file_mono.timestamps) > 0:
+				spikes_file_mono.min_ts = np.min(spikes_file_mono.timestamps)
+				spikes_file_mono.max_ts = np.max(spikes_file_mono.timestamps)
+			else:
+				spikes_file_mono.min_ts = 0
+				spikes_file_mono.max_ts = 0
+		
 			if return_save_both == 0:
 				return spikes_file_mono
 			elif return_save_both == 1 or return_save_both == 2:
